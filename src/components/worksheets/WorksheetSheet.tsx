@@ -10,9 +10,13 @@ export function WorksheetSheet({ worksheet, compact = false }: { worksheet: Work
     <div className={`sheet mx-auto bg-white text-[#222] ${compact ? "sheet-compact" : ""}`}>
       <header className="sheet-header">
         <div className="flex items-start justify-between gap-4">
-          <div>
+          <div className="flex items-start gap-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.webp" alt="" className="size-12 shrink-0 rounded-full object-cover" />
+            <div>
             <p className="text-[11px] tracking-wide text-[#777]">{SITE.brand} · {SITE.name} · {SITE.credit}</p>
             <h1 className="mt-0.5 font-display text-[22px] leading-tight text-[#222]">{worksheet.emoji} {worksheet.title}</h1>
+            </div>
           </div>
           <div className="shrink-0 text-[12px] text-[#555]">
             <p>ชื่อ ________________________</p>

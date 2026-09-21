@@ -256,7 +256,7 @@ export default function HomePage() {
       {/* ---------- 👩‍🏫 Teacher Kaowfang ---------- */}
       <section className="container-page pb-12 sm:pb-16">
         <div className="card grid gap-5 bg-gradient-to-r from-purple-50 to-pink-soft p-6 sm:grid-cols-[auto_1fr_auto] sm:items-center sm:p-8">
-          <Image src="/teacher.jpg" alt="Teacher Kaowfang" width={128} height={128} className="mx-auto size-28 rounded-full border-4 border-white object-cover shadow-lift sm:size-32" />
+          <Image src="/logo.webp" alt="Teacher Kaowfang" width={128} height={128} className="mx-auto size-28 rounded-full border-4 border-white object-cover shadow-lift sm:size-32" />
           <div className="text-center sm:text-left">
             <p className="text-[13px] font-medium text-purple-500">👩‍🏫 ผู้จัดทำ</p>
             <h2 className="text-2xl sm:text-3xl">Teacher Kaowfang</h2>
