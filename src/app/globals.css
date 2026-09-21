@@ -135,3 +135,10 @@ img, svg { max-width: 100%; height: auto; }
   75% { transform: translateX(6px); }
 }
 .animate-shake { animation: shake 300ms ease; }
+
+/* เกมจับคู่กับเงา: เปลี่ยน emoji เป็นเงาดำ */
+.emoji-shadow {
+  color: transparent;
+  text-shadow: 0 0 0 #3b2f4a;
+  filter: brightness(0) opacity(0.85);
+}

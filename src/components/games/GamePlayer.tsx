@@ -17,5 +17,13 @@ export function GamePlayer({ config }: { config: GameConfig }) {
     case "color-match": return <ColorMatchGame rounds={config.rounds} />;
     case "tile-puzzle": return <TilePuzzleGame scene={config.scene} size={config.size} />;
     case "pair-columns": return <PairColumnsGame pairs={config.pairs} />;
+    case "shadow-match":
+      return (
+        <PairColumnsGame
+          pairs={config.items.map((i) => ({ left: i.emoji, right: i.emoji, label: i.label }))}
+          shadowRight
+          instruction={{ idle: "แตะรูปก่อน แล้วแตะเงาที่เหมือนกัน", picked: (l) => `เลือก ${l} แล้ว → แตะเงาของมัน` }}
+        />
+      );
   }
 }

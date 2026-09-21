@@ -7,6 +7,7 @@ export const GAME_CATEGORIES: Record<GameCategory, { emoji: string; label: strin
   observe: { emoji: "🔍", label: "เกมสังเกตและค้นหา" },
   color: { emoji: "🎨", label: "เกมจับคู่สี" },
   letter: { emoji: "🔤", label: "เกมจับคู่ภาพ/ตัวอักษร" },
+  shadow: { emoji: "🌑", label: "เกมจับคู่กับเงา" },
 };
 
 /**
@@ -152,6 +153,44 @@ export const GAMES: Game[] = [
         { left: "ค", right: "🐃", label: "ค ควาย" },
         { left: "ง", right: "🐍", label: "ง งู" },
         { left: "จ", right: "🍽️", label: "จ จาน" },
+      ],
+    },
+  },
+  {
+    id: "shadow-animals",
+    title: "จับคู่กับเงา",
+    emoji: "🌑",
+    cover: "bg-sky-soft",
+    description: "แตะสัตว์ แล้วแตะเงาที่มีรูปร่างเหมือนกัน",
+    skills: ["การสังเกตรูปร่าง", "มิติสัมพันธ์", "การเชื่อมโยง"],
+    gradeId: "k1",
+    category: "shadow",
+    planIds: ["animals", "shapes"],
+    activityType: "game",
+    config: {
+      engine: "shadow-match",
+      items: [
+        { emoji: "🐘", label: "ช้าง" }, { emoji: "🦒", label: "ยีราฟ" }, { emoji: "🐢", label: "เต่า" },
+        { emoji: "🦋", label: "ผีเสื้อ" }, { emoji: "🐟", label: "ปลา" },
+      ],
+    },
+  },
+  {
+    id: "shadow-things",
+    title: "เงาของฉันคืออะไร",
+    emoji: "🌓",
+    cover: "bg-mint-soft",
+    description: "ของใช้และผลไม้รอบตัว จับคู่กับเงาให้ถูกนะ",
+    skills: ["การสังเกตรูปร่าง", "การจำแนก"],
+    gradeId: "k1",
+    category: "shadow",
+    planIds: ["food", "shapes", "myself"],
+    activityType: "game",
+    config: {
+      engine: "shadow-match",
+      items: [
+        { emoji: "🍌", label: "กล้วย" }, { emoji: "☂️", label: "ร่ม" }, { emoji: "✂️", label: "กรรไกร" },
+        { emoji: "🧸", label: "ตุ๊กตาหมี" }, { emoji: "🚲", label: "จักรยาน" },
       ],
     },
   },

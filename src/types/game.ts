@@ -7,7 +7,8 @@ export type GameCategory =
   | "ordering"    // 🔢 เกมเรียงลำดับ
   | "observe"     // 🔍 เกมสังเกตและค้นหา
   | "color"       // 🎨 เกมจับคู่สี
-  | "letter";     // 🔤 เกมจับคู่ภาพ/ตัวอักษร
+  | "letter"      // 🔤 เกมจับคู่ภาพ/ตัวอักษร
+  | "shadow";     // 🌑 เกมจับคู่กับเงา
 
 /**
  * engine = ตัวเกมที่เขียนไว้แล้ว 1 ครั้ง ใช้ซ้ำได้หลายเกมด้วย config ต่างกัน
@@ -19,7 +20,8 @@ export type GameConfig =
   | { engine: "sort"; rounds: { title: string; items: { emoji: string; value: number; label: string; count?: number }[] }[] }
   | { engine: "color-match"; rounds: { color: string; name: string; items: { emoji: string; color: string }[] }[] }
   | { engine: "tile-puzzle"; scene: string[]; size: 3 }
-  | { engine: "pair-columns"; pairs: { left: string; right: string; label: string }[] };
+  | { engine: "pair-columns"; pairs: { left: string; right: string; label: string }[] }
+  | { engine: "shadow-match"; items: { emoji: string; label: string }[] };
 
 export interface Game {
   id: string;

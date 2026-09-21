@@ -5,8 +5,15 @@ import { BigTile, GameShell, shuffle } from "@/components/games/GameShell";
 
 type Pair = { left: string; right: string; label: string };
 
-/** 🔤 เกมจับคู่ 2 คอลัมน์ — แตะฝั่งซ้าย (ตัวอักษร) แล้วแตะฝั่งขวา (ภาพ) */
-export function PairColumnsGame({ pairs }: { pairs: Pair[] }) {
+interface Props {
+  pairs: Pair[];
+  /** แสดงฝั่งขวาเป็นเงาดำ (เกมจับคู่กับเงา) */
+  shadowRight?: boolean;
+  instruction?: { idle: string; picked: (left: string) => string };
+}
+
+/** 🔤 เกมจับคู่ 2 คอลัมน์ — แตะฝั่งซ้าย (ตัวอักษร/รูป) แล้วแตะฝั่งขวา (ภาพ/เงา) */
+export function PairColumnsGame({ pairs, shadowRight = false, instruction }: Props) {
   const [lefts, setLefts] = useState<Pair[]>([]);
   const [rights, setRights] = useState<Pair[]>([]);
   const [selLeft, setSelLeft] = useState<string | null>(null);
@@ -35,7 +42,11 @@ export function PairColumnsGame({ pairs }: { pairs: Pair[] }) {
 
   return (
     <GameShell
-      instruction={selLeft ? `เลือก "${selLeft}" แล้ว → แตะภาพที่ขึ้นต้นด้วยตัวนี้` : "แตะตัวอักษรก่อน แล้วแตะภาพที่ตรงกัน"}
+      instruction={
+        selLeft
+          ? (instruction?.picked(selLeft) ?? `เลือก "${selLeft}" แล้ว → แตะภาพที่ขึ้นต้นด้วยตัวนี้`)
+          : (instruction?.idle ?? "แตะตัวอักษรก่อน แล้วแตะภาพที่ตรงกัน")
+      }
       done={done}
       onRestart={restart}
       stats={wrongs === 0 ? "จับคู่ถูกหมดเลย!" : `ผิดไป ${wrongs} ครั้ง`}
@@ -47,8 +58,8 @@ export function PairColumnsGame({ pairs }: { pairs: Pair[] }) {
               key={p.left}
               onClick={() => !matched.has(p.left) && setSelLeft(p.left)}
               state={matched.has(p.left) ? "correct" : selLeft === p.left ? "selected" : "idle"}
-              className="aspect-auto min-h-16 font-display text-3xl sm:min-h-20 sm:text-4xl"
-              ariaLabel={`ตัวอักษร ${p.left}`}
+              className={shadowRight ? "aspect-auto min-h-16 sm:min-h-20" : "aspect-auto min-h-16 font-display text-3xl sm:min-h-20 sm:text-4xl"}
+              ariaLabel={shadowRight ? p.label : `ตัวอักษร ${p.left}`}
             >
               {p.left}
             </BigTile>
@@ -61,9 +72,9 @@ export function PairColumnsGame({ pairs }: { pairs: Pair[] }) {
               onClick={() => tapRight(p)}
               state={matched.has(p.left) ? "correct" : wrongRight === p.left ? "wrong" : selLeft ? "idle" : "disabled"}
               className="aspect-auto min-h-16 sm:min-h-20"
-              ariaLabel={p.label}
+              ariaLabel={shadowRight ? `เงาของ ${p.label}` : p.label}
             >
-              {p.right}
+              {shadowRight && !matched.has(p.left) ? <span className="emoji-shadow">{p.right}</span> : p.right}
             </BigTile>
           ))}
         </div>
