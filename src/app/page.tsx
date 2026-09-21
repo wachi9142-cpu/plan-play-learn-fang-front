@@ -1,20 +1,21 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import { MAIN_MENU_COUNT, NAV_ITEMS, SITE } from "@/lib/site";
+import { LIBRARY_ITEMS, MENU_ITEMS, SITE } from "@/lib/site";
 import { GRADES, PLANS, countActivities, getPlansByGrade } from "@/data/plans";
 import { PROJECTS } from "@/data/projects";
 import { SCHEDULES } from "@/data/schedules";
 import { GAMES } from "@/data/games";
 import { GameCard } from "@/components/games/GameCard";
 import { PlanCard } from "@/components/partials/PlanCard";
+import { HeroBanner } from "@/components/partials/HeroBanner";
 import { cn } from "@/lib/cn";
 
 export default function HomePage() {
-  const k1 = GRADES[0];
+  const k1 = GRADES.find((g) => g.id === "k1")!;
   const plans = getPlansByGrade(k1.id);
-  const mainMenu = NAV_ITEMS.slice(0, MAIN_MENU_COUNT);
-  const library = NAV_ITEMS.slice(MAIN_MENU_COUNT);
+  const mainMenu = MENU_ITEMS;
+  const library = LIBRARY_ITEMS;
 
   const stats = [
     { emoji: "📚", label: "โครงการ", value: PROJECTS.length },
@@ -31,40 +32,48 @@ export default function HomePage() {
         <div className="pointer-events-none absolute -left-24 -top-24 size-72 rounded-full bg-purple-100 blur-3xl" aria-hidden />
         <div className="pointer-events-none absolute -bottom-20 -right-16 size-64 rounded-full bg-pink-soft blur-3xl" aria-hidden />
 
-        <div className="container-page relative py-14 text-center sm:py-20 lg:py-24">
-          <div className="animate-rise mx-auto max-w-3xl">
-            <Image src="/logo.jpg" alt="ครูข้าวฟ่าง" width={176} height={176} priority className="animate-float mx-auto size-36 rounded-full border-4 border-white object-cover shadow-lift sm:size-44" />
-            <h1 className="mt-6 text-[2rem] leading-tight sm:text-5xl lg:text-6xl">{SITE.name}</h1>
-            <p className="mt-2 font-display text-lg text-purple-500 sm:text-2xl">{SITE.nameEn}</p>
-            <p className="mt-1 text-[15px] text-ink-soft sm:text-base">{SITE.credit}</p>
+        <HeroBanner />
 
-            <p className="mt-8 text-xl font-medium text-purple-800 sm:text-2xl">{SITE.tagline}</p>
-            <p className="mt-2 text-base text-ink-soft sm:text-lg">{SITE.description}</p>
+        <div className="container-page relative py-10 text-center sm:py-14 lg:py-16">
+          <div className="animate-rise mx-auto max-w-3xl">
+            <Image src="/logo.webp" alt="Little Purple Garden by Teacher Kaowfang" width={288} height={288} priority className="animate-float mx-auto size-52 rounded-full bg-white object-cover shadow-lift sm:size-64 lg:size-72" />
+            <h1 className="mt-5 font-display text-[2.2rem] leading-tight text-purple-800 sm:text-5xl lg:text-6xl">Little Purple Garden</h1>
+            <p className="mt-1 text-base text-ink-soft sm:text-lg">{SITE.credit}</p>
+            <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-white/80 px-5 py-2 font-display text-base text-purple-700 shadow-soft sm:text-lg">🌱 {SITE.motto}</p>
+            <p className="mx-auto mt-6 max-w-2xl text-base text-ink sm:text-lg">{SITE.intro}</p>
 
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Link href="/plans" className="tap inline-flex w-full items-center justify-center gap-2 rounded-full bg-purple-600 px-7 py-3 text-base font-medium text-white shadow-soft transition hover:bg-purple-700 hover:shadow-lift sm:w-auto">
-                📖 ดูแผนการจัดประสบการณ์ <ArrowRight size={18} />
+              <Link href="/schedules" className="tap inline-flex w-full items-center justify-center gap-2 rounded-full bg-purple-600 px-7 py-3 text-base font-medium text-white shadow-soft transition hover:bg-purple-700 hover:shadow-lift sm:w-auto">
+                📅 กำหนดการสอน <ArrowRight size={18} />
               </Link>
-              <Link href="/schedules" className="tap inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-purple-200 bg-white px-7 py-3 text-base font-medium text-purple-700 transition hover:border-purple-300 hover:bg-purple-50 sm:w-auto">
-                📅 กำหนดการสอน
+              <Link href="/plans" className="tap inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-purple-200 bg-white px-7 py-3 text-base font-medium text-purple-700 transition hover:border-purple-300 hover:bg-purple-50 sm:w-auto">
+                📖 แผนการจัดประสบการณ์
               </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ---------- Welcome ---------- */}
-      <section className="container-page -mt-4 sm:-mt-8">
-        <div className="animate-rise delay-1 card flex flex-col items-center gap-3 px-5 py-5 text-center sm:flex-row sm:text-left">
+      {/* ---------- แนวคิด & วิสัยทัศน์ ---------- */}
+      <section className="container-page -mt-4 grid gap-4 sm:-mt-8 md:grid-cols-2">
+        <div className="animate-rise delay-1 card flex gap-4 p-5 sm:p-6">
           <span className="text-4xl">🌷</span>
           <div className="min-w-0">
             <p className="font-display text-lg text-purple-800 sm:text-xl">{SITE.welcome}</p>
-            <p className="text-[15px] text-ink-soft">“{SITE.concept}”</p>
+            <p className="mt-1 text-[15px] text-ink-soft">แนวคิดของเว็บไซต์: “{SITE.concept}”</p>
+            <p className="mt-2 text-[15px] text-ink-soft">Little Purple Garden = “สวนสีม่วงเล็ก ๆ” พื้นที่ที่เด็ก ๆ ได้เติบโตและเรียนรู้ผ่านการเล่น 🌱 เล่น → เรียนรู้ → เติบโต</p>
+          </div>
+        </div>
+        <div className="animate-rise delay-2 card flex gap-4 bg-purple-50 p-5 sm:p-6">
+          <span className="text-4xl">🌱</span>
+          <div className="min-w-0">
+            <p className="font-display text-lg text-purple-800 sm:text-xl">วิสัยทัศน์</p>
+            <p className="mt-1 text-[15px] leading-relaxed text-ink">“{SITE.vision}”</p>
           </div>
         </div>
       </section>
 
-      {/* ---------- 3 เมนูหลัก ---------- */}
+      {/* ---------- เมนูหลัก ---------- */}
       <section className="container-page py-12 sm:py-16">
         <h2 className="mb-6 text-center text-2xl sm:text-3xl">เลือกสิ่งที่อยากดู ✨</h2>
         <div className="grid grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-3">
@@ -92,6 +101,35 @@ export default function HomePage() {
           <span className="font-medium text-purple-800">🎈 6 กิจกรรมหลัก</span>
           <ArrowRight size={16} className="rotate-90 text-purple-300 sm:rotate-0" />
           <span className="font-medium text-purple-800">🎮 เกมออนไลน์ · 🎨 สื่อ · ใบงาน · โครงการ</span>
+        </div>
+      </section>
+
+      {/* ---------- ภาพ + ระดับชั้น ---------- */}
+      <section className="container-page pb-12 sm:pb-16">
+        <div className="card relative overflow-hidden bg-gradient-to-r from-purple-100 via-pink-soft to-yellow-soft p-6 sm:p-8">
+          <div className="bg-dots pointer-events-none absolute inset-0" aria-hidden />
+          <div className="relative grid items-center gap-6 md:grid-cols-[1fr_auto]">
+            <div>
+              <h2 className="text-2xl sm:text-3xl">🎓 การจัดการเรียนรู้ระดับปฐมวัย</h2>
+              <p className="mt-1 text-[15px] text-ink-soft sm:text-base">เลือกระดับชั้นเพื่อดูแนวทางและเนื้อหาที่เกี่ยวข้อง</p>
+              <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                {GRADES.map((g) => (
+                  <Link key={g.id} href={`/about/${g.id}`} className="card card-hover flex items-center gap-2 px-3 py-2.5">
+                    <span className="text-2xl">{g.emoji}</span>
+                    <span className="min-w-0">
+                      <span className="block truncate font-display text-[15px] text-purple-800">{g.name}</span>
+                      <span className="block text-[12px] text-ink-soft">อายุ {g.ages}</span>
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+            <div className="hidden select-none text-center md:block" aria-hidden>
+              <div className="text-6xl leading-none">🧒🎨🧸</div>
+              <div className="mt-2 text-6xl leading-none">🌳🐰📖</div>
+              <div className="mt-2 text-6xl leading-none">🎵🧩🌈</div>
+            </div>
+          </div>
         </div>
       </section>
 

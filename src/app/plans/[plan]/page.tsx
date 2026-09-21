@@ -136,7 +136,7 @@ export default async function PlanDetailPage({ params }: { params: Promise<Param
               </RelatedBox>
             )}
             {media.length > 0 && (
-              <RelatedBox emoji="🎨" title="สื่อการสอน" href="/media">
+              <RelatedBox emoji="🎨" title="สื่อการเรียนการสอน" href="/media">
                 {media.map((m) => <RelatedLink key={m.id} href={`/media#${m.id}`} emoji={m.emoji} label={m.title} sub={m.kind} />)}
               </RelatedBox>
             )}

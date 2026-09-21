@@ -20,11 +20,11 @@ const mitr = Mitr({
 
 export const metadata: Metadata = {
   title: {
-    default: `${SITE.name} · ${SITE.credit}`,
-    template: `%s · ${SITE.name}`,
+    default: `${SITE.brand} · ${SITE.name}`,
+    template: `%s · ${SITE.brand}`,
   },
   description: SITE.description,
-  icons: { icon: "/logo.jpg", apple: "/logo.jpg" },
+  icons: { icon: "/logo.webp", apple: "/logo.webp" },
 };
 
 export const viewport: Viewport = {

@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import { TEACHING_MEDIA } from "@/data/content";
 import { PageHeader, Tag } from "@/components/ui";
 
-export const metadata: Metadata = { title: "สื่อการสอน" };
+export const metadata: Metadata = { title: "สื่อการเรียนการสอน" };
 
 export default function MediaPage() {
   return (
     <div className="container-page py-8 sm:py-12">
-      <PageHeader emoji="🎨" title="สื่อการสอน" description="บัตรภาพ เพลง นิทาน ของเล่น และสื่อทำมือที่ใช้ประกอบกิจกรรม" />
+      <PageHeader emoji="🎨" title="สื่อการเรียนการสอน" description="บัตรภาพ เพลง นิทาน ของเล่น และสื่อทำมือที่ใช้ประกอบกิจกรรม" />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {TEACHING_MEDIA.map((m, i) => (
           <article key={m.id} id={m.id} className="card card-hover animate-rise scroll-mt-24 p-5" style={{ animationDelay: `${i * 70}ms` }}>

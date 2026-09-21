@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { ChevronDown, LogIn, Menu, X } from "lucide-react";
 import { PRIMARY_NAV, SITE, type NavItem } from "@/lib/site";
 import { cn } from "@/lib/cn";
 
@@ -31,35 +31,24 @@ export function Header() {
     <header className="sticky top-0 z-40 border-b border-line bg-cream/90 backdrop-blur">
       <div className="container-page flex h-16 items-center justify-between gap-3">
         <Link href="/" className="flex min-w-0 items-center gap-2.5 tap" aria-label="กลับหน้าแรก">
-          <Image src="/logo.jpg" alt="โลโก้ครูข้าวฟ่าง" width={44} height={44} priority className="size-11 shrink-0 rounded-full border-2 border-purple-200 object-cover shadow-soft" />
-          {/* ที่ lg–xl ซ่อนชื่อเพื่อให้เมนู 7 รายการพอดี — 2xl ขึ้นไปแสดงเต็ม */}
-          <span className="min-w-0 leading-tight lg:hidden 2xl:block">
-            <span className="block truncate font-display text-[17px] font-medium text-purple-800 sm:text-lg">{SITE.name}</span>
-            <span className="hidden text-xs text-ink-soft sm:block">{SITE.credit}</span>
+          <Image src="/logo.webp" alt="โลโก้ครูข้าวฟ่าง" width={44} height={44} priority className="size-11 shrink-0 rounded-full border-2 border-purple-200 object-cover shadow-soft" />
+          <span className="min-w-0 leading-tight">
+            <span className="block truncate font-display text-[17px] font-medium text-purple-800 sm:text-lg">💜 {SITE.brand}</span>
+            <span className="block truncate text-xs text-ink-soft">{SITE.credit}</span>
           </span>
         </Link>
 
-        {/* Desktop */}
-        <nav className="hidden items-center gap-0.5 lg:flex xl:gap-1" aria-label="เมนูหลัก">
-          <Link href="/" aria-label="หน้าหลัก" className={cn("rounded-full px-3 py-2 text-[14px] transition-colors xl:text-[15px]", pathname === "/" ? "bg-purple-100 font-medium text-purple-800" : "text-ink hover:bg-purple-50 hover:text-purple-700")}>
-            🏠<span className="hidden 2xl:inline"> หน้าหลัก</span>
+        {/* Desktop: หน้าแรก · เกี่ยวกับ ▾ · เมนู ▾ · เข้าสู่ระบบ */}
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="เมนูหลัก">
+          <Link href="/" className={cn("whitespace-nowrap rounded-full px-4 py-2 text-[15px] transition-colors", pathname === "/" ? "bg-purple-100 font-medium text-purple-800" : "text-ink hover:bg-purple-50 hover:text-purple-700")}>
+            🏠 หน้าแรก
           </Link>
-          {PRIMARY_NAV.filter((item) => item.href !== "/worksheets").map((item) =>
-            item.children ? (
-              <Dropdown key={item.href} item={item} active={isActive(item)} />
-            ) : (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "whitespace-nowrap rounded-full px-3 py-2 text-[14px] transition-colors xl:text-[15px]",
-                  isActive(item) ? "bg-purple-100 font-medium text-purple-800" : "text-ink hover:bg-purple-50 hover:text-purple-700",
-                )}
-              >
-                {item.emoji} {item.label}
-              </Link>
-            ),
-          )}
+          {PRIMARY_NAV.map((item) => (
+            <Dropdown key={item.href} item={item} active={isActive(item)} />
+          ))}
+          <Link href="/login" className={cn("ml-2 inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-4 py-2 text-[15px] font-medium shadow-soft transition", pathname === "/login" ? "bg-purple-700 text-white" : "bg-purple-600 text-white hover:bg-purple-700")}>
+            <LogIn size={16} /> เข้าสู่ระบบ
+          </Link>
         </nav>
 
         <button
@@ -85,10 +74,13 @@ export function Header() {
         aria-hidden={!open}
       >
         <nav className="container-page grid gap-2 py-3 pb-6" aria-label="เมนูมือถือ">
-          <MobileLink href="/" emoji="🏠" label="หน้าหลัก" active={pathname === "/"} tint="bg-purple-100" />
+          <MobileLink href="/" emoji="🏠" label="หน้าแรก" active={pathname === "/"} tint="bg-purple-100" />
           {PRIMARY_NAV.map((item) => (
             <MobileGroup key={item.href} item={item} pathname={pathname} active={isActive(item)} />
           ))}
+          <Link href="/login" className="tap mt-1 inline-flex items-center justify-center gap-2 rounded-2xl bg-purple-600 px-4 py-3 text-base font-medium text-white shadow-soft">
+            <LogIn size={18} /> เข้าสู่ระบบ
+          </Link>
         </nav>
       </div>
     </>
@@ -127,7 +119,7 @@ function Dropdown({ item, active }: { item: NavItem; active: boolean }) {
       <div
         role="menu"
         className={cn(
-          "absolute left-0 top-full z-50 w-72 pt-2 transition-all duration-150",
+          "absolute right-0 top-full z-50 w-80 pt-2 transition-all duration-150",
           show ? "visible translate-y-0 opacity-100" : "invisible -translate-y-1 opacity-0",
         )}
       >

@@ -8,7 +8,7 @@ import { PlanSearch } from "@/components/partials/PlanSearch";
 export const metadata: Metadata = { title: "แผนการจัดประสบการณ์ อนุบาล 1" };
 
 export default function PlansPage() {
-  const grade = GRADES[0];
+  const grade = GRADES.find((g) => g.id === "k1")!;
   const plans = getPlansByGrade(grade.id);
   const semesters = SEMESTERS.filter((s) => s.gradeId === grade.id);
 

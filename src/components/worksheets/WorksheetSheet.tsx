@@ -11,7 +11,7 @@ export function WorksheetSheet({ worksheet, compact = false }: { worksheet: Work
       <header className="sheet-header">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-[11px] tracking-wide text-[#777]">{SITE.name} · {SITE.credit}</p>
+            <p className="text-[11px] tracking-wide text-[#777]">{SITE.brand} · {SITE.name} · {SITE.credit}</p>
             <h1 className="mt-0.5 font-display text-[22px] leading-tight text-[#222]">{worksheet.emoji} {worksheet.title}</h1>
           </div>
           <div className="shrink-0 text-[12px] text-[#555]">

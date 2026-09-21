@@ -1,62 +1,44 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
-import { Suspense } from "react";
-import type { WorksheetCategory } from "@/types";
-import { WORKSHEET_CATEGORIES } from "@/data/worksheets";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/cn";
 
-/** ชื่อสั้นของหมวดใบงานสำหรับแถบลอย */
-const SHORT: Record<WorksheetCategory, string> = {
-  language: "ภาษา",
-  math: "คณิต",
-  color: "สี/รูปทรง",
-  thinking: "การคิด",
-  unit: "ตามหน่วย",
-};
+/** รายการในแถบลอย — เพิ่ม/ลดได้ที่นี่ */
+const DOCK_ITEMS = [
+  { href: "/worksheets", emoji: "📝", label: "ใบงาน" },
+  { href: "/games", emoji: "🎮", label: "เกมการศึกษา" },
+  { href: "/projects", emoji: "📚", label: "โครงการ" },
+  { href: "/schedules", emoji: "📅", label: "กำหนดการ" },
+  { href: "/gallery/works", emoji: "🖼️", label: "ผลงานเด็ก" },
+  { href: "/gallery/photos", emoji: "📷", label: "ภาพกิจกรรม" },
+];
 
-/** แถบลอยด้านขวา (แท็บเล็ต/desktop) — ทางลัดไปคลังใบงานและหมวดใบงาน */
+/** แถบลอยด้านขวา (แท็บเล็ต/desktop) — ทางลัดไปส่วนที่ใช้บ่อย */
 export function FloatingDock() {
-  return (
-    <Suspense fallback={null}>
-      <Dock />
-    </Suspense>
-  );
-}
-
-function Dock() {
   const pathname = usePathname();
-  const cat = useSearchParams().get("cat");
-  const onWorksheets = pathname.startsWith("/worksheets");
-  const cats = Object.keys(WORKSHEET_CATEGORIES) as WorksheetCategory[];
-
   return (
     <nav
-      aria-label="ทางลัดใบงาน"
+      aria-label="ทางลัด"
       className="no-print fixed right-3 top-1/2 z-30 hidden -translate-y-1/2 flex-col gap-0.5 rounded-3xl border border-line bg-white/90 p-1.5 shadow-lift backdrop-blur md:flex xl:right-5"
     >
-      <DockLink href="/worksheets" emoji="📝" label="ใบงาน" active={onWorksheets && !cat} highlight />
-      <div className="mx-2 my-0.5 h-px bg-line" />
-      {cats.map((c) => (
-        <DockLink key={c} href={`/worksheets?cat=${c}`} emoji={WORKSHEET_CATEGORIES[c].emoji} label={SHORT[c]} active={onWorksheets && cat === c} />
-      ))}
+      {DOCK_ITEMS.map((item) => {
+        const active = pathname === item.href || pathname.startsWith(item.href + "/");
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            title={item.label}
+            className={cn(
+              "group flex w-[76px] flex-col items-center gap-0.5 rounded-2xl px-1 py-2.5 text-center transition-all",
+              active ? "bg-purple-100 text-purple-800" : "text-ink-soft hover:bg-purple-50 hover:text-purple-700",
+            )}
+          >
+            <span className={cn("text-2xl leading-none transition-transform group-hover:-translate-y-0.5", active && "scale-110")}>{item.emoji}</span>
+            <span className={cn("text-[11px] leading-tight", active && "font-medium")}>{item.label}</span>
+          </Link>
+        );
+      })}
     </nav>
-  );
-}
-
-function DockLink({ href, emoji, label, active, highlight = false }: { href: string; emoji: string; label: string; active: boolean; highlight?: boolean }) {
-  return (
-    <Link
-      href={href}
-      title={label}
-      className={cn(
-        "group flex w-[68px] flex-col items-center gap-0.5 rounded-2xl px-1 py-2 text-center transition-all",
-        active ? "bg-purple-100 text-purple-800" : highlight ? "text-purple-700 hover:bg-purple-50" : "text-ink-soft hover:bg-purple-50 hover:text-purple-700",
-      )}
-    >
-      <span className={cn("text-2xl leading-none transition-transform group-hover:-translate-y-0.5", active && "scale-110")}>{emoji}</span>
-      <span className={cn("text-[11px] leading-tight", (active || highlight) && "font-medium")}>{label}</span>
-    </Link>
   );
 }

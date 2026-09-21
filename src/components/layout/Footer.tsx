@@ -8,10 +8,13 @@ export function Footer() {
       <div className="container-page grid gap-8 py-10 sm:grid-cols-2 lg:grid-cols-3">
         <div>
           <div className="flex items-center gap-3">
-            <Image src="/logo.jpg" alt="" width={48} height={48} className="size-12 rounded-full border-2 border-purple-200 object-cover" />
-            <p className="font-display text-xl text-purple-800">{SITE.name}</p>
+            <Image src="/logo.webp" alt="" width={48} height={48} className="size-12 rounded-full border-2 border-purple-200 object-cover" />
+            <div>
+              <p className="font-display text-xl leading-tight text-purple-800">💜 {SITE.brand}</p>
+              <p className="text-sm text-ink-soft">{SITE.credit} · 🌱 {SITE.motto}</p>
+            </div>
           </div>
-          <p className="text-sm text-ink-soft">{SITE.nameEn}</p>
+          <p className="mt-3 text-sm text-ink-soft">{SITE.name} · {SITE.nameEn}</p>
           <p className="mt-3 max-w-xs text-[15px] text-ink-soft">“{SITE.concept}”</p>
         </div>
         <div>
@@ -36,7 +39,7 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t border-line py-4 text-center text-sm text-ink-soft">
-        © {new Date().getFullYear()} {SITE.name} · {SITE.credit}
+        © {new Date().getFullYear()} {SITE.brand} · {SITE.credit}
       </div>
     </footer>
   );

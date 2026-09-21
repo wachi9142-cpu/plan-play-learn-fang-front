@@ -61,6 +61,11 @@ export interface Grade {
   id: string;           // "k1"
   name: string;         // "อนุบาล 1"
   short: string;        // "อ.1"
+  emoji: string;
+  ages: string;         // ช่วงอายุ
+  description: string;  // ลักษณะการจัดประสบการณ์ของระดับนี้
+  focus: string[];      // จุดเน้นพัฒนาการ
+  tint: string;         // tailwind bg class
 }
 
 /** แผนการจัดประสบการณ์ 1 เรื่อง — หัวใจของระบบ */
