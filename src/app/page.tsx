@@ -7,7 +7,6 @@ import { PROJECTS } from "@/data/projects";
 import { SCHEDULES } from "@/data/schedules";
 import { GAMES } from "@/data/games";
 import { GameCard } from "@/components/games/GameCard";
-import { TEACHING_MEDIA, WORKSHEETS } from "@/data/content";
 import { PlanCard } from "@/components/partials/PlanCard";
 import { cn } from "@/lib/cn";
 

@@ -8,7 +8,7 @@ export const SITE = {
   tagline: "เรียนรู้ผ่านการเล่น เติบโตผ่านประสบการณ์ 🌱",
   description: "รวมแผน กิจกรรม และสื่อการเรียนรู้สำหรับเด็กปฐมวัย",
   concept: "พื้นที่เล็ก ๆ ที่เปลี่ยนการเรียนรู้ให้เป็นเรื่องสนุก ผ่านการเล่นและประสบการณ์ของเด็ก ๆ",
-  welcome: "สวัสดีค่ะ ครูฟ่างฟ่างยินดีต้อนรับ",
+  welcome: "สวัสดีค่ะ ครูข้าวฟ่างยินดีต้อนรับ",
 };
 
 export interface NavLink {
@@ -24,7 +24,7 @@ export interface NavItem extends NavLink {
   children?: NavLink[];  // เมนูย่อย (dropdown บน desktop / accordion บนมือถือ)
 }
 
-/** เมนูหลัก 3 อย่างตามบรีฟ + คลังเนื้อหา */
+/** เมนูหลัก (ลำดับตามแถบเมนูด้านข้าง) + คลังเนื้อหา */
 export const NAV_ITEMS: NavItem[] = [
   {
     href: "/projects",
@@ -50,6 +50,13 @@ export const NAV_ITEMS: NavItem[] = [
     tint: "bg-purple-100",
   },
   {
+    href: "/core-activities",
+    emoji: "🎈",
+    label: "6 กิจกรรมหลัก",
+    description: "เคลื่อนไหว · เสริมประสบการณ์ · สร้างสรรค์ · เสรี · กลางแจ้ง · เกมการศึกษา",
+    tint: "bg-pink-soft",
+  },
+  {
     href: "/games",
     emoji: "🎮",
     label: "เกมการศึกษา",
@@ -57,23 +64,22 @@ export const NAV_ITEMS: NavItem[] = [
     tint: "bg-mint-soft",
   },
   {
-    href: "/core-activities",
-    emoji: "🎈",
-    label: "6 กิจกรรมหลัก",
-    description: "เคลื่อนไหว · เสริมประสบการณ์ · สร้างสรรค์ · เสรี · กลางแจ้ง · เกมการศึกษา",
-    tint: "bg-pink-soft",
+    href: "/worksheets",
+    emoji: "📝",
+    label: "ใบงาน",
+    description: "คลังใบงานแยกหมวด ค้นหา/กรองด้วยแท็ก พิมพ์ได้ทันที",
+    tint: "bg-yellow-soft",
   },
   { href: "/activities", emoji: "🧸", label: "กิจกรรมการเรียนรู้", description: "ไอเดียกิจกรรมพร้อมจุดประสงค์และขั้นตอน", tint: "bg-pink-soft" },
   { href: "/media", emoji: "🎨", label: "สื่อการสอน", description: "บัตรภาพ เพลง นิทาน และสื่อทำมือ", tint: "bg-yellow-soft" },
-  { href: "/worksheets", emoji: "📝", label: "ใบงาน", description: "ใบงานฝึกทักษะแยกตามหน่วยการเรียนรู้", tint: "bg-mint-soft" },
   { href: "/weekly", emoji: "🗓️", label: "แผนรายสัปดาห์", description: "ภาพรวมกิจกรรม จันทร์–ศุกร์ ของแต่ละสัปดาห์", tint: "bg-sky-soft" },
   { href: "/notes", emoji: "🌷", label: "บันทึก / แนวทางสำหรับครู", description: "เคล็ดลับและแนวทางจากประสบการณ์ในห้องเรียน", tint: "bg-purple-50" },
 ];
 
 /** จำนวนเมนูหลัก (แสดงเป็น Card ใหญ่บนหน้าแรก) */
-export const MAIN_MENU_COUNT = 5;
+export const MAIN_MENU_COUNT = 6;
 
-/** เมนูบน header (desktop): 5 เมนูหลัก + "คลังความรู้" ที่รวมส่วนที่เหลือ */
+/** เมนูหลักใน sidebar/มือถือ: 6 เมนูหลัก + "คลังความรู้" ที่รวมส่วนที่เหลือ */
 export const PRIMARY_NAV: NavItem[] = [
   ...NAV_ITEMS.slice(0, MAIN_MENU_COUNT),
   {

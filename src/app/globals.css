@@ -142,3 +142,43 @@ img, svg { max-width: 100%; height: auto; }
   text-shadow: 0 0 0 #3b2f4a;
   filter: brightness(0) opacity(0.85);
 }
+
+/* ---------- ใบงาน: หน้า A4 สำหรับดูตัวอย่าง/พิมพ์ ---------- */
+.sheet {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 14mm 14mm 10mm;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 40px -12px rgb(0 0 0 / 0.25);
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  font-family: var(--font-body);
+}
+.sheet-compact { min-height: 0; padding: 8mm; }
+.sheet-header { border-bottom: 2px solid #333; padding-bottom: 8px; margin-bottom: 14px; }
+.sheet-body { flex: 1; }
+.sheet-footer { margin-top: 14px; display: flex; justify-content: space-between; font-size: 12px; color: #777; border-top: 1px dashed #bbb; padding-top: 6px; }
+
+.trace-row { display: flex; align-items: center; gap: 6px; border-bottom: 1px solid #ddd; padding: 4px 0; min-height: 46px; }
+.trace-row > span { flex: 1; text-align: center; font-family: var(--font-display); font-size: 30px; line-height: 1; }
+.trace-solid { color: #222; }
+.trace-ghost { color: #c8c8c8; }
+.trace-blank { border-bottom: 2px dotted #bbb; height: 28px; }
+
+/* emoji แบบเส้นจาง ๆ ให้เด็กระบายสี */
+.emoji-outline { filter: grayscale(1) contrast(1.6) brightness(1.35) opacity(0.45); }
+
+/* ตัวรวมหน้า: ย่อ A4 ให้พอดีกับหน้าจอเล็ก */
+.sheet-viewport { overflow: auto; }
+@media (max-width: 800px) {
+  .sheet-scale { transform-origin: top left; }
+}
+
+@media print {
+  @page { size: A4; margin: 0; }
+  body { background: #fff !important; }
+  .no-print { display: none !important; }
+  .sheet { box-shadow: none; border: 0; border-radius: 0; width: 210mm; min-height: 297mm; page-break-after: always; }
+  .sheet-viewport { overflow: visible; }
+}

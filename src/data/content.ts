@@ -1,4 +1,4 @@
-import type { LearningActivity, TeachingMedia, TeacherNote, Worksheet } from "@/types";
+import type { LearningActivity, TeachingMedia, TeacherNote } from "@/types";
 
 export const LEARNING_ACTIVITIES: LearningActivity[] = [
   {
@@ -123,63 +123,6 @@ export const TEACHING_MEDIA: TeachingMedia[] = [
     kind: "สื่อทำมือ",
     description: "วงล้อหมุนได้ มีหน้าอารมณ์ ดีใจ เสียใจ โกรธ กลัว ตื่นเต้น",
     usage: ["เช็กอารมณ์ตอนเช้า", "สอนหน่วยความรู้สึกของฉัน"],
-  },
-];
-
-export const WORKSHEETS: Worksheet[] = [
-  {
-    id: "trace-name",
-    emoji: "✏️",
-    title: "ลากเส้นตามรอยชื่อฉัน",
-    unit: "ตัวเรา",
-    skill: "กล้ามเนื้อมัดเล็ก",
-    description: "ลากเส้นประตามตัวอักษรชื่อเล่นของเด็ก",
-    instructions: ["ครูเขียนชื่อเล่นเป็นเส้นประ", "เด็กใช้สีเทียนลากตามรอย", "ระบายสีกรอบให้สวยงาม"],
-  },
-  {
-    id: "match-body",
-    emoji: "🧒",
-    title: "โยงเส้นอวัยวะ",
-    unit: "ตัวเรา",
-    skill: "การสังเกต",
-    description: "โยงเส้นจับคู่ภาพอวัยวะกับหน้าที่ เช่น ตา–ดู หู–ฟัง",
-    instructions: ["ครูอ่านชื่ออวัยวะให้ฟัง", "เด็กโยงเส้นจับคู่", "ชี้อวัยวะบนตัวเองประกอบ"],
-  },
-  {
-    id: "color-circle",
-    emoji: "🟣",
-    title: "ระบายสีตามที่กำหนด",
-    unit: "โรงเรียนของเรา",
-    skill: "การจำแนกสี",
-    description: "ระบายสีสิ่งของในห้องเรียนตามสีที่ครูกำหนด",
-    instructions: ["ครูบอกสีทีละช่อง", "เด็กระบายสีให้ตรง", "บอกชื่อสิ่งของที่ระบาย"],
-  },
-  {
-    id: "count-fruits",
-    emoji: "🍎",
-    title: "นับผลไม้ 1–3",
-    unit: "อาหารดีมีประโยชน์",
-    skill: "คณิตศาสตร์",
-    description: "นับจำนวนผลไม้และวงกลมตัวเลขที่ถูกต้อง",
-    instructions: ["เด็กชี้นับผลไม้ทีละภาพ", "วงกลมตัวเลขที่ตรงกับจำนวน", "ระบายสีผลไม้"],
-  },
-  {
-    id: "family-draw",
-    emoji: "🏠",
-    title: "วาดครอบครัวของฉัน",
-    unit: "ครอบครัวของฉัน",
-    skill: "ความคิดสร้างสรรค์",
-    description: "วาดภาพสมาชิกในครอบครัวในกรอบบ้าน",
-    instructions: ["เด็กบอกว่าที่บ้านมีใครบ้าง", "วาดภาพสมาชิกแต่ละคน", "ครูจดชื่อสมาชิกใต้ภาพ"],
-  },
-  {
-    id: "feelings-face",
-    emoji: "😄",
-    title: "วันนี้ฉันรู้สึก...",
-    unit: "ตัวเรา",
-    skill: "อารมณ์–สังคม",
-    description: "วาดหน้าตาที่แสดงความรู้สึกของตนเองในวันนี้",
-    instructions: ["ครูชวนคุยเรื่องความรู้สึก", "เด็กวาดหน้าตาลงในวงกลม", "เล่าให้เพื่อนฟัง"],
   },
 ];
 

@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Mitr, Sarabun } from "next/font/google";
-import { Header, Footer } from "@/components/layout";
+import { AppShell } from "@/components/layout";
 import { SITE } from "@/lib/site";
 import "./globals.css";
 
@@ -36,10 +36,8 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="th" className={`${sarabun.variable} ${mitr.variable}`}>
-      <body className="flex min-h-dvh flex-col">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+      <body>
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

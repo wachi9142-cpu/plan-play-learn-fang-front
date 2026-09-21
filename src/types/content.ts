@@ -20,16 +20,6 @@ export interface TeachingMedia {
   usage: string[];
 }
 
-export interface Worksheet {
-  id: string;
-  emoji: string;
-  title: string;
-  unit: string;
-  skill: string;
-  description: string;
-  instructions: string[];
-}
-
 export interface TeacherNote {
   id: string;
   emoji: string;

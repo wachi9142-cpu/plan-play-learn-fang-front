@@ -2,7 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, CalendarDays } from "lucide-react";
 import { PLANS, ACTIVITY_META, countPlanActivities, getGrade, getPlan, getUnit } from "@/data/plans";
-import { LEARNING_ACTIVITIES, TEACHING_MEDIA, WORKSHEETS } from "@/data/content";
+import { LEARNING_ACTIVITIES, TEACHING_MEDIA } from "@/data/content";
+import { getWorksheetsForPlan } from "@/data/worksheets";
 import { getProjectsForPlan } from "@/data/projects";
 import { getSchedulesForPlan } from "@/data/schedules";
 import { getGamesForPlan } from "@/data/games";
@@ -31,7 +32,7 @@ export default async function PlanDetailPage({ params }: { params: Promise<Param
 
   // ข้อมูลที่เชื่อมโยงกัน (อ้างด้วย id)
   const media = TEACHING_MEDIA.filter((m) => plan.related?.mediaIds?.includes(m.id));
-  const worksheets = WORKSHEETS.filter((w) => plan.related?.worksheetIds?.includes(w.id));
+  const worksheets = getWorksheetsForPlan(plan.id);
   const activities = LEARNING_ACTIVITIES.filter((a) => plan.related?.activityIds?.includes(a.id));
   const projects = getProjectsForPlan(plan.id);
   const schedules = getSchedulesForPlan(plan.id);
@@ -141,7 +142,7 @@ export default async function PlanDetailPage({ params }: { params: Promise<Param
             )}
             {worksheets.length > 0 && (
               <RelatedBox emoji="📝" title="ใบงาน" href="/worksheets">
-                {worksheets.map((w) => <RelatedLink key={w.id} href={`/worksheets#${w.id}`} emoji={w.emoji} label={w.title} sub={w.skill} />)}
+                {worksheets.map((w) => <RelatedLink key={w.id} href={`/worksheets/${w.id}`} emoji={w.emoji} label={w.title} sub={w.skills.join(" · ")} />)}
               </RelatedBox>
             )}
           </div>

@@ -3,4 +3,5 @@ export * from "./content";
 export * from "./projects";
 export * from "./schedules";
 export * from "./games";
+export * from "./worksheets";
 export * from "./core-activities";
