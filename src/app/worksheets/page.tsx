@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { WORKSHEETS, WORKSHEET_CATEGORIES, allWorksheetTags } from "@/data/worksheets";
 import { PageHeader, Tag } from "@/components/ui";
 import { WorksheetLibrary } from "@/components/worksheets";
@@ -15,7 +16,9 @@ export default function WorksheetsPage() {
           <Tag tone="mint">🖨️ พิมพ์ได้ / บันทึก PDF</Tag>
         </div>
       </PageHeader>
-      <WorksheetLibrary worksheets={WORKSHEETS} tags={allWorksheetTags()} />
+      <Suspense fallback={null}>
+        <WorksheetLibrary worksheets={WORKSHEETS} tags={allWorksheetTags()} />
+      </Suspense>
     </div>
   );
 }

@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Search, X, Printer } from "lucide-react";
 import type { Worksheet, WorksheetCategory } from "@/types";
 import { WORKSHEET_CATEGORIES } from "@/data/worksheets";
@@ -20,6 +21,13 @@ export function WorksheetLibrary({ worksheets, tags, initialCategory = null }: P
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<WorksheetCategory | null>(initialCategory);
   const [tag, setTag] = useState<string | null>(null);
+
+  // รองรับลิงก์ /worksheets?cat=math จากแถบลอย/หน้าอื่น
+  const catParam = useSearchParams().get("cat");
+  useEffect(() => {
+    if (catParam && catParam in WORKSHEET_CATEGORIES) setCat(catParam as WorksheetCategory);
+    else if (catParam === null) setCat(null);
+  }, [catParam]);
 
   const cats = (Object.keys(WORKSHEET_CATEGORIES) as WorksheetCategory[]).filter((c) => worksheets.some((w) => w.category === c));
 

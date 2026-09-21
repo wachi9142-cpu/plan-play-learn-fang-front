@@ -167,7 +167,7 @@ img, svg { max-width: 100%; height: auto; }
 .trace-blank { border-bottom: 2px dotted #bbb; height: 28px; }
 
 /* emoji แบบเส้นจาง ๆ ให้เด็กระบายสี */
-.emoji-outline { filter: grayscale(1) contrast(1.6) brightness(1.35) opacity(0.45); }
+.emoji-outline { filter: grayscale(1) contrast(1.4) brightness(0.95) opacity(0.4); }
 
 /* ตัวรวมหน้า: ย่อ A4 ให้พอดีกับหน้าจอเล็ก */
 .sheet-viewport { overflow: auto; }
