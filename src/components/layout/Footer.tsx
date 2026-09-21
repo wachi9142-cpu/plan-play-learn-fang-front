@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { NAV_ITEMS, SITE } from "@/lib/site";
 
 export function Footer() {
@@ -6,7 +7,10 @@ export function Footer() {
     <footer className="mt-16 border-t border-line bg-white/60">
       <div className="container-page grid gap-8 py-10 sm:grid-cols-2 lg:grid-cols-3">
         <div>
-          <p className="font-display text-xl text-purple-800">💜 {SITE.name}</p>
+          <div className="flex items-center gap-3">
+            <Image src="/logo.jpg" alt="" width={48} height={48} className="size-12 rounded-full border-2 border-purple-200 object-cover" />
+            <p className="font-display text-xl text-purple-800">{SITE.name}</p>
+          </div>
           <p className="text-sm text-ink-soft">{SITE.nameEn}</p>
           <p className="mt-3 max-w-xs text-[15px] text-ink-soft">“{SITE.concept}”</p>
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, Menu, X } from "lucide-react";
@@ -30,7 +31,7 @@ export function Header() {
     <header className="sticky top-0 z-40 border-b border-line bg-cream/90 backdrop-blur">
       <div className="container-page flex h-16 items-center justify-between gap-3">
         <Link href="/" className="flex min-w-0 items-center gap-2.5 tap" aria-label="กลับหน้าแรก">
-          <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-purple-600 text-xl shadow-soft">💜</span>
+          <Image src="/logo.jpg" alt="โลโก้ครูข้าวฟ่าง" width={44} height={44} priority className="size-11 shrink-0 rounded-full border-2 border-purple-200 object-cover shadow-soft" />
           <span className="min-w-0 leading-tight">
             <span className="block truncate font-display text-[17px] font-medium text-purple-800 sm:text-lg">{SITE.name}</span>
             <span className="hidden text-xs text-ink-soft sm:block">{SITE.credit}</span>

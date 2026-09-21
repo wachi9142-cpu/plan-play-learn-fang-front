@@ -20,32 +20,37 @@ npm run build
 
 > dev/start ตั้งพอร์ต **3002** ไว้ใน `package.json` เพื่อไม่ชนกับโปรเจกต์อื่นที่ใช้ 3000
 
-## โครงสร้าง
+## โครงสร้างข้อมูล (สัมพันธ์กันด้วย id)
 
 ```
-src/
-├── app/                      # routes (App Router)
-│   ├── page.tsx              # หน้าแรก (Hero + เมนู Card)
-│   ├── plans/                # ภาคเรียน → เดือน → หน่วย → สัปดาห์ → วัน
-│   │   └── [grade]/[semester]/[unit]/[week]/page.tsx
-│   ├── activities/, media/, worksheets/, weekly/, notes/
-│   └── globals.css           # design tokens (สีม่วง/ครีม), utilities, animations
-├── components/
-│   ├── layout/               # Header (responsive + เมนูมือถือ), Footer
-│   ├── ui/                   # PageHeader, Breadcrumb, Tag, EmptyState, Section
-│   └── partials/             # ActivityCard, DayTabs (จันทร์–ศุกร์)
-├── data/
-│   ├── plans.ts              # GRADES → semesters → months → units → weeks → days → activities
-│   └── content.ts            # กิจกรรม / สื่อ / ใบงาน / บันทึกครู
-├── types/                    # Grade, Semester, Month, Unit, Week, DayPlan, Activity …
-└── lib/                      # site config (ชื่อเว็บ, เมนู), cn()
+📅 Schedule (กำหนดการสอน)          src/data/schedules.ts
+   └─ rows[]: { week, dates, strand, planId ─┐, note, kind }
+                                             │
+📖 LessonPlan (เรื่อง / หน่วยการจัดประสบการณ์) ◄┘   src/data/plans.ts  ← หัวใจของระบบ
+   ├─ gradeId → Grade,  unitId → Unit,  strand (สาระการเรียนรู้)
+   ├─ objectives · content · materials · assessment
+   ├─ weeks[] → days[] (จ.–ศ.) → activities[]
+   └─ related: { mediaIds, worksheetIds, projectIds, activityIds }
+📚 Project (โครงการ)                src/data/projects.ts   relatedPlanIds → LessonPlan
+🎨 Media / 📝 Worksheet / 🧸 Activity  src/data/content.ts
 ```
 
-## เพิ่มแผนชุดใหม่
+## Routes
 
-1. เพิ่ม `Unit` ใหม่ใน `src/data/plans.ts` แล้วใส่ไว้ในเดือนที่ต้องการ
-2. แต่ละ `Week` มี `days` 5 วัน (`mon`–`fri`) แต่ละวันมีรายการ `Activity`
-3. ต้องการเพิ่มระดับชั้น (เช่น อนุบาล 2) → เพิ่ม `Grade` ใหม่ใน `GRADES` เส้นทาง `/plans/k2/...` จะถูกสร้างอัตโนมัติ
-4. ประเภทกิจกรรม (`ActivityType`) และ emoji/ชื่อ อยู่ที่ `ACTIVITY_META` ใน `plans.ts`
+| หน้า | path |
+|---|---|
+| หน้าหลัก | `/` |
+| โครงการ / รายละเอียด | `/projects`, `/projects/[id]` |
+| กำหนดการสอน / ตาราง 20 สัปดาห์ | `/schedules`, `/schedules/[id]` |
+| แผนการจัดประสบการณ์ (ค้นหา) / รายละเอียดแผน / สัปดาห์ | `/plans`, `/plans/[plan]`, `/plans/[plan]/[week]` |
+| คลัง: กิจกรรม สื่อ ใบงาน แผนรายสัปดาห์ บันทึกครู | `/activities`, `/media`, `/worksheets`, `/weekly`, `/notes` |
 
-เมื่อมี backend ให้แทนที่การ import จาก `src/data/` ด้วย service/hook ตาม house pattern (`lib/api → services → hooks`) โดย type ใน `src/types/` ใช้ต่อได้เลย
+## เพิ่มข้อมูลใหม่
+
+- **แผนใหม่** → เพิ่ม `LessonPlan` ใน `PLANS` (`src/data/plans.ts`) — หน้า `/plans/[id]` และ `/plans/[id]/[week]` ถูกสร้างอัตโนมัติ
+- **กำหนดการสอนชุดใหม่** → เพิ่ม `Schedule` ใน `SCHEDULES` ใส่ `planId` ในแต่ละแถว ชื่อหน่วย/สาระจะดึงจากแผนเอง (แถวที่ยังไม่มีแผนใช้ `title` แทน)
+- **โครงการใหม่** → เพิ่ม `Project` ใน `PROJECTS` และใส่ `relatedPlanIds` ให้เชื่อมกับแผน
+- **อนุบาล 2/3** → เพิ่ม `Grade` ใน `GRADES` แล้วตั้ง `gradeId` ของแผน/กำหนดการ/โครงการ
+- เมนู header/หน้าแรก อ่านจาก `src/lib/site.ts` (โครงการและกำหนดการสอนใน dropdown ดึงจากข้อมูลอัตโนมัติ)
+
+เมื่อมี backend ให้แทนที่การ import จาก `src/data/` ด้วย service/hook ตาม house pattern โดยใช้ type ใน `src/types/` ต่อได้เลย

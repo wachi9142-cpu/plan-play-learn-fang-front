@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { NAV_ITEMS, SITE } from "@/lib/site";
 import { GRADES, PLANS, countActivities, getPlansByGrade } from "@/data/plans";
@@ -31,7 +32,7 @@ export default function HomePage() {
 
         <div className="container-page relative py-14 text-center sm:py-20 lg:py-24">
           <div className="animate-rise mx-auto max-w-3xl">
-            <span className="animate-float inline-grid size-20 place-items-center rounded-3xl bg-white text-5xl shadow-soft sm:size-24 sm:text-6xl">💜</span>
+            <Image src="/logo.jpg" alt="ครูข้าวฟ่าง" width={176} height={176} priority className="animate-float mx-auto size-36 rounded-full border-4 border-white object-cover shadow-lift sm:size-44" />
             <h1 className="mt-6 text-[2rem] leading-tight sm:text-5xl lg:text-6xl">{SITE.name}</h1>
             <p className="mt-2 font-display text-lg text-purple-500 sm:text-2xl">{SITE.nameEn}</p>
             <p className="mt-1 text-[15px] text-ink-soft sm:text-base">{SITE.credit}</p>

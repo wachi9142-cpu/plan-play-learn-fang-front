@@ -24,6 +24,7 @@ export const metadata: Metadata = {
     template: `%s · ${SITE.name}`,
   },
   description: SITE.description,
+  icons: { icon: "/logo.jpg", apple: "/logo.jpg" },
 };
 
 export const viewport: Viewport = {
