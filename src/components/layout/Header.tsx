@@ -34,7 +34,7 @@ export function Header() {
           <Image src="/logo.webp" alt="โลโก้ครูข้าวฟ่าง" width={44} height={44} priority className="size-11 shrink-0 rounded-full border-2 border-purple-200 object-cover shadow-soft" />
           <span className="min-w-0 leading-tight lg:hidden 2xl:block">
             <span className="block truncate font-display text-[17px] font-medium text-purple-800 sm:text-lg">💜 {SITE.brand}</span>
-            <span className="block truncate text-xs text-ink-soft">{SITE.credit}</span>
+            <span className="block truncate text-xs text-ink-soft">{SITE.brandSub} · {SITE.credit}</span>
           </span>
         </Link>
 

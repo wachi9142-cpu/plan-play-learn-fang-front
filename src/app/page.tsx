@@ -6,14 +6,14 @@ import { NEWS_CATEGORIES, sortedNews } from "@/data/news";
 import { Tag } from "@/components/ui";
 import { GRADES } from "@/data/plans";
 import { PROJECTS } from "@/data/projects";
-import { CALENDAR_EVENTS, CALENDAR_TYPES, THAI_MONTHS } from "@/data/calendar";
+import { CALENDAR_EVENTS, CALENDAR_TYPES, THAI_MONTHS_SHORT } from "@/data/calendar";
 import { EVENT_CATEGORIES, SCHOOL_EVENTS } from "@/data/school-events";
 import { getGalleryByKind } from "@/data/gallery";
 import { CONTACT } from "@/data/contact";
 import { HeroBanner } from "@/components/partials/HeroBanner";
 import { cn } from "@/lib/cn";
 
-const thaiDate = (iso: string) => `${Number(iso.slice(8, 10))} ${THAI_MONTHS[Number(iso.slice(5, 7)) - 1].slice(0, 4)}.`;
+const thaiDate = (iso: string) => `${Number(iso.slice(8, 10))} ${THAI_MONTHS_SHORT[Number(iso.slice(5, 7)) - 1]} ${Number(iso.slice(0, 4)) + 543 - 2500}`;
 
 export default function HomePage() {
   // การ์ดแผนเล่นเรียน 6 ใบ (ไม่รวม 6 กิจกรรมหลัก ตามบรีฟหน้าแรก)
@@ -44,6 +44,7 @@ export default function HomePage() {
           <div className="animate-rise mx-auto max-w-3xl">
             <Image src="/logo.webp" alt="Little Purple Garden by Teacher Kaowfang" width={288} height={288} priority className="animate-float mx-auto size-52 rounded-full bg-white object-cover shadow-lift sm:size-64 lg:size-72" />
             <h1 className="mt-5 font-display text-[2.2rem] leading-tight text-purple-800 sm:text-5xl lg:text-6xl">Little Purple Garden</h1>
+            <p className="mt-1 font-display text-lg text-purple-500 sm:text-2xl">{SITE.brandSub}</p>
             <p className="mt-1 text-base text-ink-soft sm:text-lg">{SITE.credit}</p>
             <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-white/80 px-5 py-2 font-display text-base text-purple-700 shadow-soft sm:text-lg">🌱 {SITE.motto}</p>
             <p className="mx-auto mt-6 max-w-2xl font-display text-lg text-purple-800 sm:text-2xl">🌱 “{SITE.tagline}”</p>
@@ -76,11 +77,13 @@ export default function HomePage() {
 
       {/* ---------- ระดับชั้น (4 Card) ---------- */}
       <section className="container-page pt-12 sm:pt-16">
-        <h2 className="mb-6 text-center text-2xl sm:text-3xl">🌱 ระดับชั้น</h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <h2 className="mb-2 text-center text-2xl sm:text-3xl">🌱 ระดับการดูแลและการศึกษา</h2>
+        <p className="mb-6 text-center text-[15px] text-ink-soft">👶 Nursery · 🎒 Kindergarten</p>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {GRADES.map((g, i) => (
             <Link key={g.id} href={`/about/${g.id}`} className="card card-hover animate-rise group flex flex-col items-center p-6 text-center" style={{ animationDelay: `${i * 80}ms` }}>
-              <span className={cn("grid size-16 place-items-center rounded-2xl text-4xl transition-transform group-hover:-rotate-6", g.tint)}>🌷</span>
+              <span className="text-[12px] font-medium text-purple-500">{g.group === "nursery" ? "👶 Nursery" : "🎒 Kindergarten"}</span>
+              <span className={cn("mt-2 grid size-16 place-items-center rounded-2xl text-4xl transition-transform group-hover:-rotate-6", g.tint)}>{g.group === "nursery" ? "🍼" : "🌷"}</span>
               <span className="mt-3 font-display text-xl text-purple-800">{g.name}</span>
               <span className="mt-1 text-[15px] text-ink-soft">{g.tagline}</span>
               <span className="mt-3 inline-flex items-center gap-1 text-[14px] font-medium text-purple-600">ดูข้อมูล <ArrowRight size={14} className="transition group-hover:translate-x-1" /></span>

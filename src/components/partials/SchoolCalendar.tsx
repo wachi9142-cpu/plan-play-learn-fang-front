@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { CALENDAR_EVENTS, CALENDAR_TYPES, THAI_DAYS, THAI_MONTHS, eventsOn, type CalendarEvent } from "@/data/calendar";
+import { CALENDAR_EVENTS, CALENDAR_TYPES, THAI_DAYS, THAI_MONTHS, THAI_MONTHS_SHORT, eventsOn, type CalendarEvent } from "@/data/calendar";
 import { cn } from "@/lib/cn";
 
 const pad = (n: number) => String(n).padStart(2, "0");
@@ -124,7 +124,7 @@ export function SchoolCalendar() {
 
 function EventRow({ e, compact = false }: { e: CalendarEvent; compact?: boolean }) {
   const t = CALENDAR_TYPES[e.type];
-  const d = (s: string) => `${Number(s.slice(8, 10))} ${THAI_MONTHS[Number(s.slice(5, 7)) - 1].slice(0, 4)}.`;
+  const d = (s: string) => `${Number(s.slice(8, 10))} ${THAI_MONTHS_SHORT[Number(s.slice(5, 7)) - 1]}`;
   return (
     <div className={cn("flex gap-3 rounded-xl px-3 py-2", t.bg)}>
       <span className="text-xl">{t.emoji}</span>

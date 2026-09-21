@@ -12,7 +12,8 @@ export function Footer() {
             <Image src="/logo.webp" alt="" width={48} height={48} className="size-12 rounded-full border-2 border-purple-200 object-cover" />
             <div>
               <p className="font-display text-xl leading-tight text-purple-800">💜 {SITE.brand}</p>
-              <p className="text-sm text-ink-soft">{SITE.credit} · 🌱 {SITE.motto}</p>
+              <p className="text-sm text-ink-soft">{SITE.brandSub} · {SITE.credit}</p>
+              <p className="text-sm text-ink-soft">🌱 {SITE.motto}</p>
             </div>
           </div>
           <p className="mt-3 max-w-xs text-[15px] text-ink-soft">“{SITE.concept}”</p>

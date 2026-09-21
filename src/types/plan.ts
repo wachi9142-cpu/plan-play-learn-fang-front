@@ -61,6 +61,7 @@ export interface Grade {
   id: string;           // "k1"
   name: string;         // "อนุบาล 1"
   short: string;        // "อ.1"
+  group: "nursery" | "kindergarten";
   emoji: string;
   ages: string;         // ช่วงอายุ
   tagline: string;      // คำอธิบายสั้นบนหน้าแรก
