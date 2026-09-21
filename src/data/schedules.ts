@@ -16,6 +16,7 @@ export const SCHEDULES: Schedule[] = [
     school: "โรงเรียน Little Purple Garden",
     teacher: "นางสาววชิรญาณ์ ใจหาญ",
     description: "กำหนดการสอนอนุบาลชั้นอนุบาล 1 ภาคเรียนที่ 2 ปีการศึกษา 2569 (20 สัปดาห์)",
+    startDate: "2026-11-02",
     rows: [
       { week: 1, dates: "2-6 พ.ย. 69", strand: "เรื่องราวเกี่ยวกับตัวเด็ก", planId: "food" },
       { week: 2, dates: "9-13 พ.ย. 69", strand: "เรื่องราวเกี่ยวกับตัวเด็ก", planId: "rice" },
@@ -46,3 +47,11 @@ export const SCHEDULES: Schedule[] = [
 export const getSchedule = (id: string) => SCHEDULES.find((s) => s.id === id);
 export const getSchedulesForPlan = (planId: string) =>
   SCHEDULES.filter((s) => s.rows.some((r) => r.planId === planId));
+
+/** หาสัปดาห์ปัจจุบันของกำหนดการ (จาก startDate) — ก่อนเปิดเทอม = สัปดาห์ 1, หลังปิดเทอม = สัปดาห์สุดท้าย */
+export function currentWeekIndex(s: Schedule, today = new Date()): number {
+  if (!s.startDate) return 0;
+  const start = new Date(s.startDate + "T00:00:00");
+  const diff = Math.floor((today.getTime() - start.getTime()) / (7 * 24 * 3600 * 1000));
+  return Math.min(Math.max(diff, 0), s.rows.length - 1);
+}

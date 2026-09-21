@@ -6,12 +6,11 @@ import { cn } from "@/lib/cn";
 
 /** รายการในแถบลอย — เพิ่ม/ลดได้ที่นี่ */
 const DOCK_ITEMS = [
+  { href: "/news", emoji: "📢", label: "ประชาสัมพันธ์" },
   { href: "/worksheets", emoji: "📝", label: "ใบงาน" },
   { href: "/games", emoji: "🎮", label: "เกมการศึกษา" },
-  { href: "/projects", emoji: "📚", label: "โครงการ" },
-  { href: "/schedules", emoji: "📅", label: "กำหนดการ" },
-  { href: "/gallery/works", emoji: "🖼️", label: "ผลงานเด็ก" },
-  { href: "/gallery/photos", emoji: "📷", label: "ภาพกิจกรรม" },
+  { href: "/gallery/works", emoji: "🏆", label: "ผลงานเด็ก" },
+  { href: "/search", emoji: "🔍", label: "ค้นหา" },
 ];
 
 /** แถบลอยด้านขวา (แท็บเล็ต/desktop) — ทางลัดไปส่วนที่ใช้บ่อย */
@@ -30,7 +29,7 @@ export function FloatingDock() {
             href={item.href}
             title={item.label}
             className={cn(
-              "group flex w-[76px] flex-col items-center gap-0.5 rounded-2xl px-1 py-2.5 text-center transition-all",
+              "group flex w-[80px] flex-col items-center gap-0.5 rounded-2xl px-1 py-2.5 text-center transition-all",
               active ? "bg-purple-100 text-purple-800" : "text-ink-soft hover:bg-purple-50 hover:text-purple-700",
             )}
           >

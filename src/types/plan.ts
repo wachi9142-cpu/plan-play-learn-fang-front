@@ -63,6 +63,7 @@ export interface Grade {
   short: string;        // "อ.1"
   emoji: string;
   ages: string;         // ช่วงอายุ
+  tagline: string;      // คำอธิบายสั้นบนหน้าแรก
   description: string;  // ลักษณะการจัดประสบการณ์ของระดับนี้
   focus: string[];      // จุดเน้นพัฒนาการ
   tint: string;         // tailwind bg class
@@ -130,6 +131,7 @@ export interface Schedule {
   school?: string;
   teacher?: string;
   description?: string;
+  startDate?: string;       // วันจันทร์แรกของภาคเรียน (ISO) ใช้คำนวณ "สัปดาห์นี้"
   rows: ScheduleRow[];
   footer?: string;          // แถบท้ายตาราง เช่น "ปิดเทอม"
 }
