@@ -1,41 +1,36 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
-import { ACTIVITY_META, DAY_META, DAY_ORDER, GRADES } from "@/data/plans";
+import { ACTIVITY_META, DAY_META, DAY_ORDER, PLANS, getUnit } from "@/data/plans";
 import { PageHeader, Tag } from "@/components/ui";
 
 export const metadata: Metadata = { title: "แผนรายสัปดาห์" };
 
 export default function WeeklyPage() {
-  const rows = GRADES.flatMap((g) =>
-    g.semesters.flatMap((s) =>
-      s.months.flatMap((m) =>
-        m.units.flatMap((u) =>
-          u.weeks.map((w) => ({ grade: g, semester: s, month: m, unit: u, week: w })),
-        ),
-      ),
-    ),
-  );
+  const rows = [...PLANS]
+    .sort((a, b) => a.number - b.number)
+    .flatMap((plan) => plan.weeks.map((week) => ({ plan, week })));
 
   return (
     <div className="container-page py-8 sm:py-12">
-      <PageHeader emoji="📅" title="แผนรายสัปดาห์" description="ภาพรวมกิจกรรม จันทร์–ศุกร์ ของแต่ละสัปดาห์ กดเพื่อดูรายละเอียดกิจกรรม" />
+      <PageHeader emoji="🗓️" title="แผนรายสัปดาห์" description="ภาพรวมกิจกรรม จันทร์–ศุกร์ ของแต่ละสัปดาห์ กดเพื่อดูรายละเอียดกิจกรรม" />
 
       <div className="space-y-4">
-        {rows.map(({ grade, semester, month, unit, week }, i) => {
-          const href = `/plans/${grade.id}/${semester.id}/${unit.id}/${week.id}`;
+        {rows.map(({ plan, week }, i) => {
+          const href = `/plans/${plan.id}/${week.id}`;
+          const unit = getUnit(plan.unitId);
           const total = week.days.reduce((n, d) => n + d.activities.length, 0);
           return (
             <article key={href} className="card animate-rise overflow-hidden" style={{ animationDelay: `${Math.min(i, 8) * 60}ms` }}>
               <div className="flex flex-wrap items-center gap-2 border-b border-line px-4 py-3 sm:px-5">
-                <span className="text-2xl">{unit.emoji}</span>
+                <span className="text-2xl">{plan.emoji}</span>
                 <div className="min-w-0 flex-1">
                   <h2 className="text-lg leading-snug sm:text-xl">
-                    หน่วย “{unit.title}” · สัปดาห์ที่ {week.number}: {week.title}
+                    เรื่อง “{plan.title}” · สัปดาห์ที่ {week.number}: {week.title}
                   </h2>
                   <div className="mt-1 flex flex-wrap gap-1.5">
-                    <Tag tone="sky">{semester.name}</Tag>
-                    <Tag tone="yellow">{month.name}</Tag>
+                    <Tag tone="purple">เรื่องที่ {plan.number}</Tag>
+                    {unit && <Tag tone="yellow">หน่วย {unit.name}</Tag>}
                   </div>
                 </div>
                 <Link href={href} className="tap inline-flex items-center gap-1 rounded-full bg-purple-600 px-4 py-2 text-[14px] font-medium text-white transition hover:bg-purple-700">

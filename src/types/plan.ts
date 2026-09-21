@@ -71,6 +71,7 @@ export interface LessonPlan {
   emoji: string;
   gradeId: string;      // → Grade
   unitId: string;       // → Unit
+  strand?: string;      // สาระการเรียนรู้ (1 ใน 4 สาระ) → STRANDS
   description: string;
   keywords: string[];   // สำหรับค้นหา
   duration: string;     // "4 สัปดาห์"
@@ -102,21 +103,30 @@ export interface Semester {
   months: Month[];
 }
 
-/** กำหนดการสอน 1 ชุด — ตารางที่แต่ละแถวชี้ไปยังแผน */
+/** กำหนดการสอน 1 ชุด — ตารางรายสัปดาห์ (ปกติ 20 สัปดาห์/ภาคเรียน) */
+export type ScheduleRowKind = "plan" | "assessment" | "holiday" | "event";
+
 export interface ScheduleRow {
-  order: number;
-  planId: string;       // → LessonPlan (เรื่อง + หน่วย ดึงจากแผน)
-  duration: string;     // "2 สัปดาห์" / "1–14 มิ.ย."
-  note?: string;
+  week: number;             // สัปดาห์ที่
+  dates: string;            // วัน เดือน ปี เช่น "1-5 พ.ย. 64"
+  strand?: string;          // สาระการเรียนรู้ (ถ้าไม่ระบุ ดึงจากแผน)
+  planId?: string;          // → LessonPlan (หน่วยการจัดประสบการณ์) — กดแล้วไปยังแผน
+  title?: string;           // ชื่อหน่วยกรณียังไม่มีแผน หรือแถวพิเศษ เช่น "ประเมินพัฒนาการ"
+  note?: string;            // หมายเหตุ
+  kind?: ScheduleRowKind;   // default "plan"
 }
 
 export interface Schedule {
-  id: string;           // "set-1"
-  title: string;        // "กำหนดการสอนชุดที่ 1"
+  id: string;               // "k1-2564-2"
+  title: string;            // "กำหนดการสอนชุดที่ 1"
   gradeId: string;
-  term: string;         // "ภาคเรียนที่ 1 ปีการศึกษา 2569"
+  semester: string;         // "ภาคเรียนที่ 2"
+  year: string;             // "ปีการศึกษา 2564"
+  school?: string;
+  teacher?: string;
   description?: string;
   rows: ScheduleRow[];
+  footer?: string;          // แถบท้ายตาราง เช่น "ปิดเทอม"
 }
 
 /** โครงการ (Project Approach) */

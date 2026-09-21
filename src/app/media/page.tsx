@@ -10,7 +10,7 @@ export default function MediaPage() {
       <PageHeader emoji="🎨" title="สื่อการสอน" description="บัตรภาพ เพลง นิทาน ของเล่น และสื่อทำมือที่ใช้ประกอบกิจกรรม" />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {TEACHING_MEDIA.map((m, i) => (
-          <article key={m.id} className="card card-hover animate-rise p-5" style={{ animationDelay: `${i * 70}ms` }}>
+          <article key={m.id} id={m.id} className="card card-hover animate-rise scroll-mt-24 p-5" style={{ animationDelay: `${i * 70}ms` }}>
             <div className="flex items-start gap-3">
               <span className="grid size-14 shrink-0 place-items-center rounded-2xl bg-yellow-soft text-3xl">{m.emoji}</span>
               <div className="min-w-0">

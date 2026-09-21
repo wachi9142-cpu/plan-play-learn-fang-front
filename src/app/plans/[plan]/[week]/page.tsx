@@ -1,54 +1,50 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { GRADES, findWeek } from "@/data/plans";
+import { PLANS, findWeek, getGrade, getUnit } from "@/data/plans";
 import { Breadcrumb, PageHeader, Tag } from "@/components/ui";
 import { DayTabs } from "@/components/partials";
 
-type Params = { grade: string; semester: string; unit: string; week: string };
+type Params = { plan: string; week: string };
 
 export function generateStaticParams(): Params[] {
-  return GRADES.flatMap((g) =>
-    g.semesters.flatMap((s) =>
-      s.months.flatMap((m) =>
-        m.units.flatMap((u) => u.weeks.map((w) => ({ grade: g.id, semester: s.id, unit: u.id, week: w.id }))),
-      ),
-    ),
-  );
+  return PLANS.flatMap((p) => p.weeks.map((w) => ({ plan: p.id, week: w.id })));
 }
 
 export async function generateMetadata({ params }: { params: Promise<Params> }) {
   const p = await params;
-  const found = findWeek(p.grade, p.semester, p.unit, p.week);
-  return { title: found ? `${found.unit.title} · สัปดาห์ที่ ${found.week.number}` : "ไม่พบสัปดาห์" };
+  const found = findWeek(p.plan, p.week);
+  return { title: found ? `${found.plan.title} · สัปดาห์ที่ ${found.week.number}` : "ไม่พบสัปดาห์" };
 }
 
 export default async function WeekPage({ params }: { params: Promise<Params> }) {
   const p = await params;
-  const found = findWeek(p.grade, p.semester, p.unit, p.week);
+  const found = findWeek(p.plan, p.week);
   if (!found) notFound();
-  const { grade, semester, unit, week } = found;
+  const { plan, week } = found;
+  const grade = getGrade(plan.gradeId);
+  const unit = getUnit(plan.unitId);
 
-  const base = `/plans/${grade.id}/${semester.id}/${unit.id}`;
-  const idx = unit.weeks.findIndex((w) => w.id === week.id);
-  const prev = unit.weeks[idx - 1];
-  const next = unit.weeks[idx + 1];
+  const base = `/plans/${plan.id}`;
+  const idx = plan.weeks.findIndex((w) => w.id === week.id);
+  const prev = plan.weeks[idx - 1];
+  const next = plan.weeks[idx + 1];
 
   return (
     <div className="container-page py-8 sm:py-12">
       <Breadcrumb
         items={[
           { label: "แผนการจัดประสบการณ์", href: "/plans" },
-          { label: `หน่วย ${unit.title}`, href: base },
+          { label: `เรื่อง ${plan.title}`, href: base },
           { label: `สัปดาห์ที่ ${week.number}` },
         ]}
       />
 
-      <PageHeader emoji={unit.emoji} title={`สัปดาห์ที่ ${week.number} · ${week.title}`} description={week.summary}>
+      <PageHeader emoji={plan.emoji} title={`สัปดาห์ที่ ${week.number} · ${week.title}`} description={week.summary}>
         <div className="flex flex-wrap gap-2">
-          <Tag tone="purple">หน่วย “{unit.title}”</Tag>
-          <Tag tone="pink">{grade.name}</Tag>
-          <Tag tone="sky">{semester.name}</Tag>
+          <Tag tone="purple">เรื่อง “{plan.title}”</Tag>
+          {unit && <Tag tone="yellow">หน่วย {unit.name}</Tag>}
+          {grade && <Tag tone="pink">{grade.name}</Tag>}
         </div>
       </PageHeader>
 

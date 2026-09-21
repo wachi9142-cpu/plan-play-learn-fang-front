@@ -13,6 +13,7 @@ export function Footer() {
         <div>
           <p className="mb-2 font-display text-lg text-purple-800">เมนู</p>
           <ul className="grid grid-cols-1 gap-1.5 text-[15px]">
+            <li><Link href="/" className="inline-block py-1 text-ink hover:text-purple-700">🏠 หน้าหลัก</Link></li>
             {NAV_ITEMS.map((n) => (
               <li key={n.href}>
                 <Link href={n.href} className="inline-block py-1 text-ink hover:text-purple-700">

@@ -15,7 +15,7 @@ export default function WorksheetsPage() {
             <h2 className="mb-4 text-xl sm:text-2xl">📚 หน่วย “{unit}”</h2>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {WORKSHEETS.filter((w) => w.unit === unit).map((w) => (
-                <article key={w.id} className="card card-hover p-5">
+                <article key={w.id} id={w.id} className="card card-hover scroll-mt-24 p-5">
                   <div className="flex items-start gap-3">
                     <span className="grid size-14 shrink-0 place-items-center rounded-2xl bg-mint-soft text-3xl">{w.emoji}</span>
                     <div className="min-w-0">

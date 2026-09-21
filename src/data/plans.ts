@@ -1,4 +1,4 @@
-import type { Activity, ActivityType, DayKey, Grade } from "@/types";
+import type { Activity, ActivityType, DayKey, DayPlan, Grade, LessonPlan, Semester, Unit, Week } from "@/types";
 
 /** ข้อมูลประกอบ UI ของกิจกรรมแต่ละประเภท */
 export const ACTIVITY_META: Record<ActivityType, { emoji: string; label: string }> = {
@@ -20,7 +20,35 @@ export const DAY_META: Record<DayKey, { short: string; full: string }> = {
 
 export const DAY_ORDER: DayKey[] = ["mon", "tue", "wed", "thu", "fri"];
 
-/* ---------- helper สร้างกิจกรรมแบบสั้น ---------- */
+/* ============================================================
+   ระดับชั้น & หน่วยการเรียนรู้ (lookup tables)
+   ============================================================ */
+export const GRADES: Grade[] = [
+  { id: "k1", name: "อนุบาล 1", short: "อ.1" },
+  // { id: "k2", name: "อนุบาล 2", short: "อ.2" },  ← เพิ่มได้ในอนาคต
+];
+
+export const UNITS: Unit[] = [
+  { id: "food", emoji: "🍚", name: "อาหาร" },
+  { id: "myself", emoji: "🧒", name: "ตัวเรา" },
+  { id: "family", emoji: "👨‍👩‍👧", name: "ครอบครัว" },
+  { id: "school", emoji: "🏫", name: "โรงเรียน" },
+  { id: "animals", emoji: "🐣", name: "สัตว์" },
+  { id: "nature", emoji: "🌳", name: "ธรรมชาติ" },
+  { id: "culture", emoji: "🎎", name: "วัฒนธรรม/วันสำคัญ" },
+  { id: "things", emoji: "🔷", name: "สิ่งต่าง ๆ รอบตัว" },
+];
+
+/** สาระการเรียนรู้ 4 สาระ ตามหลักสูตรการศึกษาปฐมวัย */
+export const STRANDS = [
+  "เรื่องราวเกี่ยวกับตัวเด็ก",
+  "เรื่องราวเกี่ยวกับบุคคลและสถานที่แวดล้อมเด็ก",
+  "ธรรมชาติรอบตัว",
+  "สิ่งต่าง ๆ รอบตัวเด็ก",
+] as const;
+export type Strand = (typeof STRANDS)[number];
+
+/* ---------- helpers สร้างข้อมูลแบบสั้น ---------- */
 const act = (
   id: string,
   type: ActivityType,
@@ -31,14 +59,54 @@ const act = (
   assessment?: string[],
 ): Activity => ({ id, type, title, objectives, materials, steps, assessment });
 
+/** สัปดาห์ที่ยังไม่ใส่รายละเอียด — คืนโครงว่างของทั้ง 5 วัน */
+function emptyDays(): DayPlan[] {
+  return DAY_ORDER.map((day) => ({ day, activities: [] as Activity[] }));
+}
+
+const week = (id: string, number: number, title: string, summary: string, days: DayPlan[] = emptyDays()): Week => ({
+  id, number, title, summary, days,
+});
+
 /* ============================================================
-   หน่วย "ตัวเรา"
+   แผนการจัดประสบการณ์ (เรื่อง) — ข้อมูลหลักของระบบ
    ============================================================ */
-const unitMyself = {
+
+/** เรื่องที่ 2 — ตัวเรา (ใส่รายละเอียดสัปดาห์ 1–2 ครบ) */
+const planMyself: LessonPlan = {
   id: "myself",
-  emoji: "🧒",
+  number: 2,
   title: "ตัวเรา",
+  emoji: "🧒",
+  gradeId: "k1",
+  unitId: "myself",
+  strand: "เรื่องราวเกี่ยวกับตัวเด็ก",
   description: "เด็ก ๆ รู้จักชื่อ อวัยวะ ความรู้สึก และการดูแลตัวเองอย่างง่าย ๆ",
+  keywords: ["ตัวเรา", "ร่างกาย", "อวัยวะ", "ชื่อ", "ความรู้สึก", "ดูแลตัวเอง"],
+  duration: "4 สัปดาห์",
+  objectives: [
+    "เด็กบอกชื่อ–นามสกุล และเพศของตนเองได้",
+    "เด็กบอกชื่อและหน้าที่ของอวัยวะภายนอกได้",
+    "เด็กแสดงความรู้สึกของตนเองอย่างเหมาะสม",
+    "เด็กปฏิบัติกิจวัตรประจำวันด้วยตนเองได้ตามวัย",
+  ],
+  content: [
+    "ชื่อ นามสกุล ชื่อเล่น และเพศของฉัน",
+    "อวัยวะภายนอก: หัว ตา หู จมูก ปาก มือ เท้า และหน้าที่",
+    "ความรู้สึก ดีใจ เสียใจ โกรธ กลัว",
+    "การดูแลตนเอง: ล้างมือ แปรงฟัน แต่งตัว",
+  ],
+  materials: ["บัตรภาพอวัยวะ", "กระจกเงา", "เพลงหัว ไหล่ เข่า เท้า", "สีเทียน กระดาษ ดินน้ำมัน", "โปสเตอร์ล้างมือ"],
+  assessment: [
+    "สังเกตการตอบคำถามและการบอกชื่ออวัยวะ",
+    "สังเกตการทำกิจกรรมสร้างสรรค์และผลงาน",
+    "บันทึกพฤติกรรมการดูแลตนเองในกิจวัตรประจำวัน",
+  ],
+  related: {
+    mediaIds: ["body-cards", "hello-song", "handwash-poster", "feelings-wheel"],
+    worksheetIds: ["trace-name", "match-body", "feelings-face"],
+    activityIds: ["color-mixing"],
+  },
   weeks: [
     {
       id: "w1",
@@ -47,7 +115,7 @@ const unitMyself = {
       summary: "แนะนำตัว รู้จักชื่อตนเองและเพื่อน",
       days: [
         {
-          day: "mon" as DayKey,
+          day: "mon",
           theme: "ชื่อของฉัน",
           activities: [
             act("m-w1-mon-1", "circle", "เพลงสวัสดี ฉันชื่อ...",
@@ -66,7 +134,7 @@ const unitMyself = {
           ],
         },
         {
-          day: "tue" as DayKey,
+          day: "tue",
           theme: "เพื่อนของฉัน",
           activities: [
             act("m-w1-tue-1", "circle", "เกมโยนลูกบอลบอกชื่อ",
@@ -84,7 +152,7 @@ const unitMyself = {
           ],
         },
         {
-          day: "wed" as DayKey,
+          day: "wed",
           theme: "ฉันเป็นเด็กผู้หญิง / เด็กผู้ชาย",
           activities: [
             act("m-w1-wed-1", "story", "ใครเป็นใคร",
@@ -102,7 +170,7 @@ const unitMyself = {
           ],
         },
         {
-          day: "thu" as DayKey,
+          day: "thu",
           theme: "ของฉัน",
           activities: [
             act("m-w1-thu-1", "circle", "เคลื่อนไหวตามเพลง \"นี่คือของฉัน\"",
@@ -120,7 +188,7 @@ const unitMyself = {
           ],
         },
         {
-          day: "fri" as DayKey,
+          day: "fri",
           theme: "ทบทวนสัปดาห์นี้",
           activities: [
             act("m-w1-fri-1", "game", "หาชื่อของฉัน",
@@ -146,7 +214,7 @@ const unitMyself = {
       summary: "รู้จักอวัยวะและหน้าที่ของอวัยวะต่าง ๆ",
       days: [
         {
-          day: "mon" as DayKey,
+          day: "mon",
           theme: "หัว ไหล่ เข่า เท้า",
           activities: [
             act("m-w2-mon-1", "circle", "เพลงหัว ไหล่ เข่า เท้า",
@@ -165,7 +233,7 @@ const unitMyself = {
           ],
         },
         {
-          day: "tue" as DayKey,
+          day: "tue",
           theme: "ตาดู หูฟัง",
           activities: [
             act("m-w2-tue-1", "game", "เสียงอะไรเอ่ย",
@@ -183,7 +251,7 @@ const unitMyself = {
           ],
         },
         {
-          day: "wed" as DayKey,
+          day: "wed",
           theme: "มือของฉัน",
           activities: [
             act("m-w2-wed-1", "circle", "นิ้วโป้งอยู่ไหน",
@@ -201,7 +269,7 @@ const unitMyself = {
           ],
         },
         {
-          day: "thu" as DayKey,
+          day: "thu",
           theme: "เท้าของฉัน",
           activities: [
             act("m-w2-thu-1", "outdoor", "เดินเท้าเปล่าสัมผัสพื้นผิว",
@@ -219,7 +287,7 @@ const unitMyself = {
           ],
         },
         {
-          day: "fri" as DayKey,
+          day: "fri",
           theme: "ร่างกายแข็งแรง",
           activities: [
             act("m-w2-fri-1", "circle", "ออกกำลังกายตอนเช้า",
@@ -243,132 +311,251 @@ const unitMyself = {
       number: 3,
       title: "ความรู้สึกของฉัน",
       summary: "รู้จักอารมณ์ ดีใจ เสียใจ โกรธ กลัว และวิธีจัดการอย่างเหมาะสม",
-      days: DAY_ORDER_PLACEHOLDER(),
+      days: emptyDays(),
     },
     {
       id: "w4",
       number: 4,
       title: "ฉันดูแลตัวเองได้",
       summary: "การแต่งตัว ล้างหน้า แปรงฟัน และการกินอาหารด้วยตนเอง",
-      days: DAY_ORDER_PLACEHOLDER(),
+      days: emptyDays(),
     },
   ],
 };
 
-/** สัปดาห์ที่ยังไม่ใส่รายละเอียด — คืนโครงว่างของทั้ง 5 วัน */
-function DAY_ORDER_PLACEHOLDER() {
-  return (["mon", "tue", "wed", "thu", "fri"] as DayKey[]).map((day) => ({
-    day,
-    activities: [] as Activity[],
-  }));
-}
-
-/* ============================================================
-   หน่วยอื่น ๆ (โครงไว้ก่อน เพิ่มรายละเอียดภายหลังได้)
-   ============================================================ */
-const unitSchool = {
-  id: "school",
-  emoji: "🏫",
-  title: "โรงเรียนของเรา",
-  description: "รู้จักโรงเรียน ห้องเรียน คุณครู และข้อตกลงในห้อง",
-  weeks: [
-    { id: "w1", number: 1, title: "ห้องเรียนของฉัน", summary: "รู้จักมุมต่าง ๆ ในห้องเรียน", days: DAY_ORDER_PLACEHOLDER() },
-    { id: "w2", number: 2, title: "คุณครูและเพื่อน", summary: "รู้จักครูประจำชั้นและบุคลากรในโรงเรียน", days: DAY_ORDER_PLACEHOLDER() },
-  ],
-};
-
-const unitFamily = {
-  id: "family",
-  emoji: "👨‍👩‍👧",
-  title: "ครอบครัวของฉัน",
-  description: "สมาชิกในครอบครัว บทบาท และการช่วยเหลือกัน",
-  weeks: [
-    { id: "w1", number: 1, title: "คนในบ้านของฉัน", summary: "เรียกชื่อสมาชิกในครอบครัวได้", days: DAY_ORDER_PLACEHOLDER() },
-    { id: "w2", number: 2, title: "ช่วยงานบ้าน", summary: "ฝึกช่วยเหลืองานบ้านง่าย ๆ", days: DAY_ORDER_PLACEHOLDER() },
-  ],
-};
-
-const unitFood = {
+/** เรื่องที่ 1 — อาหารดีมีประโยชน์ */
+const planFood: LessonPlan = {
   id: "food",
-  emoji: "🍚",
+  number: 1,
   title: "อาหารดีมีประโยชน์",
-  description: "อาหารหลัก 5 หมู่ และมารยาทในการรับประทานอาหาร",
-  weeks: [
-    { id: "w1", number: 1, title: "ผักผลไม้แสนอร่อย", summary: "รู้จักผักและผลไม้ใกล้ตัว", days: DAY_ORDER_PLACEHOLDER() },
-    { id: "w2", number: 2, title: "กินอย่างไรให้แข็งแรง", summary: "อาหารที่มีประโยชน์และไม่มีประโยชน์", days: DAY_ORDER_PLACEHOLDER() },
+  emoji: "🍚",
+  gradeId: "k1",
+  unitId: "food",
+  strand: "เรื่องราวเกี่ยวกับตัวเด็ก",
+  description: "อาหารหลัก 5 หมู่ ผักผลไม้ใกล้ตัว และมารยาทในการรับประทานอาหาร",
+  keywords: ["อาหาร", "ผัก", "ผลไม้", "5 หมู่", "กินดี", "สุขภาพ"],
+  duration: "2 สัปดาห์",
+  objectives: [
+    "เด็กบอกชื่ออาหารที่มีประโยชน์ได้",
+    "เด็กจำแนกผักและผลไม้ที่รู้จักได้",
+    "เด็กรับประทานอาหารด้วยตนเองอย่างมีมารยาท",
   ],
+  content: [
+    "อาหารที่มีประโยชน์และไม่มีประโยชน์",
+    "ผักและผลไม้ที่พบในชีวิตประจำวัน",
+    "มารยาทและสุขนิสัยในการรับประทานอาหาร",
+  ],
+  materials: ["ผัก–ผลไม้ของจริง", "บัตรภาพอาหาร", "จาน ช้อน ของเล่น", "หนังสือนิทานเรื่องอาหาร"],
+  assessment: ["สังเกตการบอกชื่ออาหาร", "สังเกตพฤติกรรมการรับประทานอาหารกลางวัน", "ประเมินใบงานนับผลไม้"],
+  weeks: [
+    week("w1", 1, "ผักผลไม้แสนอร่อย", "รู้จักผักและผลไม้ใกล้ตัว ชิม ดม สัมผัส", [
+      { day: "mon", theme: "ผลไม้ที่ฉันชอบ", activities: [
+        act("f-w1-mon-1", "circle", "เพลงผลไม้", ["เด็กเคลื่อนไหวตามจังหวะเพลง", "เด็กบอกชื่อผลไม้ในเพลงได้"], ["เพลงผลไม้"], ["ครูร้องเพลงพร้อมท่าประกอบ", "เด็กทำท่าตาม", "ถามว่าในเพลงมีผลไม้อะไรบ้าง"]),
+        act("f-w1-mon-2", "story", "ตะกร้าผลไม้", ["เด็กบอกชื่อ สี และรสชาติผลไม้ได้"], ["ผลไม้ของจริง 4–5 ชนิด", "ตะกร้า"], ["ครูหยิบผลไม้ทีละชนิด", "เด็กบอกชื่อและสี", "ชิมและบอกรสชาติ"]),
+        act("f-w1-mon-3", "creative", "พิมพ์ภาพจากผลไม้", ["เด็กฝึกกล้ามเนื้อมัดเล็ก", "เด็กสังเกตรูปทรงหน้าตัดผลไม้"], ["มะนาว/กระเจี๊ยบ ผ่าครึ่ง", "สีโปสเตอร์", "กระดาษ"], ["ครูสาธิตการจุ่มสีและพิมพ์", "เด็กพิมพ์ภาพอย่างอิสระ", "เล่าว่าเป็นรูปอะไร"]),
+      ]},
+      { day: "tue", theme: "ผักสีเขียว", activities: [
+        act("f-w1-tue-1", "story", "ผักอะไรเอ่ย", ["เด็กบอกชื่อผักที่รู้จักได้"], ["ผักของจริง", "ผ้าคลุม"], ["ครูคลุมผักไว้ให้เด็กสัมผัสและทาย", "เปิดผ้าและบอกชื่อผัก", "ชวนคุยว่าเคยกินผักนี้ไหม"]),
+        act("f-w1-tue-2", "free", "มุมบ้าน: ทำอาหาร", ["เด็กเล่นบทบาทสมมติร่วมกับเพื่อน"], ["ของเล่นชุดครัว", "ผักผลไม้จำลอง"], ["ครูแนะนำมุมบ้าน", "เด็กเล่นทำอาหารอย่างอิสระ", "เก็บของเข้าที่"]),
+        act("f-w1-tue-3", "game", "จับคู่ผลไม้กับสี", ["เด็กจำแนกสีได้"], ["บัตรภาพผลไม้", "บัตรสี"], ["ครูวางบัตรสีเรียงกัน", "เด็กหยิบบัตรผลไม้ไปวางให้ตรงสี", "ตรวจคำตอบร่วมกัน"]),
+      ]},
+      { day: "wed", theme: "ปลูกผักกันเถอะ", activities: [
+        act("f-w1-wed-1", "outdoor", "ปลูกถั่วงอก", ["เด็กสังเกตการเจริญเติบโตของพืช", "เด็กรับผิดชอบดูแลต้นถั่ว"], ["ถั่วเขียว", "สำลี", "แก้วพลาสติก"], ["เด็กวางสำลีและเมล็ดถั่วในแก้ว", "รดน้ำทุกเช้า", "สังเกตและเล่าการเปลี่ยนแปลง"]),
+        act("f-w1-wed-2", "creative", "ฉีกปะรูปผัก", ["เด็กฝึกกล้ามเนื้อมัดเล็ก"], ["กระดาษสี", "กาว", "ภาพโครงร่างผัก"], ["เด็กฉีกกระดาษเป็นชิ้นเล็ก", "ทากาวและปะลงในภาพผัก", "นำเสนอผลงาน"]),
+      ]},
+      { day: "thu", theme: "ผลไม้หลากรส", activities: [
+        act("f-w1-thu-1", "story", "หวาน เปรี้ยว ขม", ["เด็กบอกรสชาติของอาหารได้"], ["ผลไม้รสต่าง ๆ", "ผ้าปิดตา"], ["เด็กปิดตาชิมผลไม้", "บอกว่ารสอะไร", "ทายว่าเป็นผลไม้อะไร"]),
+        act("f-w1-thu-2", "game", "นับผลไม้ 1–3", ["เด็กนับจำนวน 1–3 ได้"], ["ผลไม้จำลอง", "บัตรตัวเลข"], ["ครูวางผลไม้เป็นกลุ่ม", "เด็กนับและหยิบบัตรตัวเลข", "ตรวจร่วมกัน"]),
+      ]},
+      { day: "fri", theme: "ปาร์ตี้สลัดผลไม้", activities: [
+        act("f-w1-fri-1", "story", "ทำสลัดผลไม้", ["เด็กร่วมทำอาหารง่าย ๆ อย่างปลอดภัย", "เด็กฝึกมารยาทในการรับประทาน"], ["ผลไม้หั่นชิ้น", "โยเกิร์ต", "ถ้วย ช้อน"], ["ล้างมือก่อนทำ", "เด็กตักผลไม้ใส่ถ้วยและราดโยเกิร์ต", "นั่งรับประทานพร้อมกันอย่างมีมารยาท"]),
+        act("f-w1-fri-2", "outdoor", "เก็บผลไม้ใส่ตะกร้า", ["เด็กวิ่งและหยิบของอย่างคล่องแคล่ว"], ["ลูกบอลสี", "ตะกร้า"], ["ครูกระจายลูกบอลในสนาม", "เด็กวิ่งเก็บใส่ตะกร้าตามสีที่ครูบอก", "นับจำนวนร่วมกัน"]),
+      ]},
+    ]),
+    week("w2", 2, "กินอย่างไรให้แข็งแรง", "อาหารที่มีประโยชน์และไม่มีประโยชน์ มารยาทในการกิน"),
+  ],
+  related: {
+    worksheetIds: ["count-fruits"],
+    projectIds: ["mango-lab", "milk-story", "coconut"],
+    activityIds: ["water-play"],
+  },
 };
 
+/** เรื่องที่ 3 — ครอบครัวของฉัน */
+const planFamily: LessonPlan = {
+  id: "family",
+  number: 3,
+  title: "ครอบครัวของฉัน",
+  emoji: "👨‍👩‍👧",
+  gradeId: "k1",
+  unitId: "family",
+  strand: "เรื่องราวเกี่ยวกับบุคคลและสถานที่แวดล้อมเด็ก",
+  description: "สมาชิกในครอบครัว บทบาท และการช่วยเหลือกัน",
+  keywords: ["ครอบครัว", "พ่อ", "แม่", "บ้าน", "ช่วยงานบ้าน"],
+  duration: "2 สัปดาห์",
+  objectives: ["เด็กบอกชื่อและเรียกสมาชิกในครอบครัวได้", "เด็กบอกหน้าที่ของสมาชิกในครอบครัวได้", "เด็กช่วยงานบ้านง่าย ๆ ได้"],
+  content: ["สมาชิกในครอบครัว พ่อ แม่ พี่ น้อง ปู่ ย่า ตา ยาย", "การแสดงความรักและการช่วยเหลือกันในครอบครัว", "งานบ้านที่เด็กทำได้"],
+  materials: ["ตุ๊กตามือชุดครอบครัว", "ภาพถ่ายครอบครัวของเด็ก", "นิทานเรื่องครอบครัว"],
+  assessment: ["สังเกตการเล่าเรื่องครอบครัว", "ประเมินผลงานวาดภาพครอบครัว"],
+  weeks: [
+    week("w1", 1, "คนในบ้านของฉัน", "เรียกชื่อสมาชิกในครอบครัวได้"),
+    week("w2", 2, "ช่วยงานบ้าน", "ฝึกช่วยเหลืองานบ้านง่าย ๆ"),
+  ],
+  related: { mediaIds: ["puppets"], worksheetIds: ["family-draw"], activityIds: ["story-puppet"] },
+};
+
+/** เรื่องที่ 4 — โรงเรียนของเรา */
+const planSchool: LessonPlan = {
+  id: "school",
+  number: 4,
+  title: "โรงเรียนของเรา",
+  emoji: "🏫",
+  gradeId: "k1",
+  unitId: "school",
+  strand: "เรื่องราวเกี่ยวกับบุคคลและสถานที่แวดล้อมเด็ก",
+  description: "รู้จักโรงเรียน ห้องเรียน คุณครู และข้อตกลงในห้อง",
+  keywords: ["โรงเรียน", "ห้องเรียน", "ครู", "เพื่อน", "ข้อตกลง"],
+  duration: "2 สัปดาห์",
+  objectives: ["เด็กบอกชื่อโรงเรียนและครูประจำชั้นได้", "เด็กรู้จักมุมต่าง ๆ ในห้องเรียน", "เด็กปฏิบัติตามข้อตกลงของห้องได้"],
+  content: ["ชื่อโรงเรียน ห้องเรียน และสถานที่สำคัญในโรงเรียน", "บุคคลในโรงเรียน", "ข้อตกลงและการอยู่ร่วมกัน"],
+  materials: ["ภาพสถานที่ในโรงเรียน", "ป้ายข้อตกลง", "เพลงสวัสดี"],
+  assessment: ["สังเกตการปฏิบัติตามข้อตกลง", "สังเกตการบอกชื่อสถานที่"],
+  weeks: [
+    week("w1", 1, "ห้องเรียนของฉัน", "รู้จักมุมต่าง ๆ ในห้องเรียน"),
+    week("w2", 2, "คุณครูและเพื่อน", "รู้จักครูประจำชั้นและบุคลากรในโรงเรียน"),
+  ],
+  related: { mediaIds: ["hello-song", "shape-blocks"], worksheetIds: ["color-circle"], activityIds: ["shape-hunt"] },
+};
+
+/** เรื่องที่ 5 — สัตว์น่ารัก */
+const planAnimals: LessonPlan = {
+  id: "animals",
+  number: 5,
+  title: "สัตว์น่ารัก",
+  emoji: "🐣",
+  gradeId: "k1",
+  unitId: "animals",
+  strand: "ธรรมชาติรอบตัว",
+  description: "สัตว์เลี้ยง สัตว์ป่า และการดูแลสัตว์",
+  keywords: ["สัตว์", "สัตว์เลี้ยง", "ไก่", "ไข่", "หนอนไหม"],
+  duration: "3 สัปดาห์",
+  objectives: ["เด็กบอกชื่อและเสียงร้องของสัตว์ได้", "เด็กบอกวิธีดูแลสัตว์เลี้ยงได้", "เด็กสังเกตวงจรชีวิตของสัตว์อย่างง่าย"],
+  content: ["สัตว์เลี้ยงและสัตว์ป่า", "ที่อยู่ อาหาร และเสียงของสัตว์", "การดูแลและความเมตตาต่อสัตว์"],
+  materials: ["บัตรภาพสัตว์", "หุ่นสัตว์", "นิทานสัตว์"],
+  assessment: ["สังเกตการเลียนแบบและบอกชื่อสัตว์", "สังเกตการเล่าวงจรชีวิต"],
+  weeks: [
+    week("w1", 1, "สัตว์เลี้ยงของฉัน", "รู้จักสัตว์เลี้ยงใกล้ตัว"),
+    week("w2", 2, "ไข่ฟักเป็นตัว", "สังเกตไข่และลูกสัตว์"),
+    week("w3", 3, "สัตว์ตัวเล็ก", "หนอน ผีเสื้อ และแมลง"),
+  ],
+  related: { projectIds: ["egg-explorer", "silkworm"], activityIds: ["animal-walk"] },
+};
+
+/** เรื่องที่ 6 — ต้นไม้และธรรมชาติ */
+const planNature: LessonPlan = {
+  id: "nature",
+  number: 6,
+  title: "ต้นไม้รอบตัวเรา",
+  emoji: "🌳",
+  gradeId: "k1",
+  unitId: "nature",
+  strand: "ธรรมชาติรอบตัว",
+  description: "ส่วนประกอบของต้นไม้ ประโยชน์ และการดูแลธรรมชาติ",
+  keywords: ["ต้นไม้", "ธรรมชาติ", "ใบไม้", "ดอกไม้", "ปลูกต้นไม้"],
+  duration: "2 สัปดาห์",
+  objectives: ["เด็กบอกส่วนประกอบของต้นไม้ได้", "เด็กบอกประโยชน์ของต้นไม้ได้", "เด็กดูแลต้นไม้ในห้องเรียนได้"],
+  content: ["ราก ลำต้น ใบ ดอก ผล", "ประโยชน์ของต้นไม้", "การปลูกและดูแลต้นไม้"],
+  materials: ["ใบไม้ ดอกไม้ของจริง", "แว่นขยาย", "กระถางและเมล็ดพันธุ์"],
+  assessment: ["สังเกตการสำรวจและบอกส่วนประกอบ", "บันทึกการดูแลต้นไม้"],
+  weeks: [
+    week("w1", 1, "สำรวจต้นไม้", "เดินสำรวจต้นไม้ในโรงเรียน"),
+    week("w2", 2, "ปลูกต้นไม้ของฉัน", "ปลูกและดูแลต้นไม้ของตัวเอง"),
+  ],
+  related: { projectIds: ["wood-story", "coconut"], activityIds: ["sensory-bin"] },
+};
+
+/* ------------------------------------------------------------
+   แผนจากกำหนดการสอน ภาคเรียนที่ 2/2564 (โครงไว้ก่อน — เติมรายละเอียดได้ทีหลัง)
+   ------------------------------------------------------------ */
+const stub = (
+  id: string, number: number, title: string, emoji: string, unitId: string, strand: Strand,
+  description: string, keywords: string[], weeks = 1,
+): LessonPlan => ({
+  id, number, title, emoji, gradeId: "k1", unitId, strand, description, keywords,
+  duration: `${weeks} สัปดาห์`,
+  objectives: [], content: [], materials: [], assessment: [],
+  weeks: Array.from({ length: weeks }, (_, i) => week(`w${i + 1}`, i + 1, title, description)),
+});
+
+const TERM2_PLANS: LessonPlan[] = [
+  stub("rice", 7, "ข้าวมหัศจรรย์", "🌾", "food", "เรื่องราวเกี่ยวกับตัวเด็ก", "ข้าวมาจากไหน ประโยชน์ของข้าว และการกินข้าวให้หมดจาน", ["ข้าว", "ชาวนา", "อาหาร"]),
+  stub("loy-krathong", 8, "ลอยกระทง", "🪷", "culture", "เรื่องราวเกี่ยวกับตัวเด็ก", "ประเพณีลอยกระทง การประดิษฐ์กระทงจากวัสดุธรรมชาติ", ["ลอยกระทง", "ประเพณี", "กระทง"]),
+  stub("insects", 9, "แมลง", "🐞", "animals", "ธรรมชาติรอบตัว", "แมลงใกล้ตัว ส่วนประกอบ และการดำรงชีวิตของแมลง", ["แมลง", "ผีเสื้อ", "มด"]),
+  stub("father", 10, "พระคุณพ่อ", "👨", "family", "เรื่องราวเกี่ยวกับตัวเด็ก", "พระคุณของพ่อ และการแสดงความรักต่อพ่อ", ["พ่อ", "วันพ่อ", "ครอบครัว"]),
+  stub("shapes", 11, "รูปร่างรูปทรง", "🔷", "things", "สิ่งต่าง ๆ รอบตัวเด็ก", "รูปร่างและรูปทรงพื้นฐานที่พบในชีวิตประจำวัน", ["รูปทรง", "วงกลม", "สามเหลี่ยม"]),
+  stub("sounds", 12, "เสียงรอบตัว", "🔔", "things", "ธรรมชาติรอบตัว", "เสียงจากธรรมชาติ สัตว์ และสิ่งของรอบตัว", ["เสียง", "ฟัง", "ดนตรี"]),
+  stub("happy-home", 13, "บ้านแสนสุข", "🏠", "family", "ธรรมชาติรอบตัว", "บ้านของฉัน ห้องต่าง ๆ และการช่วยดูแลบ้าน", ["บ้าน", "ครอบครัว", "ห้อง"]),
+  stub("senses", 14, "หนูน้อยนักประสาทสัมผัส", "👀", "myself", "เรื่องราวเกี่ยวกับตัวเด็ก", "ประสาทสัมผัสทั้ง 5 ตา หู จมูก ลิ้น กาย", ["ประสาทสัมผัส", "ตา", "หู", "จมูก"]),
+  stub("summer", 15, "ฤดูร้อน", "☀️", "nature", "ธรรมชาติรอบตัว", "ลักษณะของฤดูร้อน การดูแลตนเองในหน้าร้อน", ["ฤดูร้อน", "อากาศ", "แดด"]),
+  stub("vegetables", 16, "ผักสดสะอาด", "🥬", "food", "ธรรมชาติรอบตัว", "ผักชนิดต่าง ๆ การล้างผัก และประโยชน์ของผัก", ["ผัก", "สะอาด", "อาหาร"]),
+];
+
+export const PLANS: LessonPlan[] = [planFood, planMyself, planFamily, planSchool, planAnimals, planNature, ...TERM2_PLANS];
+
 /* ============================================================
-   ระดับชั้น → ภาคเรียน → เดือน → หน่วย → สัปดาห์
+   ภาคเรียน → เดือน → แผน (อ้างด้วย planId)
    ============================================================ */
-export const GRADES: Grade[] = [
+export const SEMESTERS: Semester[] = [
   {
-    id: "k1",
-    name: "อนุบาล 1",
-    semesters: [
-      {
-        id: "s1",
-        name: "ภาคเรียนที่ 1",
-        year: "ปีการศึกษา 2569",
-        months: [
-          { id: "2026-05", name: "พฤษภาคม", units: [unitSchool] },
-          { id: "2026-06", name: "มิถุนายน", units: [unitMyself] },
-          { id: "2026-07", name: "กรกฎาคม", units: [unitFamily] },
-          { id: "2026-08", name: "สิงหาคม", units: [unitFood] },
-        ],
-      },
-      {
-        id: "s2",
-        name: "ภาคเรียนที่ 2",
-        year: "ปีการศึกษา 2569",
-        months: [
-          {
-            id: "2026-11",
-            name: "พฤศจิกายน",
-            units: [
-              {
-                id: "animals",
-                emoji: "🐣",
-                title: "สัตว์น่ารัก",
-                description: "สัตว์เลี้ยง สัตว์ป่า และการดูแลสัตว์",
-                weeks: [
-                  { id: "w1", number: 1, title: "สัตว์เลี้ยงของฉัน", summary: "รู้จักสัตว์เลี้ยงใกล้ตัว", days: DAY_ORDER_PLACEHOLDER() },
-                ],
-              },
-            ],
-          },
-        ],
-      },
+    id: "s1",
+    gradeId: "k1",
+    name: "ภาคเรียนที่ 1",
+    year: "ปีการศึกษา 2569",
+    months: [
+      { id: "2026-05", name: "พฤษภาคม", planIds: ["school"] },
+      { id: "2026-06", name: "มิถุนายน", planIds: ["myself"] },
+      { id: "2026-07", name: "กรกฎาคม", planIds: ["family"] },
+      { id: "2026-08", name: "สิงหาคม", planIds: [] },
+    ],
+  },
+  {
+    id: "s2",
+    gradeId: "k1",
+    name: "ภาคเรียนที่ 2",
+    year: "ปีการศึกษา 2569",
+    months: [
+      { id: "2026-11", name: "พฤศจิกายน", planIds: ["animals"] },
+      { id: "2026-12", name: "ธันวาคม", planIds: ["nature"] },
     ],
   },
 ];
 
 /* ---------- helpers สำหรับหน้าแสดงผล ---------- */
-export function findUnit(gradeId: string, semesterId: string, unitId: string) {
-  const grade = GRADES.find((g) => g.id === gradeId);
-  const semester = grade?.semesters.find((s) => s.id === semesterId);
-  for (const month of semester?.months ?? []) {
-    const unit = month.units.find((u) => u.id === unitId);
-    if (unit) return { grade: grade!, semester: semester!, month, unit };
-  }
-  return null;
+export const getGrade = (id: string) => GRADES.find((g) => g.id === id);
+export const getUnit = (id: string) => UNITS.find((u) => u.id === id);
+export const getPlan = (id: string) => PLANS.find((p) => p.id === id);
+export const getPlansByGrade = (gradeId: string) => PLANS.filter((p) => p.gradeId === gradeId).sort((a, b) => a.number - b.number);
+
+export function findWeek(planId: string, weekId: string) {
+  const plan = getPlan(planId);
+  const wk = plan?.weeks.find((w) => w.id === weekId);
+  if (!plan || !wk) return null;
+  return { plan, week: wk };
 }
 
-export function findWeek(gradeId: string, semesterId: string, unitId: string, weekId: string) {
-  const found = findUnit(gradeId, semesterId, unitId);
-  const week = found?.unit.weeks.find((w) => w.id === weekId);
-  if (!found || !week) return null;
-  return { ...found, week };
-}
+export const countPlanActivities = (plan: LessonPlan) =>
+  plan.weeks.reduce((n, w) => n + w.days.reduce((m, d) => m + d.activities.length, 0), 0);
 
-export function countActivities(): number {
-  let n = 0;
-  for (const g of GRADES)
-    for (const s of g.semesters)
-      for (const m of s.months)
-        for (const u of m.units)
-          for (const w of u.weeks)
-            for (const d of w.days) n += d.activities.length;
-  return n;
+export const countActivities = () => PLANS.reduce((n, p) => n + countPlanActivities(p), 0);
+
+/** ค้นหาแผนจากคำค้น (เรื่อง / หน่วย / คำสำคัญ) */
+export function searchPlans(query: string, gradeId?: string) {
+  const q = query.trim().toLowerCase();
+  const base = gradeId ? getPlansByGrade(gradeId) : [...PLANS].sort((a, b) => a.number - b.number);
+  if (!q) return base;
+  return base.filter((p) => {
+    const unit = getUnit(p.unitId)?.name ?? "";
+    const hay = [p.title, unit, p.description, ...p.keywords, ...p.weeks.map((w) => w.title)].join(" ").toLowerCase();
+    return hay.includes(q);
+  });
 }

@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react";
-import { NAV_ITEMS, SITE } from "@/lib/site";
+import { useEffect, useRef, useState } from "react";
+import { ChevronDown, Menu, X } from "lucide-react";
+import { PRIMARY_NAV, SITE, type NavItem } from "@/lib/site";
 import { cn } from "@/lib/cn";
 
 export function Header() {
@@ -20,7 +20,10 @@ export function Header() {
     return () => { document.body.style.overflow = ""; };
   }, [open]);
 
-  const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
+  const isActive = (item: NavItem) =>
+    pathname === item.href ||
+    pathname.startsWith(item.href + "/") ||
+    (item.children?.some((c) => pathname === c.href || pathname.startsWith(c.href + "/")) ?? false);
 
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-cream/90 backdrop-blur">
@@ -33,22 +36,27 @@ export function Header() {
           </span>
         </Link>
 
+        {/* Desktop */}
         <nav className="hidden items-center gap-1 lg:flex" aria-label="เมนูหลัก">
-          {NAV_ITEMS.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "rounded-full px-3.5 py-2 text-[15px] transition-colors",
-                isActive(item.href)
-                  ? "bg-purple-100 font-medium text-purple-800"
-                  : "text-ink hover:bg-purple-50 hover:text-purple-700",
-              )}
-            >
-              <span className="mr-1">{item.emoji}</span>
-              {item.label.replace(" / แนวทางสำหรับครู", "")}
-            </Link>
-          ))}
+          <Link href="/" className={cn("rounded-full px-3.5 py-2 text-[15px] transition-colors", pathname === "/" ? "bg-purple-100 font-medium text-purple-800" : "text-ink hover:bg-purple-50 hover:text-purple-700")}>
+            🏠 หน้าหลัก
+          </Link>
+          {PRIMARY_NAV.map((item) =>
+            item.children ? (
+              <Dropdown key={item.href} item={item} active={isActive(item)} />
+            ) : (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "rounded-full px-3.5 py-2 text-[15px] transition-colors",
+                  isActive(item) ? "bg-purple-100 font-medium text-purple-800" : "text-ink hover:bg-purple-50 hover:text-purple-700",
+                )}
+              >
+                {item.emoji} {item.label}
+              </Link>
+            ),
+          )}
         </nav>
 
         <button
@@ -63,7 +71,7 @@ export function Header() {
         </button>
       </div>
 
-      {/* เมนูมือถือ / แท็บเล็ต */}
+      {/* Mobile / tablet */}
       <div
         id="mobile-menu"
         className={cn(
@@ -71,24 +79,120 @@ export function Header() {
           open ? "max-h-[calc(100dvh-4rem)] overflow-y-auto" : "max-h-0 border-t-0",
         )}
       >
-        <nav className="container-page grid gap-2 py-3" aria-label="เมนูมือถือ">
-          {NAV_ITEMS.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "flex items-center gap-3 rounded-2xl border px-4 py-3 text-base transition-colors",
-                isActive(item.href)
-                  ? "border-purple-200 bg-purple-100 font-medium text-purple-800"
-                  : "border-line bg-white text-ink active:bg-purple-50",
-              )}
-            >
-              <span className={cn("grid size-10 shrink-0 place-items-center rounded-xl text-xl", item.tint)}>{item.emoji}</span>
-              <span>{item.label}</span>
-            </Link>
+        <nav className="container-page grid gap-2 py-3 pb-6" aria-label="เมนูมือถือ">
+          <MobileLink href="/" emoji="🏠" label="หน้าหลัก" active={pathname === "/"} tint="bg-purple-100" />
+          {PRIMARY_NAV.map((item) => (
+            <MobileGroup key={item.href} item={item} pathname={pathname} active={isActive(item)} />
           ))}
         </nav>
       </div>
     </header>
+  );
+}
+
+/* ---------- Desktop dropdown ---------- */
+function Dropdown({ item, active }: { item: NavItem; active: boolean }) {
+  const [show, setShow] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!show) return;
+    const onDoc = (e: MouseEvent) => { if (!ref.current?.contains(e.target as Node)) setShow(false); };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setShow(false); };
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => { document.removeEventListener("mousedown", onDoc); document.removeEventListener("keydown", onKey); };
+  }, [show]);
+
+  return (
+    <div ref={ref} className="relative" onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}>
+      <button
+        type="button"
+        onClick={() => setShow((v) => !v)}
+        aria-expanded={show}
+        aria-haspopup="menu"
+        className={cn(
+          "inline-flex items-center gap-1 rounded-full px-3.5 py-2 text-[15px] transition-colors",
+          active || show ? "bg-purple-100 font-medium text-purple-800" : "text-ink hover:bg-purple-50 hover:text-purple-700",
+        )}
+      >
+        {item.emoji} {item.label}
+        <ChevronDown size={15} className={cn("transition-transform", show && "rotate-180")} />
+      </button>
+      <div
+        role="menu"
+        className={cn(
+          "absolute left-0 top-full z-50 w-72 pt-2 transition-all duration-150",
+          show ? "visible translate-y-0 opacity-100" : "invisible -translate-y-1 opacity-0",
+        )}
+      >
+        <div className="card overflow-hidden p-1.5">
+          <Link href={item.href} role="menuitem" onClick={() => setShow(false)} className="flex items-center gap-2 rounded-xl px-3 py-2 text-[15px] font-medium text-purple-800 hover:bg-purple-50">
+            {item.emoji} ดูทั้งหมด
+          </Link>
+          <div className="my-1 h-px bg-line" />
+          {item.children!.map((c) => (
+            <Link key={c.href} href={c.href} role="menuitem" onClick={() => setShow(false)} className="flex items-center gap-2 rounded-xl px-3 py-2 text-[15px] text-ink hover:bg-purple-50 hover:text-purple-800">
+              <span className="w-6 shrink-0 text-center">{c.emoji}</span>
+              <span className="leading-snug">{c.label}</span>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Mobile ---------- */
+function MobileLink({ href, emoji, label, active, tint }: { href: string; emoji: string; label: string; active: boolean; tint: string }) {
+  return (
+    <Link
+      href={href}
+      className={cn(
+        "flex items-center gap-3 rounded-2xl border px-4 py-3 text-base transition-colors",
+        active ? "border-purple-200 bg-purple-100 font-medium text-purple-800" : "border-line bg-white text-ink active:bg-purple-50",
+      )}
+    >
+      <span className={cn("grid size-10 shrink-0 place-items-center rounded-xl text-xl", tint)}>{emoji}</span>
+      <span>{label}</span>
+    </Link>
+  );
+}
+
+function MobileGroup({ item, pathname, active }: { item: NavItem; pathname: string; active: boolean }) {
+  const [expanded, setExpanded] = useState(active);
+  if (!item.children) return <MobileLink href={item.href} emoji={item.emoji} label={item.label} active={active} tint={item.tint} />;
+
+  return (
+    <div className={cn("overflow-hidden rounded-2xl border", active ? "border-purple-200" : "border-line")}>
+      <div className={cn("flex items-stretch", active ? "bg-purple-100" : "bg-white")}>
+        <Link href={item.href} className={cn("flex min-w-0 flex-1 items-center gap-3 px-4 py-3 text-base", active ? "font-medium text-purple-800" : "text-ink")}>
+          <span className={cn("grid size-10 shrink-0 place-items-center rounded-xl text-xl", item.tint)}>{item.emoji}</span>
+          <span className="truncate">{item.label}</span>
+        </Link>
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          aria-expanded={expanded}
+          aria-label={expanded ? `ซ่อนรายการ${item.label}` : `แสดงรายการ${item.label}`}
+          className="tap grid w-12 place-items-center border-l border-line text-purple-700"
+        >
+          <ChevronDown size={20} className={cn("transition-transform", expanded && "rotate-180")} />
+        </button>
+      </div>
+      {expanded && (
+        <div className="grid gap-1 border-t border-line bg-cream p-2">
+          {item.children.map((c) => {
+            const on = pathname === c.href || pathname.startsWith(c.href + "/");
+            return (
+              <Link key={c.href} href={c.href} className={cn("tap flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-[15px]", on ? "bg-white font-medium text-purple-800 shadow-soft" : "text-ink active:bg-white")}>
+                <span className="w-6 shrink-0 text-center">{c.emoji}</span>
+                <span className="leading-snug">{c.label}</span>
+              </Link>
+            );
+          })}
+        </div>
+      )}
+    </div>
   );
 }

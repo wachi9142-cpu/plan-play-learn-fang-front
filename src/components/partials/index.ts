@@ -1,2 +1,5 @@
 export * from "./ActivityCard";
 export * from "./DayTabs";
+export * from "./PlanCard";
+export * from "./PlanSearch";
+export * from "./ScheduleTable";
