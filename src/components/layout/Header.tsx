@@ -5,7 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, LogIn, Menu, X } from "lucide-react";
-import { PRIMARY_NAV, SITE, type NavItem } from "@/lib/site";
+import { PRIMARY_NAV, SITE, TOP_LINKS, type NavItem } from "@/lib/site";
 import { cn } from "@/lib/cn";
 
 export function Header() {
@@ -32,7 +32,7 @@ export function Header() {
       <div className="container-page flex h-16 items-center justify-between gap-3">
         <Link href="/" className="flex min-w-0 items-center gap-2.5 tap" aria-label="กลับหน้าแรก">
           <Image src="/logo.webp" alt="โลโก้ครูข้าวฟ่าง" width={44} height={44} priority className="size-11 shrink-0 rounded-full border-2 border-purple-200 object-cover shadow-soft" />
-          <span className="min-w-0 leading-tight">
+          <span className="min-w-0 leading-tight lg:hidden 2xl:block">
             <span className="block truncate font-display text-[17px] font-medium text-purple-800 sm:text-lg">💜 {SITE.brand}</span>
             <span className="block truncate text-xs text-ink-soft">{SITE.credit}</span>
           </span>
@@ -40,11 +40,16 @@ export function Header() {
 
         {/* Desktop: หน้าแรก · เกี่ยวกับ ▾ · เมนู ▾ · เข้าสู่ระบบ */}
         <nav className="hidden items-center gap-1 lg:flex" aria-label="เมนูหลัก">
-          <Link href="/" className={cn("whitespace-nowrap rounded-full px-4 py-2 text-[15px] transition-colors", pathname === "/" ? "bg-purple-100 font-medium text-purple-800" : "text-ink hover:bg-purple-50 hover:text-purple-700")}>
+          <Link href="/" className={cn("whitespace-nowrap rounded-full px-3 py-2 text-[14px] transition-colors xl:px-4 xl:text-[15px]", pathname === "/" ? "bg-purple-100 font-medium text-purple-800" : "text-ink hover:bg-purple-50 hover:text-purple-700")}>
             🏠 หน้าแรก
           </Link>
           {PRIMARY_NAV.map((item) => (
             <Dropdown key={item.href} item={item} active={isActive(item)} />
+          ))}
+          {TOP_LINKS.map((item) => (
+            <Link key={item.href} href={item.href} className={cn("whitespace-nowrap rounded-full px-3 py-2 text-[14px] transition-colors xl:px-4 xl:text-[15px]", isActive(item) ? "bg-purple-100 font-medium text-purple-800" : "text-ink hover:bg-purple-50 hover:text-purple-700")}>
+              <span className="hidden xl:inline">{item.emoji} </span>{item.label}
+            </Link>
           ))}
           <Link href="/login" className={cn("ml-2 inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-4 py-2 text-[15px] font-medium shadow-soft transition", pathname === "/login" ? "bg-purple-700 text-white" : "bg-purple-600 text-white hover:bg-purple-700")}>
             <LogIn size={16} /> เข้าสู่ระบบ
@@ -77,6 +82,9 @@ export function Header() {
           <MobileLink href="/" emoji="🏠" label="หน้าแรก" active={pathname === "/"} tint="bg-purple-100" />
           {PRIMARY_NAV.map((item) => (
             <MobileGroup key={item.href} item={item} pathname={pathname} active={isActive(item)} />
+          ))}
+          {TOP_LINKS.map((item) => (
+            <MobileLink key={item.href} href={item.href} emoji={item.emoji} label={item.label} active={isActive(item)} tint={item.tint} />
           ))}
           <Link href="/login" className="tap mt-1 inline-flex items-center justify-center gap-2 rounded-2xl bg-purple-600 px-4 py-3 text-base font-medium text-white shadow-soft">
             <LogIn size={18} /> เข้าสู่ระบบ

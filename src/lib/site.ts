@@ -88,16 +88,34 @@ export const NAV_ITEMS: NavItem[] = [
 /** จำนวนเมนูหลัก (แสดงเป็น Card ใหญ่บนหน้าแรก) */
 export const MAIN_MENU_COUNT = 6;
 
-/** ลำดับ "เมนู" ตามบรีฟ: กำหนดการสอน → แผนฯ → โครงการ → 6 กิจกรรมหลัก → เกม → ใบงาน */
-const MENU_ORDER = ["/schedules", "/plans", "/projects", "/core-activities", "/games", "/worksheets"];
+/** ลำดับ "เมนู" ตามบรีฟ: กำหนดการสอน → แผนฯ → โครงการ → 6 กิจกรรมหลัก → เกม → ใบงาน → สื่อการเรียนการสอน */
+const MENU_ORDER = ["/schedules", "/plans", "/projects", "/core-activities", "/games", "/worksheets", "/media"];
 export const MENU_ITEMS: NavItem[] = MENU_ORDER.map((h) => NAV_ITEMS.find((n) => n.href === h)!);
-export const LIBRARY_ITEMS: NavItem[] = NAV_ITEMS.slice(MAIN_MENU_COUNT);
+export const LIBRARY_ITEMS: NavItem[] = NAV_ITEMS.slice(MAIN_MENU_COUNT).filter((n) => !MENU_ORDER.includes(n.href));
 
-/** ระดับชั้นสำหรับเมนู "เกี่ยวกับ" */
-export const ABOUT_ITEMS: NavLink[] = GRADES.map((g) => ({ href: `/about/${g.id}`, emoji: g.emoji, label: g.name }));
+/** เมนู "เกี่ยวกับ": ข้อมูลโรงเรียน → ระดับชั้น → อาคาร/นักเรียน/บุคลากร */
+export const ABOUT_ITEMS: NavLink[] = [
+  { href: "/about#history", emoji: "🏫", label: "ข้อมูล / ประวัติโรงเรียน" },
+  { href: "/about#philosophy", emoji: "🌷", label: "ปรัชญา" },
+  { href: "/about#vision", emoji: "🌱", label: "วิสัยทัศน์" },
+  { href: "/about#mission", emoji: "🎯", label: "พันธกิจ" },
+  { href: "/about#goals", emoji: "⭐", label: "เป้าหมาย" },
+  ...GRADES.map((g) => ({ href: `/about/${g.id}`, emoji: g.emoji, label: g.name })),
+  { href: "/about#facilities", emoji: "🏡", label: "ข้อมูลอาคาร / สถานที่" },
+  { href: "/about#students", emoji: "🧒", label: "ข้อมูลนักเรียน" },
+  { href: "/about#staff", emoji: "👩‍🏫", label: "ข้อมูลบุคลากร" },
+];
+
+/** เมนูบนแถบ (ไม่มีเมนูย่อย) — ปฏิทินโรงเรียน · กิจกรรมโรงเรียน · ติดต่อเรา */
+export const TOP_LINKS: NavItem[] = [
+  { href: "/calendar", emoji: "📅", label: "ปฏิทินโรงเรียน", description: "เปิด–ปิดเทอม วันหยุด วันสำคัญ และกิจกรรมประจำเดือน", tint: "bg-sky-soft" },
+  { href: "/school-events", emoji: "🎉", label: "กิจกรรมโรงเรียน", description: "กิจกรรมที่เกิดขึ้นในโรงเรียน พร้อมรูปและรายละเอียด", tint: "bg-yellow-soft" },
+  { href: "/news", emoji: "📣", label: "ประชาสัมพันธ์", description: "ประกาศ ข่าวสาร และเรื่องแจ้งถึงผู้ปกครอง", tint: "bg-pink-soft" },
+  { href: "/contact", emoji: "📞", label: "ติดต่อเรา", description: "ที่อยู่ แผนที่ เวลาเปิด–ปิด และช่องทางติดต่อ", tint: "bg-mint-soft" },
+];
 
 /**
- * แถบ Navigation ด้านบน (ตามบรีฟ): หน้าแรก · เกี่ยวกับ ▾ · เมนู ▾ · เข้าสู่ระบบ
+ * แถบ Navigation ด้านบน (ตามบรีฟ): หน้าแรก · เกี่ยวกับ ▾ · เมนู ▾ · ปฏิทินโรงเรียน · กิจกรรมโรงเรียน · ติดต่อเรา · เข้าสู่ระบบ
  */
 export const PRIMARY_NAV: NavItem[] = [
   {
@@ -114,9 +132,6 @@ export const PRIMARY_NAV: NavItem[] = [
     label: "เมนู",
     description: "หมวดหมู่หลักของเว็บไซต์",
     tint: "bg-purple-100",
-    children: [
-      ...MENU_ITEMS.map(({ href, emoji, label }) => ({ href, emoji, label })),
-      ...LIBRARY_ITEMS.map(({ href, emoji, label }) => ({ href, emoji, label })),
-    ],
+    children: MENU_ITEMS.map(({ href, emoji, label }) => ({ href, emoji, label })),
   },
 ];

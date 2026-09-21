@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import { NAV_ITEMS, SITE } from "@/lib/site";
+import { SITE } from "@/lib/site";
+import { CONTACT } from "@/data/contact";
 
 export function Footer() {
   return (
@@ -14,28 +15,23 @@ export function Footer() {
               <p className="text-sm text-ink-soft">{SITE.credit} · 🌱 {SITE.motto}</p>
             </div>
           </div>
-          <p className="mt-3 text-sm text-ink-soft">{SITE.name} · {SITE.nameEn}</p>
           <p className="mt-3 max-w-xs text-[15px] text-ink-soft">“{SITE.concept}”</p>
         </div>
         <div>
-          <p className="mb-2 font-display text-lg text-purple-800">เมนู</p>
-          <ul className="grid grid-cols-1 gap-1.5 text-[15px]">
-            <li><Link href="/" className="inline-block py-1 text-ink hover:text-purple-700">🏠 หน้าหลัก</Link></li>
-            {NAV_ITEMS.map((n) => (
-              <li key={n.href}>
-                <Link href={n.href} className="inline-block py-1 text-ink hover:text-purple-700">
-                  {n.emoji} {n.label}
-                </Link>
-              </li>
+          <p className="mb-2 font-display text-lg text-purple-800">📞 ติดต่อเรา</p>
+          <address className="not-italic text-[15px] text-ink-soft">
+            {CONTACT.address.lines.map((l) => <span key={l} className="block">{l}</span>)}
+          </address>
+          <ul className="mt-2 grid gap-1 text-[15px]">
+            {CONTACT.channels.slice(0, 3).map((c) => (
+              <li key={c.id}><a href={c.href} className="text-ink hover:text-purple-700">{c.emoji} {c.value}</a></li>
             ))}
           </ul>
+          <Link href="/contact" className="mt-2 inline-block text-[14px] font-medium text-purple-700 hover:underline">ดูแผนที่และเวลาเปิด–ปิด →</Link>
         </div>
         <div>
           <p className="mb-2 font-display text-lg text-purple-800">🌷 {SITE.welcome}</p>
-          <p className="text-[15px] text-ink-soft">
-            เว็บไซต์นี้รวบรวมแผนการจัดประสบการณ์และกิจกรรมสำหรับเด็กอนุบาล 1
-            เพื่อให้คุณครูปฐมวัยหยิบไปใช้ได้ง่าย ๆ ทุกวัน
-          </p>
+          <p className="text-[15px] text-ink-soft">{SITE.intro} เพื่อให้คุณครูและผู้ปกครองหยิบไปใช้กับเด็ก ๆ ได้ง่าย ๆ ทุกวัน</p>
         </div>
       </div>
       <div className="border-t border-line py-4 text-center text-sm text-ink-soft">

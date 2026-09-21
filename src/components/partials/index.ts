@@ -5,3 +5,4 @@ export * from "./PlanSearch";
 export * from "./ScheduleTable";
 export * from "./GalleryGrid";
 export * from "./HeroBanner";
+export * from "./SchoolCalendar";
