@@ -1,10 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import { NAV_ITEMS, SITE } from "@/lib/site";
+import { MAIN_MENU_COUNT, NAV_ITEMS, SITE } from "@/lib/site";
 import { GRADES, PLANS, countActivities, getPlansByGrade } from "@/data/plans";
 import { PROJECTS } from "@/data/projects";
 import { SCHEDULES } from "@/data/schedules";
+import { GAMES } from "@/data/games";
+import { GameCard } from "@/components/games/GameCard";
 import { TEACHING_MEDIA, WORKSHEETS } from "@/data/content";
 import { PlanCard } from "@/components/partials/PlanCard";
 import { cn } from "@/lib/cn";
@@ -12,14 +14,14 @@ import { cn } from "@/lib/cn";
 export default function HomePage() {
   const k1 = GRADES[0];
   const plans = getPlansByGrade(k1.id);
-  const mainMenu = NAV_ITEMS.slice(0, 3);
-  const library = NAV_ITEMS.slice(3);
+  const mainMenu = NAV_ITEMS.slice(0, MAIN_MENU_COUNT);
+  const library = NAV_ITEMS.slice(MAIN_MENU_COUNT);
 
   const stats = [
     { emoji: "📚", label: "โครงการ", value: PROJECTS.length },
     { emoji: "📖", label: "แผน (เรื่อง)", value: PLANS.length },
     { emoji: "🧸", label: "กิจกรรมในแผน", value: countActivities() },
-    { emoji: "🎨", label: "สื่อ + ใบงาน", value: TEACHING_MEDIA.length + WORKSHEETS.length },
+    { emoji: "🎮", label: "เกมออนไลน์", value: GAMES.length },
   ];
 
   return (
@@ -88,9 +90,9 @@ export default function HomePage() {
           <ArrowRight size={16} className="rotate-90 text-purple-300 sm:rotate-0" />
           <span className="font-medium text-purple-800">📖 แผน (เรื่อง)</span>
           <ArrowRight size={16} className="rotate-90 text-purple-300 sm:rotate-0" />
-          <span className="font-medium text-purple-800">🧸 กิจกรรมรายวัน</span>
+          <span className="font-medium text-purple-800">🎈 6 กิจกรรมหลัก</span>
           <ArrowRight size={16} className="rotate-90 text-purple-300 sm:rotate-0" />
-          <span className="font-medium text-purple-800">🎨 สื่อ · ใบงาน · โครงการ</span>
+          <span className="font-medium text-purple-800">🎮 เกมออนไลน์ · 🎨 สื่อ · ใบงาน · โครงการ</span>
         </div>
       </section>
 
@@ -119,6 +121,19 @@ export default function HomePage() {
         </div>
         <div className="grid gap-4 lg:grid-cols-2">
           {plans.slice(0, 4).map((p) => <PlanCard key={p.id} plan={p} compact />)}
+        </div>
+      </section>
+
+      {/* ---------- เกมแนะนำ ---------- */}
+      <section className="container-page pb-12 sm:pb-16">
+        <div className="mb-5 flex items-end justify-between gap-3">
+          <h2 className="text-2xl sm:text-3xl">🎮 เกมการศึกษา เล่นได้เลย!</h2>
+          <Link href="/games" className="tap inline-flex items-center gap-1 text-[15px] font-medium text-purple-700 hover:underline">
+            ดูทั้งหมด <ArrowRight size={16} />
+          </Link>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {GAMES.slice(0, 3).map((g) => <GameCard key={g.id} game={g} />)}
         </div>
       </section>
 

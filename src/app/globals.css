@@ -127,3 +127,11 @@ img, svg { max-width: 100%; height: auto; }
 /* ซ่อน scrollbar ของแถบที่เลื่อนแนวนอน (เช่น breadcrumb) */
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* เกม: สั่นเบา ๆ เมื่อตอบผิด */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+.animate-shake { animation: shake 300ms ease; }

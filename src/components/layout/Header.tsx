@@ -33,15 +33,15 @@ export function Header() {
         <Link href="/" className="flex min-w-0 items-center gap-2.5 tap" aria-label="กลับหน้าแรก">
           <Image src="/logo.jpg" alt="โลโก้ครูข้าวฟ่าง" width={44} height={44} priority className="size-11 shrink-0 rounded-full border-2 border-purple-200 object-cover shadow-soft" />
           <span className="min-w-0 leading-tight">
-            <span className="block truncate font-display text-[17px] font-medium text-purple-800 sm:text-lg">{SITE.name}</span>
+            <span className="block truncate font-display text-[17px] font-medium text-purple-800 sm:text-lg lg:max-w-44 xl:max-w-none">{SITE.name}</span>
             <span className="hidden text-xs text-ink-soft sm:block">{SITE.credit}</span>
           </span>
         </Link>
 
         {/* Desktop */}
-        <nav className="hidden items-center gap-1 lg:flex" aria-label="เมนูหลัก">
-          <Link href="/" className={cn("rounded-full px-3.5 py-2 text-[15px] transition-colors", pathname === "/" ? "bg-purple-100 font-medium text-purple-800" : "text-ink hover:bg-purple-50 hover:text-purple-700")}>
-            🏠 หน้าหลัก
+        <nav className="hidden items-center gap-0.5 lg:flex xl:gap-1" aria-label="เมนูหลัก">
+          <Link href="/" aria-label="หน้าหลัก" className={cn("rounded-full px-3 py-2 text-[14px] transition-colors xl:text-[15px]", pathname === "/" ? "bg-purple-100 font-medium text-purple-800" : "text-ink hover:bg-purple-50 hover:text-purple-700")}>
+            🏠<span className="hidden 2xl:inline"> หน้าหลัก</span>
           </Link>
           {PRIMARY_NAV.map((item) =>
             item.children ? (
@@ -51,7 +51,7 @@ export function Header() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "rounded-full px-3.5 py-2 text-[15px] transition-colors",
+                  "whitespace-nowrap rounded-full px-3 py-2 text-[14px] transition-colors xl:text-[15px]",
                   isActive(item) ? "bg-purple-100 font-medium text-purple-800" : "text-ink hover:bg-purple-50 hover:text-purple-700",
                 )}
               >
@@ -116,7 +116,7 @@ function Dropdown({ item, active }: { item: NavItem; active: boolean }) {
         aria-expanded={show}
         aria-haspopup="menu"
         className={cn(
-          "inline-flex items-center gap-1 rounded-full px-3.5 py-2 text-[15px] transition-colors",
+          "inline-flex items-center gap-1 whitespace-nowrap rounded-full px-3 py-2 text-[14px] transition-colors xl:text-[15px]",
           active || show ? "bg-purple-100 font-medium text-purple-800" : "text-ink hover:bg-purple-50 hover:text-purple-700",
         )}
       >

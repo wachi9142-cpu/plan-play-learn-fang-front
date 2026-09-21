@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Activity } from "@/types";
 import { ACTIVITY_META } from "@/data/plans";
 import { Tag } from "@/components/ui";
@@ -18,7 +19,7 @@ export function ActivityCard({ activity, index }: { activity: Activity; index?: 
       <header className="flex items-start gap-3 border-b border-line px-5 py-4 sm:px-6">
         <span className={`grid size-12 shrink-0 place-items-center rounded-xl text-2xl ${TYPE_TINT[activity.type]}`}>{meta.emoji}</span>
         <div className="min-w-0">
-          <p className="text-[13px] font-medium text-purple-500">{meta.label}</p>
+          <Link href={`/core-activities/${activity.type}`} className="text-[13px] font-medium text-purple-500 hover:underline">🎈 {meta.label}</Link>
           <h3 className="text-lg sm:text-xl">“{activity.title}”</h3>
         </div>
       </header>

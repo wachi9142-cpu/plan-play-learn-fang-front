@@ -49,6 +49,20 @@ export const NAV_ITEMS: NavItem[] = [
     description: "รวมแผนอนุบาล 1 ค้นหาตามเรื่อง หน่วย หรือคำสำคัญ",
     tint: "bg-purple-100",
   },
+  {
+    href: "/games",
+    emoji: "🎮",
+    label: "เกมการศึกษา",
+    description: "คลังเกมออนไลน์ เล่นได้เลยบนเว็บ เพิ่มเกมใหม่ได้เรื่อย ๆ",
+    tint: "bg-mint-soft",
+  },
+  {
+    href: "/core-activities",
+    emoji: "🎈",
+    label: "6 กิจกรรมหลัก",
+    description: "เคลื่อนไหว · เสริมประสบการณ์ · สร้างสรรค์ · เสรี · กลางแจ้ง · เกมการศึกษา",
+    tint: "bg-pink-soft",
+  },
   { href: "/activities", emoji: "🧸", label: "กิจกรรมการเรียนรู้", description: "ไอเดียกิจกรรมพร้อมจุดประสงค์และขั้นตอน", tint: "bg-pink-soft" },
   { href: "/media", emoji: "🎨", label: "สื่อการสอน", description: "บัตรภาพ เพลง นิทาน และสื่อทำมือ", tint: "bg-yellow-soft" },
   { href: "/worksheets", emoji: "📝", label: "ใบงาน", description: "ใบงานฝึกทักษะแยกตามหน่วยการเรียนรู้", tint: "bg-mint-soft" },
@@ -56,17 +70,18 @@ export const NAV_ITEMS: NavItem[] = [
   { href: "/notes", emoji: "🌷", label: "บันทึก / แนวทางสำหรับครู", description: "เคล็ดลับและแนวทางจากประสบการณ์ในห้องเรียน", tint: "bg-purple-50" },
 ];
 
-/** เมนูบน header (desktop): 3 เมนูหลัก + "คลังความรู้" ที่รวมส่วนที่เหลือ */
+/** จำนวนเมนูหลัก (แสดงเป็น Card ใหญ่บนหน้าแรก) */
+export const MAIN_MENU_COUNT = 5;
+
+/** เมนูบน header (desktop): 5 เมนูหลัก + "คลังความรู้" ที่รวมส่วนที่เหลือ */
 export const PRIMARY_NAV: NavItem[] = [
-  NAV_ITEMS[0],
-  NAV_ITEMS[1],
-  NAV_ITEMS[2],
+  ...NAV_ITEMS.slice(0, MAIN_MENU_COUNT),
   {
     href: "/activities",
     emoji: "🧺",
     label: "คลังความรู้",
     description: "กิจกรรม สื่อ ใบงาน และบันทึกครู",
     tint: "bg-pink-soft",
-    children: NAV_ITEMS.slice(3).map(({ href, emoji, label }) => ({ href, emoji, label })),
+    children: NAV_ITEMS.slice(MAIN_MENU_COUNT).map(({ href, emoji, label }) => ({ href, emoji, label })),
   },
 ];

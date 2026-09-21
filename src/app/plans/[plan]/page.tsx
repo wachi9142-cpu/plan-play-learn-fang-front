@@ -5,6 +5,7 @@ import { PLANS, ACTIVITY_META, countPlanActivities, getGrade, getPlan, getUnit }
 import { LEARNING_ACTIVITIES, TEACHING_MEDIA, WORKSHEETS } from "@/data/content";
 import { getProjectsForPlan } from "@/data/projects";
 import { getSchedulesForPlan } from "@/data/schedules";
+import { getGamesForPlan } from "@/data/games";
 import { Breadcrumb, PageHeader, Tag } from "@/components/ui";
 
 type Params = { plan: string };
@@ -34,6 +35,7 @@ export default async function PlanDetailPage({ params }: { params: Promise<Param
   const activities = LEARNING_ACTIVITIES.filter((a) => plan.related?.activityIds?.includes(a.id));
   const projects = getProjectsForPlan(plan.id);
   const schedules = getSchedulesForPlan(plan.id);
+  const games = getGamesForPlan(plan.id);
 
   return (
     <div className="container-page py-8 sm:py-12">
@@ -113,10 +115,15 @@ export default async function PlanDetailPage({ params }: { params: Promise<Param
       </section>
 
       {/* สิ่งที่เกี่ยวข้อง */}
-      {(projects.length + media.length + worksheets.length + activities.length) > 0 && (
+      {(projects.length + media.length + worksheets.length + activities.length + games.length) > 0 && (
         <section className="animate-rise delay-6 mt-10">
           <h2 className="mb-4 text-xl sm:text-2xl">🔗 สิ่งที่เกี่ยวข้องกับเรื่องนี้</h2>
           <div className="grid gap-4 md:grid-cols-2">
+            {games.length > 0 && (
+              <RelatedBox emoji="🎮" title="เกมออนไลน์ที่เกี่ยวข้อง" href="/games">
+                {games.map((g) => <RelatedLink key={g.id} href={`/games/${g.id}`} emoji={g.emoji} label={g.title} sub={`▶️ เล่นได้เลย · ${g.skills.join(", ")}`} />)}
+              </RelatedBox>
+            )}
             {projects.length > 0 && (
               <RelatedBox emoji="📚" title="โครงการที่เกี่ยวข้อง" href="/projects">
                 {projects.map((p) => <RelatedLink key={p.id} href={`/projects/${p.id}`} emoji={p.emoji} label={p.title} sub={p.duration} />)}

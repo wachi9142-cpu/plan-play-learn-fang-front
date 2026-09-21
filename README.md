@@ -32,8 +32,19 @@ npm run build
    ├─ weeks[] → days[] (จ.–ศ.) → activities[]
    └─ related: { mediaIds, worksheetIds, projectIds, activityIds }
 📚 Project (โครงการ)                src/data/projects.ts   relatedPlanIds → LessonPlan
+🎮 Game (เกมออนไลน์)                 src/data/games.ts      planIds → LessonPlan, activityType → 6 กิจกรรมหลัก
+🎈 CoreActivity (6 กิจกรรมหลัก)      src/data/core-activities.ts  รวม Activity ตาม type จากทุกแผน
 🎨 Media / 📝 Worksheet / 🧸 Activity  src/data/content.ts
 ```
+
+## 🎮 เกมออนไลน์ (engine แบบ config-driven)
+
+`src/components/games/engines/` มี engine 6 แบบ: `memory` (จับคู่), `odd-one-out` (สังเกต), `sort` (เรียงลำดับ),
+`color-match` (จับคู่สี), `tile-puzzle` (ภาพตัดต่อ), `pair-columns` (จับคู่ภาพ/ตัวอักษร)
+
+- **เพิ่มเกมใหม่จาก engine เดิม** → เพิ่ม object ใน `GAMES` เลือก `engine` + ใส่ `config` (ไม่ต้องเขียนโค้ด)
+- **เพิ่ม engine ใหม่** → สร้าง component ใน `engines/`, เพิ่ม union ใน `GameConfig` (`src/types/game.ts`) และ case ใน `GamePlayer.tsx`
+- `GameShell` ให้กรอบเกมร่วมกัน: คำสั่ง · ดาวความคืบหน้า · ปุ่มเริ่มใหม่ · หน้าจบเกม
 
 ## Routes
 
@@ -43,6 +54,8 @@ npm run build
 | โครงการ / รายละเอียด | `/projects`, `/projects/[id]` |
 | กำหนดการสอน / ตาราง 20 สัปดาห์ | `/schedules`, `/schedules/[id]` |
 | แผนการจัดประสบการณ์ (ค้นหา) / รายละเอียดแผน / สัปดาห์ | `/plans`, `/plans/[plan]`, `/plans/[plan]/[week]` |
+| เกมการศึกษา (คลังเกม) / เล่นเกม | `/games`, `/games/[id]` |
+| 6 กิจกรรมหลัก / รายหมวด | `/core-activities`, `/core-activities/[type]` |
 | คลัง: กิจกรรม สื่อ ใบงาน แผนรายสัปดาห์ บันทึกครู | `/activities`, `/media`, `/worksheets`, `/weekly`, `/notes` |
 
 ## เพิ่มข้อมูลใหม่
