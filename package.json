@@ -1,0 +1,25 @@
+{
+  "name": "plan-play-learn-fang-front",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3002",
+    "build": "next build",
+    "start": "next start -p 3002",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "16.2.9",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "lucide-react": "1.17.0"
+  },
+  "devDependencies": {
+    "typescript": "6.0.3",
+    "tailwindcss": "4.3.0",
+    "@tailwindcss/postcss": "4.3.0",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@types/node": "26.6.2"
+  }
+}

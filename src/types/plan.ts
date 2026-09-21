@@ -1,0 +1,142 @@
+/**
+ * โครงสร้างข้อมูลแบบสัมพันธ์กัน (relational)
+ *
+ *   กำหนดการสอน (Schedule)
+ *        │  แต่ละแถวอ้างถึง planId
+ *        ↓
+ *   แผนการจัดประสบการณ์ / เรื่อง (LessonPlan)  ── belongs to ── หน่วย (Unit)
+ *        │  จุดประสงค์ · สาระการเรียนรู้ · สื่อ · การประเมิน
+ *        ↓
+ *   สัปดาห์ (Week) → วัน (DayPlan) → กิจกรรม (Activity)
+ *        │
+ *        └── related: media / worksheets / projects (อ้างด้วย id)
+ *
+ * ทุกอย่างอ้างกันด้วย id จึงเพิ่ม อนุบาล 2 / โครงการใหม่ / แผนใหม่ ได้โดยไม่ต้องแก้หน้าเว็บ
+ */
+
+export type ActivityType =
+  | "circle"      // กิจกรรมเคลื่อนไหวและจังหวะ
+  | "creative"    // กิจกรรมสร้างสรรค์
+  | "free"        // กิจกรรมเสรี / เล่นตามมุม
+  | "outdoor"     // กิจกรรมกลางแจ้ง
+  | "story"       // กิจกรรมเสริมประสบการณ์
+  | "game";       // เกมการศึกษา
+
+export interface Activity {
+  id: string;
+  type: ActivityType;
+  title: string;
+  objectives: string[];
+  materials: string[];
+  steps: string[];
+  assessment?: string[];
+  note?: string;
+}
+
+export type DayKey = "mon" | "tue" | "wed" | "thu" | "fri";
+
+export interface DayPlan {
+  day: DayKey;
+  theme?: string;
+  activities: Activity[];
+}
+
+export interface Week {
+  id: string;           // e.g. "w1"
+  number: number;
+  title: string;
+  summary: string;
+  days: DayPlan[];
+}
+
+/** หน่วยการเรียนรู้ (ชื่อสั้น เช่น "อาหาร", "ตัวเรา") */
+export interface Unit {
+  id: string;
+  emoji: string;
+  name: string;
+}
+
+/** ระดับชั้น */
+export interface Grade {
+  id: string;           // "k1"
+  name: string;         // "อนุบาล 1"
+  short: string;        // "อ.1"
+}
+
+/** แผนการจัดประสบการณ์ 1 เรื่อง — หัวใจของระบบ */
+export interface LessonPlan {
+  id: string;           // slug e.g. "food"
+  number: number;       // เรื่องที่ N
+  title: string;        // "อาหารดีมีประโยชน์"
+  emoji: string;
+  gradeId: string;      // → Grade
+  unitId: string;       // → Unit
+  description: string;
+  keywords: string[];   // สำหรับค้นหา
+  duration: string;     // "4 สัปดาห์"
+  objectives: string[];         // จุดประสงค์
+  content: string[];            // สาระการเรียนรู้
+  materials: string[];          // สื่อ/อุปกรณ์
+  assessment: string[];         // การประเมิน
+  weeks: Week[];
+  related?: {
+    mediaIds?: string[];
+    worksheetIds?: string[];
+    projectIds?: string[];
+    activityIds?: string[];     // → LearningActivity (คลังกิจกรรม)
+  };
+}
+
+/** โครงสร้างปีการศึกษา ใช้สำหรับ "เลือกดูตามภาคเรียน → เดือน" */
+export interface Month {
+  id: string;
+  name: string;
+  planIds: string[];    // → LessonPlan
+}
+
+export interface Semester {
+  id: string;
+  gradeId: string;
+  name: string;         // "ภาคเรียนที่ 1"
+  year: string;         // "ปีการศึกษา 2569"
+  months: Month[];
+}
+
+/** กำหนดการสอน 1 ชุด — ตารางที่แต่ละแถวชี้ไปยังแผน */
+export interface ScheduleRow {
+  order: number;
+  planId: string;       // → LessonPlan (เรื่อง + หน่วย ดึงจากแผน)
+  duration: string;     // "2 สัปดาห์" / "1–14 มิ.ย."
+  note?: string;
+}
+
+export interface Schedule {
+  id: string;           // "set-1"
+  title: string;        // "กำหนดการสอนชุดที่ 1"
+  gradeId: string;
+  term: string;         // "ภาคเรียนที่ 1 ปีการศึกษา 2569"
+  description?: string;
+  rows: ScheduleRow[];
+}
+
+/** โครงการ (Project Approach) */
+export interface ProjectPhase {
+  title: string;
+  description: string;
+  activities: string[];
+}
+
+export interface Project {
+  id: string;
+  emoji: string;
+  title: string;
+  subtitle?: string;
+  gradeId: string;
+  description: string;
+  duration: string;
+  goals: string[];
+  phases: ProjectPhase[];
+  materials: string[];
+  outcomes: string[];
+  relatedPlanIds?: string[];   // → LessonPlan
+}
