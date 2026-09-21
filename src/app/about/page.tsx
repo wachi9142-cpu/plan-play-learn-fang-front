@@ -35,7 +35,7 @@ export default function AboutPage() {
 
       {/* แบรนด์ */}
       <section className="animate-rise card grid gap-6 p-6 sm:grid-cols-[auto_1fr] sm:items-center sm:p-8">
-        <Image src="/logo.webp" alt="Little Purple Garden" width={200} height={200} className="mx-auto size-40 rounded-full bg-white object-cover shadow-soft sm:size-48" />
+        <Image src="/logo-lpg.webp" alt="Little Purple Garden" width={200} height={200} className="mx-auto size-40 rounded-full bg-white object-cover shadow-soft sm:size-48" />
         <div>
           <p className="font-display text-2xl text-purple-800">💜 {SITE.brand}</p>
           <p className="text-[15px] text-ink-soft">{SITE.credit} · 🌱 {SITE.motto}</p>

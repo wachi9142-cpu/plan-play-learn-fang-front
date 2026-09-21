@@ -42,7 +42,7 @@ export default function HomePage() {
 
         <div className="container-page relative py-10 text-center sm:py-14 lg:py-16">
           <div className="animate-rise mx-auto max-w-3xl">
-            <Image src="/logo.webp" alt="Little Purple Garden by Teacher Kaowfang" width={288} height={288} priority className="animate-float mx-auto size-52 rounded-full bg-white object-cover shadow-lift sm:size-64 lg:size-72" />
+            <Image src="/logo-lpg.webp" alt="Little Purple Garden by Teacher Kaowfang" width={288} height={288} priority className="animate-float mx-auto size-52 rounded-full bg-white object-cover shadow-lift sm:size-64 lg:size-72" />
             <h1 className="mt-5 font-display text-[2.2rem] leading-tight text-purple-800 sm:text-5xl lg:text-6xl">Little Purple Garden</h1>
             <p className="mt-1 font-display text-lg text-purple-500 sm:text-2xl">{SITE.brandSub}</p>
             <p className="mt-1 text-base text-ink-soft sm:text-lg">{SITE.credit}</p>
@@ -256,7 +256,7 @@ export default function HomePage() {
       {/* ---------- 👩‍🏫 Teacher Kaowfang ---------- */}
       <section className="container-page pb-12 sm:pb-16">
         <div className="card grid gap-5 bg-gradient-to-r from-purple-50 to-pink-soft p-6 sm:grid-cols-[auto_1fr_auto] sm:items-center sm:p-8">
-          <Image src="/logo.webp" alt="Teacher Kaowfang" width={128} height={128} className="mx-auto size-28 rounded-full border-4 border-white object-cover shadow-lift sm:size-32" />
+          <Image src="/logo-lpg.webp" alt="Teacher Kaowfang" width={128} height={128} className="mx-auto size-28 rounded-full border-4 border-white object-cover shadow-lift sm:size-32" />
           <div className="text-center sm:text-left">
             <p className="text-[13px] font-medium text-purple-500">👩‍🏫 ผู้จัดทำ</p>
             <h2 className="text-2xl sm:text-3xl">Teacher Kaowfang</h2>

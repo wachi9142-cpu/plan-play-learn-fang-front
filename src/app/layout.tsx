@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     template: `%s · ${SITE.brand}`,
   },
   description: SITE.description,
-  icons: { icon: "/logo.webp", apple: "/logo.webp" },
+  icons: { icon: "/logo-lpg.webp", apple: "/logo-lpg.webp" },
 };
 
 export const viewport: Viewport = {

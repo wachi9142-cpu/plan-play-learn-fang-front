@@ -12,7 +12,7 @@ export default function LoginPage() {
     <div className="container-page flex min-h-[70vh] items-center justify-center py-10">
       <div className="card animate-rise w-full max-w-md p-6 sm:p-8">
         <div className="text-center">
-          <Image src="/logo.webp" alt="Little Purple Garden" width={112} height={112} className="mx-auto size-28 rounded-full bg-white object-cover shadow-soft" />
+          <Image src="/logo-lpg.webp" alt="Little Purple Garden" width={112} height={112} className="mx-auto size-28 rounded-full bg-white object-cover shadow-soft" />
           <h1 className="mt-4 text-2xl sm:text-3xl">🔐 เข้าสู่ระบบ</h1>
           <p className="mt-1 text-[15px] text-ink-soft">💜 {SITE.brand} · {SITE.credit}</p>
         </div>

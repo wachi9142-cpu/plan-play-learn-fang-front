@@ -16,7 +16,7 @@ export default function ContactPage() {
         {/* ข้อมูลโรงเรียน + ที่อยู่ */}
         <section className="card animate-rise delay-1 p-5 sm:p-6">
           <div className="flex items-center gap-4">
-            <Image src="/logo.webp" alt="Little Purple Garden" width={80} height={80} className="size-20 rounded-full bg-white object-cover shadow-soft" />
+            <Image src="/logo-lpg.webp" alt="Little Purple Garden" width={80} height={80} className="size-20 rounded-full bg-white object-cover shadow-soft" />
             <div>
               <h2 className="text-xl sm:text-2xl">🏫 {CONTACT.school}</h2>
               <p className="text-[15px] text-ink-soft">{CONTACT.credit}</p>

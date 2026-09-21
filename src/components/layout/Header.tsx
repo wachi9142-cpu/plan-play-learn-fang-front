@@ -31,7 +31,7 @@ export function Header() {
     <header className="sticky top-0 z-40 border-b border-line bg-cream/90 backdrop-blur">
       <div className="container-page flex h-16 items-center justify-between gap-3">
         <Link href="/" className="flex min-w-0 items-center gap-2.5 tap" aria-label="กลับหน้าแรก">
-          <Image src="/logo.webp" alt="โลโก้ครูข้าวฟ่าง" width={44} height={44} priority className="size-11 shrink-0 rounded-full border-2 border-purple-200 object-cover shadow-soft" />
+          <Image src="/logo-lpg.webp" alt="โลโก้ครูข้าวฟ่าง" width={44} height={44} priority className="size-11 shrink-0 rounded-full border-2 border-purple-200 object-cover shadow-soft" />
           <span className="min-w-0 leading-tight lg:hidden 2xl:block">
             <span className="block truncate font-display text-[17px] font-medium text-purple-800 sm:text-lg">💜 {SITE.brand}</span>
             <span className="block truncate text-xs text-ink-soft">{SITE.brandSub} · {SITE.credit}</span>
