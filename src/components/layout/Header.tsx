@@ -26,6 +26,7 @@ export function Header() {
     (item.children?.some((c) => pathname === c.href || pathname.startsWith(c.href + "/")) ?? false);
 
   return (
+    <>
     <header className="sticky top-0 z-40 border-b border-line bg-cream/90 backdrop-blur">
       <div className="container-page flex h-16 items-center justify-between gap-3">
         <Link href="/" className="flex min-w-0 items-center gap-2.5 tap" aria-label="กลับหน้าแรก">
@@ -70,14 +71,16 @@ export function Header() {
           {open ? <X size={22} /> : <Menu size={22} />}
         </button>
       </div>
+    </header>
 
-      {/* Mobile / tablet */}
+      {/* Mobile / tablet — อยู่นอก header เพราะ backdrop-blur ทำให้ fixed อ้างอิงกับ header */}
       <div
         id="mobile-menu"
         className={cn(
-          "lg:hidden overflow-hidden border-t border-line bg-cream transition-[max-height] duration-300 ease-out",
-          open ? "max-h-[calc(100dvh-4rem)] overflow-y-auto" : "max-h-0 border-t-0",
+          "fixed inset-x-0 top-16 bottom-0 z-40 overflow-y-auto border-t border-line bg-cream transition-opacity duration-200 lg:hidden",
+          open ? "opacity-100" : "pointer-events-none opacity-0",
         )}
+        aria-hidden={!open}
       >
         <nav className="container-page grid gap-2 py-3 pb-6" aria-label="เมนูมือถือ">
           <MobileLink href="/" emoji="🏠" label="หน้าหลัก" active={pathname === "/"} tint="bg-purple-100" />
@@ -86,7 +89,7 @@ export function Header() {
           ))}
         </nav>
       </div>
-    </header>
+    </>
   );
 }
 
