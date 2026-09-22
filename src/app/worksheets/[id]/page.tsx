@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { WORKSHEETS, WORKSHEET_CATEGORIES, getWorksheet } from "@/data/worksheets";
+import { getGame } from "@/data/games";
 import { getGrade, getPlan, getUnit } from "@/data/plans";
 import { Breadcrumb, PageHeader, Tag } from "@/components/ui";
 import { SheetScaler, WorksheetActions, WorksheetSheet } from "@/components/worksheets";
@@ -26,6 +27,7 @@ export default async function WorksheetDetailPage({ params }: { params: Promise<
   const cat = WORKSHEET_CATEGORIES[w.category];
   const grade = getGrade(w.gradeId);
   const plans = w.planIds.map(getPlan).filter((p) => p !== undefined);
+  const games = (w.gameIds ?? []).map(getGame).filter((g) => g !== undefined);
   const related = WORKSHEETS.filter((x) => x.id !== w.id && (x.category === w.category || x.planIds.some((p) => w.planIds.includes(p)))).slice(0, 3);
   const idx = WORKSHEETS.findIndex((x) => x.id === w.id);
   const prev = WORKSHEETS[idx - 1];
@@ -62,7 +64,7 @@ export default async function WorksheetDetailPage({ params }: { params: Promise<
           <div className="card p-5">
             <h2 className="mb-3 text-lg">📋 ข้อมูลใบงาน</h2>
             <dl className="grid gap-y-3 text-[15px]">
-              <div><dt className="text-[13px] text-ink-soft">🎯 เหมาะสำหรับ</dt><dd><Tag tone="pink">{grade?.name}</Tag></dd></div>
+              <div><dt className="text-[13px] text-ink-soft">🎯 เหมาะสำหรับ</dt><dd className="flex flex-wrap gap-1.5"><Tag tone="pink">{grade?.name ?? (w.gradeId === "primary" ? "ประถมศึกษา" : w.gradeId === "secondary" ? "มัธยมศึกษา" : w.gradeId)}</Tag><Tag tone="yellow">👶 {w.ages ?? grade?.ages}</Tag></dd></div>
               <div><dt className="text-[13px] text-ink-soft">📚 หมวด</dt><dd><Link href={`/worksheets?cat=${w.category}`} className="hover:underline"><Tag tone="purple">{cat.emoji} {cat.label}</Tag></Link></dd></div>
               <div><dt className="text-[13px] text-ink-soft">✏️ ทักษะ</dt><dd className="mt-0.5 flex flex-wrap gap-1.5">{w.skills.map((s) => <Tag key={s} tone="mint">{s}</Tag>)}</dd></div>
               <div><dt className="text-[13px] text-ink-soft">🏷️ แท็ก</dt><dd className="mt-0.5 flex flex-wrap gap-1.5">{w.tags.map((t) => <Tag key={t} tone="yellow">{t}</Tag>)}</dd></div>
@@ -79,6 +81,13 @@ export default async function WorksheetDetailPage({ params }: { params: Promise<
             </ol>
           </div>
 
+          {games.length > 0 && (
+            <div className="card p-5">
+              <h2 className="mb-2 text-lg">🎮 เกมที่คู่กับใบงานนี้</h2>
+              <p className="mb-2 text-[13px] text-ink-soft">เล่นเกมก่อน แล้วมาทำใบงานในเรื่องเดียวกัน</p>
+              <div className="grid gap-1.5">{games.map((g) => <Link key={g.id} href={`/games/${g.id}`} className="tap flex items-center gap-3 rounded-xl bg-cream px-3 py-2 text-[15px] hover:bg-purple-50"><span className="text-xl">{g.emoji}</span><span className="min-w-0 flex-1 truncate text-purple-800">{g.title}</span><span className="text-[12px] text-ink-soft">🟢🟡🔴</span></Link>)}</div>
+            </div>
+          )}
           {plans.length > 0 && (
             <div className="card p-5">
               <h2 className="mb-2 text-lg">📖 แผนที่เกี่ยวข้อง</h2>

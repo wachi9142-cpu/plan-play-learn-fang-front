@@ -38,6 +38,8 @@ export interface CanvasDoc {
 }
 
 /** ผลงานในแฟ้มผลงานเด็ก (บันทึกจาก Canvas) */
+export type PortfolioCategory = "art" | "coding" | "worksheet" | "craft" | "writing" | "photo" | "other";
+
 export interface PortfolioItem {
   id: string;
   canvasId: string;
@@ -45,9 +47,13 @@ export interface PortfolioItem {
   childName: string;
   image: string; // data URL
   date: string;
-  published: boolean;
+  published: boolean;      // แสดงใน Gallery สาธารณะ (ไม่เผยแพร่ = Private เห็นเฉพาะครู/ผู้ปกครองของเด็ก)
   planId?: string;
   authors?: string[];
+  category?: PortfolioCategory;
+  teacherComment?: string;
+  roomId?: string;
+  note?: string;
 }
 
 /** ข้อความที่ส่งระหว่างผู้ร่วมวาด */

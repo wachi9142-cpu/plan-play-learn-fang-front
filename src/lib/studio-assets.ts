@@ -47,6 +47,12 @@ export async function listAssets(docId: string): Promise<StudioAsset[]> {
   return all.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
+/** ไฟล์ทั้งหมดทุกที่มา (Garden Library) */
+export async function listAllAssets(): Promise<StudioAsset[]> {
+  const all = await tx<StudioAsset[]>("readonly", (s) => s.getAll());
+  return all.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
+
 export const getAsset = (id: string) => tx<StudioAsset | undefined>("readonly", (s) => s.get(id));
 
 export async function removeAsset(id: string, docId: string) {

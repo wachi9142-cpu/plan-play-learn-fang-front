@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { GAMES, GAME_CATEGORIES, getGame } from "@/data/games";
+import { getWorksheetsForGame } from "@/data/worksheets";
 import { getGrade, getPlan, getUnit } from "@/data/plans";
 import { getCoreActivity } from "@/data/core-activities";
 import { Breadcrumb, Tag } from "@/components/ui";
@@ -30,6 +31,7 @@ export default async function GamePage({ params }: { params: Promise<Params> }) 
   const cat = GAME_CATEGORIES[game.category];
   const core = getCoreActivity(game.activityType);
   const plans = game.planIds.map(getPlan).filter((p) => p !== undefined);
+  const sheets = getWorksheetsForGame(game.id);
   const idx = GAMES.findIndex((g) => g.id === game.id);
   const prev = GAMES[idx - 1];
   const next = GAMES[idx + 1];
@@ -71,6 +73,13 @@ export default async function GamePage({ params }: { params: Promise<Params> }) 
             )}
           </dl>
         </div>
+        {sheets.length > 0 && (
+          <div className="card p-5 md:col-span-2">
+            <h2 className="mb-2 text-lg">📝 ใบงานที่คู่กับเกมนี้</h2>
+            <p className="mb-2 text-[13px] text-ink-soft">📖 แผน → 💻 Coding → 🎮 เกม → 📝 ใบงาน → 🎨 ผลงาน — เล่นแล้วพิมพ์ใบงานทำต่อได้เลย</p>
+            <div className="grid gap-1.5 sm:grid-cols-2">{sheets.map((s) => <Link key={s.id} href={`/worksheets/${s.id}`} className="tap flex items-center gap-3 rounded-xl bg-cream px-3 py-2 text-[15px] hover:bg-purple-50"><span className="text-xl">{s.emoji}</span><span className="min-w-0 flex-1 truncate text-purple-800">{s.title}</span><span className="text-[12px] text-ink-soft">👶 {s.ages}</span></Link>)}</div>
+          </div>
+        )}
         <div className="card p-5">
           <h2 className="mb-3 text-lg">📖 หน่วย / แผนที่เกี่ยวข้อง</h2>
           {plans.length === 0 ? <p className="text-[15px] text-ink-soft">ยังไม่ได้เชื่อมกับแผน</p> : (

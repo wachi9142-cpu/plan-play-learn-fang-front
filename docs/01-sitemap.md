@@ -31,6 +31,7 @@
 
 | ระบบ | เส้นทาง | สถานะ |
 |---|---|---|
+| 📚 หลักสูตร (เพิ่ม/อ่าน PDF/จัดโครงสร้าง) | `/curriculum`, `/curriculum/[id]` | ✅ |
 | 💻 ห้องเรียนออนไลน์ — hub ห้องแยกระดับ + ห้องพิเศษ | `/online-classroom` | ✅ |
 | 🧑‍🏫 Teacher Dashboard | `/online-classroom/teacher` | ✅ |
 | ห้องเรียน 1 ห้อง: เรียนสด · แชต · ย้อนหลัง · ดาว · สมาชิก · ตั้งค่า | `/online-classroom/[id]?tab=` | ✅ |

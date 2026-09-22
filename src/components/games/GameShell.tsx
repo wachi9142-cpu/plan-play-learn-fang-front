@@ -5,6 +5,8 @@ import { RotateCcw } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { PRAISE, starsFor } from "@/lib/game-levels";
 
+const mmss = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+
 export interface GameOutcome { mistakes: number; total: number; seconds: number; timeUp: boolean; stars: number }
 
 /**
@@ -24,11 +26,19 @@ export function GameShell({ instruction, progress, done, onRestart, children, st
   onDone?: (o: GameOutcome) => void;
 }) {
   const [left, setLeft] = useState<number | null>(timeLimit ?? null);
+  const [elapsed, setElapsed] = useState(0);
   const [timeUp, setTimeUp] = useState(false);
   const start = useRef(Date.now());
   const reported = useRef(false);
 
-  const restart = () => { start.current = Date.now(); setLeft(timeLimit ?? null); setTimeUp(false); reported.current = false; onRestart(); };
+  const restart = () => { start.current = Date.now(); setLeft(timeLimit ?? null); setElapsed(0); setTimeUp(false); reported.current = false; onRestart(); };
+
+  /* นาฬิกาจับเวลา (นับขึ้น) — ใช้ทุกเกม ไม่กดดันเด็ก แค่ให้เห็นว่าใช้เวลาเท่าไร */
+  useEffect(() => {
+    if (done || timeUp) return;
+    const t = setInterval(() => setElapsed(Math.floor((Date.now() - start.current) / 1000)), 500);
+    return () => clearInterval(t);
+  }, [done, timeUp]);
 
   useEffect(() => {
     if (timeLimit === undefined || done || timeUp) return;
@@ -44,6 +54,7 @@ export function GameShell({ instruction, progress, done, onRestart, children, st
     onDone?.({ mistakes, total, seconds: Math.round((Date.now() - start.current) / 1000), timeUp: timeUp && !done, stars });
   }, [finished]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const finalSec = Math.round((Date.now() - start.current) / 1000) > elapsed + 2 ? elapsed : elapsed;
   const praise = PRAISE[stars];
   return (
     <div className="card overflow-hidden">
@@ -54,7 +65,8 @@ export function GameShell({ instruction, progress, done, onRestart, children, st
             {Array.from({ length: Math.min(progress.total, 12) }, (_, i) => <span key={i} className={cn("text-lg transition", i < progress.current ? "" : "opacity-25 grayscale")}>⭐</span>)}
           </div>
         )}
-        {left !== null && !finished && <span className={cn("rounded-full px-2.5 py-1 font-mono text-[14px]", left <= 10 ? "animate-pulse bg-red-50 text-red-600" : "bg-white text-purple-700")}>⏱ {Math.floor(left / 60)}:{String(left % 60).padStart(2, "0")}</span>}
+        {timeLimit === undefined && !finished && <span className="rounded-full bg-white px-2.5 py-1 font-mono text-[14px] text-purple-700" title="เวลาที่ใช้">⏱ {mmss(elapsed)}</span>}
+        {left !== null && !finished && <span className={cn("rounded-full px-2.5 py-1 font-mono text-[14px]", left <= 10 ? "animate-pulse bg-red-50 text-red-600" : "bg-white text-purple-700")}>⏱ {mmss(left)}</span>}
         <button type="button" onClick={restart} className="tap inline-flex items-center gap-1.5 rounded-full border border-purple-200 bg-white px-3.5 py-1.5 text-[14px] font-medium text-purple-700 hover:bg-purple-100"><RotateCcw size={15} /> เริ่มใหม่</button>
       </div>
 
@@ -66,7 +78,7 @@ export function GameShell({ instruction, progress, done, onRestart, children, st
             <p className="font-display text-2xl text-purple-800 sm:text-3xl">{timeUp && !done ? "หมดเวลาแล้ว ลองอีกครั้งนะ" : praise.title}</p>
             <div className="mt-1 flex gap-0.5 text-3xl" aria-label={`${stars} จาก 5 ดาว`}>{Array.from({ length: 5 }, (_, i) => <span key={i} className={i < stars ? "" : "opacity-25 grayscale"}>⭐</span>)}</div>
             <p className="font-display text-lg text-purple-700">{stars} / 5 คะแนน</p>
-            <p className="text-base text-ink-soft">“{timeUp && !done ? "ไม่เป็นไรนะ ค่อย ๆ คิดอีกทีนะ" : praise.text}”{stats && ` · ${stats}`}</p>
+            <p className="text-base text-ink-soft">“{timeUp && !done ? "ไม่เป็นไรนะ ค่อย ๆ คิดอีกทีนะ" : praise.text}”{stats && ` · ${stats}`} · ⏱ ใช้เวลา {mmss(finalSec)}</p>
             <button type="button" onClick={restart} className="tap mt-2 inline-flex items-center gap-2 rounded-full bg-purple-600 px-6 py-3 text-base font-medium text-white shadow-soft hover:bg-purple-700"><RotateCcw size={18} /> เล่นอีกครั้ง</button>
           </div>
         )}

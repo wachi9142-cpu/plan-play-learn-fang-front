@@ -51,7 +51,7 @@ export function applyDifficulty(config: GameConfig, level: Difficulty): { config
     case "sliding": {
       const n = (config.size ?? 3) ** 2;
       const sc = level === "easy" ? 4 : level === "medium" ? 14 : 40;
-      return { config, info: { questions: n - 1, scramble: sc, note: level === "easy" ? "สลับตำแหน่งเพียงเล็กน้อย" : level === "medium" ? "ต้องคิดลำดับการเลื่อนมากขึ้น" : "กระจัดกระจาย ต้องวางแผนหลายขั้น (ไม่จับเวลา)" } };
+      return { config, info: { questions: n - 1, scramble: sc, timeLimit: level === "hard" ? 300 : undefined, note: level === "easy" ? "สลับตำแหน่งเพียงเล็กน้อย · จับเวลา (ไม่จำกัด)" : level === "medium" ? "ต้องคิดลำดับการเลื่อนมากขึ้น · จับเวลา (ไม่จำกัด)" : "กระจัดกระจาย ต้องวางแผนหลายขั้น · จำกัด 5 นาที" } };
     }
     case "grid-path": {
       const L = config.levels[level];

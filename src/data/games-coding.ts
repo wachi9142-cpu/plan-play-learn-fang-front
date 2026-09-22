@@ -7,7 +7,7 @@ import { SKILLS as S } from "./game-skills";
  * ทุกเกมได้ 🟢🟡🔴 · ออนไลน์/ออฟไลน์ · บันทึกผล · แยกโปรไฟล์ อัตโนมัติจากระบบเดิม
  */
 const base = { category: "coding" as const, activityType: "game" as const, planIds: [] as string[] };
-const kinder = { ...base, gradeId: "k1", ages: "4–6 ปี" };
+const kinder = { ...base, gradeId: "k1", ages: "4–6 ปี", planIds: ["coding-rabbit"] };
 const primary = { ...base, gradeId: "primary", ages: "7–12 ปี" };
 const secondary = { ...base, gradeId: "secondary", ages: "13–18 ปี" };
 

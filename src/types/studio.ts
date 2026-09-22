@@ -43,6 +43,8 @@ export type Block =
   | { id: string; type: "fields"; fields: { label: string; value: string }[] };
 
 export interface DocLinks {
+  /** 📚 หลักสูตรที่ใช้กับเอกสาร/แผนนี้ (ไม่เปลี่ยนตามฉบับใหม่) */
+  curriculumId?: string;
   planId?: string;
   scheduleId?: string;
   gradeId?: string;

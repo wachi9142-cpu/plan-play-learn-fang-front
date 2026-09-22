@@ -6,12 +6,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeft, Copy, Save, Trash2, WifiOff, X } from "lucide-react";
 import { DownloadMenu } from "./DownloadMenu";
 import type { Block, DocStatus, SaveStatus, StudioAsset, StudioDoc, TextStyle } from "@/types";
-import { DOC_STATUS, DOC_TYPES, deleteDoc, duplicateDoc, saveDocLocal, syncDoc, syncPending } from "@/lib/studio-store";
+import { DOC_STATUS, DOC_TYPES, deleteDoc, duplicateDoc, saveDocLocal, syncDoc, syncPending, uid } from "@/lib/studio-store";
 import { getAsset } from "@/lib/studio-assets";
 import { BlockView, InsertMenu, blockFromAsset, newBlock } from "./BlockEditor";
 import { DRAG_MIME } from "./AssetPanel";
 import { FormatToolbar, Tb } from "./FormatToolbar";
 import { ElementsPanel, LinksPanel, ProjectsPanel, RAIL, TemplatesPanel, UploadsPanel, type RailTab } from "./SidePanels";
+import { CurriculumPanel, CurriculumSplit, type PickedLine } from "@/components/curriculum/CurriculumPanel";
+import { getCurriculum } from "@/lib/curriculum-store";
 import { SlidesEditor } from "./SlidesEditor";
 import { SheetEditor } from "./SheetEditor";
 import { cn } from "@/lib/cn";
@@ -32,6 +34,7 @@ export function DocEditor({ initial }: { initial: StudioDoc }) {
   const [status, setStatus] = useState<SaveStatus>(initial.dirty ? "unsaved" : "saved");
   const [online, setOnline] = useState(true);
   const [tab, setTab] = useState<RailTab | null>(initial.type === "sheet" ? null : "uploads");
+  const [split, setSplit] = useState(false);
   const [slideIdx, setSlideIdx] = useState(0);
   const isSlides = doc.type === "slides";
   const isSheet = doc.type === "sheet";
@@ -109,6 +112,18 @@ export function DocEditor({ initial }: { initial: StudioDoc }) {
     if (isSlides) setSlideBlocks(fn); else setBlocks(fn);
   };
 
+  /** ใส่ข้อความจากหลักสูตรลงในเอกสาร (จัดกลุ่มตามชนิด) */
+  const insertCurriculum = (lines: PickedLine[]) => {
+    const group = (k: PickedLine["kind"]) => lines.filter((l) => l.kind === k).map((l) => l.text.replace(/\n/g, " · "));
+    const out: Block[] = [];
+    const add = (title: string, items: string[]) => { if (!items.length) return; out.push({ id: uid(), type: "heading", level: 3, html: title }); out.push({ id: uid(), type: "bullets", items }); };
+    add("📏 มาตรฐาน / ตัวบ่งชี้ / สภาพที่พึงประสงค์", group("state"));
+    add("🌟 ประสบการณ์สำคัญ", group("experience"));
+    add("📗 สาระที่ควรเรียนรู้", group("content"));
+    if (out.length) appendBlocks(out);
+  };
+
+  const curriculumTitle = doc.links.curriculumId ? (getCurriculum(doc.links.curriculumId)?.title ?? "หลักสูตร") : "";
   const st = STATUS[status];
   const t = DOC_TYPES[doc.type];
   const ds = DOC_STATUS[doc.status];
@@ -120,6 +135,7 @@ export function DocEditor({ initial }: { initial: StudioDoc }) {
         <div className="flex flex-wrap items-center gap-2 px-3 py-2 sm:px-4">
           <Link href="/studio" className="tap inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[14px] text-purple-700 hover:bg-purple-50"><ArrowLeft size={16} /> Studio</Link>
           <span className="rounded-full bg-purple-100 px-2.5 py-0.5 text-[12px] text-purple-800">{t.emoji} {t.label}</span>
+          {doc.links.curriculumId && <button type="button" onClick={() => { setTab("curriculum"); setSplit(true); }} className="rounded-full bg-cream px-2.5 py-0.5 text-[12px] text-purple-700 ring-1 ring-line hover:bg-purple-50" title="เปิดหลักสูตรคู่กับแผน">📚 {curriculumTitle}</button>}
           <select value={doc.status} onChange={(e) => update({ status: e.target.value as DocStatus })} className={cn("h-7 rounded-full border-0 px-2.5 text-[12px] font-medium", ds.cls)} title="สถานะเอกสาร">
             {(Object.keys(DOC_STATUS) as DocStatus[]).map((k) => <option key={k} value={k}>{DOC_STATUS[k].emoji} {DOC_STATUS[k].label}</option>)}
           </select>
@@ -155,6 +171,7 @@ export function DocEditor({ initial }: { initial: StudioDoc }) {
             {tab === "uploads" && <UploadsPanel docId={doc.id} onInsert={(a) => insertAsset(a)} />}
             {tab === "projects" && <ProjectsPanel currentId={doc.id} />}
             {tab === "links" && <LinksPanel doc={doc} onChange={(links) => update({ links })} />}
+            {tab === "curriculum" && <CurriculumPanel curriculumId={doc.links.curriculumId} onPickCurriculum={(id) => update({ links: { ...doc.links, curriculumId: id } })} onInsert={insertCurriculum} onOpenSplit={() => setSplit((s) => !s)} splitOpen={split} />}
           </div>
         )}
 
@@ -171,6 +188,7 @@ export function DocEditor({ initial }: { initial: StudioDoc }) {
               {tab === "uploads" && <UploadsPanel docId={doc.id} onInsert={(a) => insertAsset(a)} />}
               {tab === "projects" && <ProjectsPanel currentId={doc.id} />}
               {tab === "links" && <LinksPanel doc={doc} onChange={(links) => update({ links })} />}
+              {tab === "curriculum" && <CurriculumPanel curriculumId={doc.links.curriculumId} onPickCurriculum={(id) => update({ links: { ...doc.links, curriculumId: id } })} onInsert={insertCurriculum} />}
             </div>
           )}
 
@@ -214,6 +232,9 @@ export function DocEditor({ initial }: { initial: StudioDoc }) {
             ⚡ บันทึกอัตโนมัติเมื่อหยุดพิมพ์ · Ctrl+S บันทึกทันที · เก็บในเครื่องนี้ก่อนเสมอ และจะซิงก์เข้าบัญชีเมื่อเชื่อมต่อระบบหลังบ้าน
           </p>
         </div>
+
+        {/* 📖 อ่านหลักสูตรคู่กับแผน (Split View) */}
+        {split && doc.links.curriculumId && <CurriculumSplit curriculumId={doc.links.curriculumId} onClose={() => setSplit(false)} />}
       </div>
     </div>
   );

@@ -14,7 +14,7 @@ import { AssetPanel } from "./AssetPanel";
 import { InsertMenu } from "./BlockEditor";
 import { cn } from "@/lib/cn";
 
-export type RailTab = "templates" | "elements" | "uploads" | "projects" | "links";
+export type RailTab = "templates" | "elements" | "uploads" | "projects" | "links" | "curriculum";
 
 export const RAIL: { id: RailTab; emoji: string; label: string }[] = [
   { id: "templates", emoji: "📑", label: "แม่แบบ" },
@@ -22,6 +22,7 @@ export const RAIL: { id: RailTab; emoji: string; label: string }[] = [
   { id: "uploads", emoji: "⬆️", label: "อัปโหลด" },
   { id: "projects", emoji: "📚", label: "เอกสารของฉัน" },
   { id: "links", emoji: "🔗", label: "เชื่อมข้อมูล" },
+  { id: "curriculum", emoji: "📚", label: "หลักสูตร" },
 ];
 
 /* ---------- แม่แบบ: ชุดบล็อกสำเร็จรูป ---------- */
