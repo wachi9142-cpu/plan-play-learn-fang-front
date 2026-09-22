@@ -195,3 +195,8 @@ img, svg { max-width: 100%; height: auto; }
   .doc-page { box-shadow: none; border: 0; border-radius: 0; max-width: none; padding: 0; }
   .editable { outline: none !important; box-shadow: none !important; }
 }
+
+/* สไลด์: พิมพ์ทีละหน้าแนวนอน */
+@media print {
+  .slide-page { page-break-after: always; border: 0; border-radius: 0; }
+}

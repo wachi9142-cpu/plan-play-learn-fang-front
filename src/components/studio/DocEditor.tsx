@@ -11,6 +11,8 @@ import { BlockView, InsertMenu, blockFromAsset, newBlock } from "./BlockEditor";
 import { DRAG_MIME } from "./AssetPanel";
 import { FormatToolbar, Tb } from "./FormatToolbar";
 import { ElementsPanel, LinksPanel, ProjectsPanel, RAIL, TemplatesPanel, UploadsPanel, type RailTab } from "./SidePanels";
+import { SlidesEditor } from "./SlidesEditor";
+import { SheetEditor } from "./SheetEditor";
 import { cn } from "@/lib/cn";
 
 const STATUS: Record<SaveStatus, { dot: string; label: string }> = {
@@ -28,7 +30,10 @@ export function DocEditor({ initial }: { initial: StudioDoc }) {
   const [doc, setDoc] = useState<StudioDoc>(initial);
   const [status, setStatus] = useState<SaveStatus>(initial.dirty ? "unsaved" : "saved");
   const [online, setOnline] = useState(true);
-  const [tab, setTab] = useState<RailTab | null>("uploads");
+  const [tab, setTab] = useState<RailTab | null>(initial.type === "sheet" ? null : "uploads");
+  const [slideIdx, setSlideIdx] = useState(0);
+  const isSlides = doc.type === "slides";
+  const isSheet = doc.type === "sheet";
   const [endOver, setEndOver] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const docRef = useRef(doc);
@@ -66,23 +71,32 @@ export function DocEditor({ initial }: { initial: StudioDoc }) {
   }, [persist, status]);
 
   /* ---- แทรก ---- */
+  /** เมื่อเป็นสไลด์ → แทรกลงสไลด์ที่เลือกอยู่ */
+  const setSlideBlocks = (fn: (b: Block[]) => Block[]) => {
+    const slides = docRef.current.slides ?? [];
+    update({ slides: slides.map((s, i) => (i === slideIdx ? { ...s, blocks: fn(s.blocks) } : s)) });
+  };
   const insertAsset = async (a: StudioAsset | string, afterIndex?: number) => {
     const asset = typeof a === "string" ? await getAsset(a) : a;
     if (!asset) return;
     const b = blockFromAsset(asset);
-    setBlocks((bs) => (afterIndex === undefined ? [...bs, b] : [...bs.slice(0, afterIndex + 1), b, ...bs.slice(afterIndex + 1)]));
+    const ins = (bs: Block[]) => (afterIndex === undefined ? [...bs, b] : [...bs.slice(0, afterIndex + 1), b, ...bs.slice(afterIndex + 1)]);
+    if (isSlides) setSlideBlocks(ins); else setBlocks(ins);
   };
-  const appendBlocks = (blocks: Block[]) => setBlocks((bs) => [...bs, ...blocks]);
+  const appendBlocks = (blocks: Block[]) => (isSlides ? setSlideBlocks((bs) => [...bs, ...blocks]) : setBlocks((bs) => [...bs, ...blocks]));
+  const addBlock = (ty: Block["type"]) => (isSlides ? setSlideBlocks((bs) => [...bs, newBlock(ty)]) : setBlocks((bs) => [...bs, newBlock(ty)]));
+  const addText = (html: string) => (isSlides ? setSlideBlocks((bs) => [...bs, { ...newBlock("paragraph"), html } as Block]) : setBlocks((bs) => [...bs, { ...newBlock("paragraph"), html } as Block]));
 
   /** เปลี่ยนบล็อกที่กำลังแก้ไข (มี focus) เป็นหัวข้อ/ข้อความ */
   const changeHeading = (level: 0 | 1 | 2 | 3) => {
     const el = document.activeElement?.closest("[data-block-id]") as HTMLElement | null;
     const id = el?.dataset.blockId;
     if (!id) return;
-    setBlocks((bs) => bs.map((b) => {
+    const fn = (bs: Block[]) => bs.map((b) => {
       if (b.id !== id || (b.type !== "heading" && b.type !== "paragraph")) return b;
       return level === 0 ? { id: b.id, type: "paragraph", html: b.html } : { id: b.id, type: "heading", level, html: b.html };
-    }));
+    }) as Block[];
+    if (isSlides) setSlideBlocks(fn); else setBlocks(fn);
   };
 
   /** ใส่สไตล์ระดับบล็อก (ระยะบรรทัด/ตัวอักษร/ฟอนต์/ขนาด) ให้บล็อกที่กำลังแก้ไข */
@@ -90,7 +104,8 @@ export function DocEditor({ initial }: { initial: StudioDoc }) {
     const el = document.activeElement?.closest("[data-block-id]") as HTMLElement | null;
     const id = el?.dataset.blockId;
     if (!id) return;
-    setBlocks((bs) => bs.map((b) => ("style" in b || b.type === "heading" || b.type === "paragraph" || b.type === "bullets" || b.type === "callout") && b.id === id ? ({ ...b, style: { ...(b as { style?: TextStyle }).style, ...patch } } as Block) : b));
+    const fn = (bs: Block[]) => bs.map((b) => ("style" in b || b.type === "heading" || b.type === "paragraph" || b.type === "bullets" || b.type === "callout") && b.id === id ? ({ ...b, style: { ...(b as { style?: TextStyle }).style, ...patch } } as Block) : b);
+    if (isSlides) setSlideBlocks(fn); else setBlocks(fn);
   };
 
   const st = STATUS[status];
@@ -135,7 +150,7 @@ export function DocEditor({ initial }: { initial: StudioDoc }) {
           <div className="no-print sticky top-[8.5rem] hidden h-[calc(100dvh-8.5rem)] w-[300px] shrink-0 border-r border-line bg-cream p-3 md:block">
             <button type="button" onClick={() => setTab(null)} className="absolute right-2 top-2 z-10 grid size-7 place-items-center rounded-full bg-white text-ink-soft shadow-soft hover:text-purple-700" aria-label="ปิดแผง"><X size={14} /></button>
             {tab === "templates" && <TemplatesPanel onInsert={appendBlocks} />}
-            {tab === "elements" && <ElementsPanel onInsertBlock={(ty) => setBlocks((bs) => [...bs, newBlock(ty)])} onInsertText={(html) => setBlocks((bs) => [...bs, { ...newBlock("paragraph"), html } as Block])} />}
+            {tab === "elements" && <ElementsPanel onInsertBlock={addBlock} onInsertText={addText} />}
             {tab === "uploads" && <UploadsPanel docId={doc.id} onInsert={(a) => insertAsset(a)} />}
             {tab === "projects" && <ProjectsPanel currentId={doc.id} />}
             {tab === "links" && <LinksPanel doc={doc} onChange={(links) => update({ links })} />}
@@ -151,13 +166,21 @@ export function DocEditor({ initial }: { initial: StudioDoc }) {
           {tab && (
             <div className="no-print mb-4 h-[60vh] md:hidden">
               {tab === "templates" && <TemplatesPanel onInsert={appendBlocks} />}
-              {tab === "elements" && <ElementsPanel onInsertBlock={(ty) => setBlocks((bs) => [...bs, newBlock(ty)])} onInsertText={(html) => setBlocks((bs) => [...bs, { ...newBlock("paragraph"), html } as Block])} />}
+              {tab === "elements" && <ElementsPanel onInsertBlock={addBlock} onInsertText={addText} />}
               {tab === "uploads" && <UploadsPanel docId={doc.id} onInsert={(a) => insertAsset(a)} />}
               {tab === "projects" && <ProjectsPanel currentId={doc.id} />}
               {tab === "links" && <LinksPanel doc={doc} onChange={(links) => update({ links })} />}
             </div>
           )}
 
+          {isSlides && (
+            <SlidesEditor slides={doc.slides ?? []} onChange={(slides) => update({ slides })} current={slideIdx} setCurrent={setSlideIdx} />
+          )}
+          {isSheet && doc.sheet && (
+            <SheetEditor sheet={doc.sheet} onChange={(sheet) => update({ sheet })} />
+          )}
+
+          {!isSlides && !isSheet && (
           <div className="doc-page card mx-auto w-full max-w-[210mm] px-6 py-8 sm:px-12 sm:py-12">
             <h1 className="mb-4 font-display text-2xl text-purple-800 sm:text-3xl print:block">{doc.title}</h1>
             <div className="pl-0 sm:pl-2">
@@ -185,6 +208,7 @@ export function DocEditor({ initial }: { initial: StudioDoc }) {
               <p className="pb-2 text-center text-[12px] text-ink-soft">หรือลากรูป/ไฟล์จากแถบ “อัปโหลด” มาวางที่นี่</p>
             </div>
           </div>
+          )}
           <p className="no-print mt-3 text-center text-[12px] text-ink-soft">
             ⚡ บันทึกอัตโนมัติเมื่อหยุดพิมพ์ · Ctrl+S บันทึกทันที · เก็บในเครื่องนี้ก่อนเสมอ และจะซิงก์เข้าบัญชีเมื่อเชื่อมต่อระบบหลังบ้าน
           </p>

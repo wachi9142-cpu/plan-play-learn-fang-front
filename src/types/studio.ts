@@ -6,7 +6,7 @@
  * - รูปภาพ/ไฟล์แนบ (assets): IndexedDB (รองรับไฟล์ใหญ่)
  * - ซิงก์ขึ้นเซิร์ฟเวอร์เมื่อเชื่อมต่อได้และตั้งค่า API แล้ว
  */
-export type DocType = "plan" | "schedule" | "worksheet" | "media" | "other";
+export type DocType = "plan" | "schedule" | "worksheet" | "media" | "slides" | "sheet" | "other";
 export type DocStatus = "draft" | "saved" | "ready";
 
 export type ImageAlign = "left" | "center" | "right";
@@ -52,12 +52,21 @@ export interface StudioAsset {
   blob: Blob;
 }
 
+/** สไลด์ 1 หน้า (16:9) — ใช้บล็อกชุดเดียวกับเอกสาร */
+export type SlideTheme = "white" | "purple" | "pink" | "mint" | "sky" | "yellow" | "dark";
+export interface Slide { id: string; theme: SlideTheme; blocks: Block[]; notes?: string }
+
+/** สเปรดชีต: ตารางเซลล์ (รองรับสูตร =SUM(A1:A5) =AVERAGE() =COUNT() และ +-*\/ ระหว่างเซลล์) */
+export interface SheetData { rows: string[][]; colWidths?: number[]; headerRow?: boolean }
+
 export interface StudioDoc {
   id: string;
   type: DocType;
   status: DocStatus;
   title: string;
   blocks: Block[];
+  slides?: Slide[];      // เฉพาะ type "slides"
+  sheet?: SheetData;     // เฉพาะ type "sheet"
   links: DocLinks;
   tags?: string[];
   createdAt: string;

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight, Copy, FileText, LayoutGrid, List as ListIcon, Plus, Search, Trash2, Upload } from "lucide-react";
 import type { DocStatus, DocType, StudioDoc } from "@/types";
-import { DOC_STATUS, DOC_TYPES, createDoc, deleteDoc, duplicateDoc, listDocs } from "@/lib/studio-store";
+import { DOC_STATUS, DOC_TYPES, SHEET_TEMPLATES, SLIDE_TEMPLATES, createDoc, deleteDoc, duplicateDoc, listDocs } from "@/lib/studio-store";
 import { PLANS, getUnit } from "@/data/plans";
 import { SCHEDULES } from "@/data/schedules";
 import { EmptyState } from "@/components/ui";
@@ -29,6 +29,8 @@ const CHIPS: Chip[] = [
   { id: "schedule", emoji: "📅", label: "กำหนดการสอน", color: "bg-[#2b8ad6] text-white", action: "create", type: "schedule" },
   { id: "worksheet", emoji: "📝", label: "ใบงาน", color: "bg-[#2ea672] text-white", action: "create", type: "worksheet" },
   { id: "media", emoji: "🎨", label: "สื่อการสอน", color: "bg-[#e0508a] text-white", action: "create", type: "media" },
+  { id: "slides", emoji: "🎞️", label: "สไลด์", color: "bg-[#f2a33a] text-white", action: "create", type: "slides", badge: "ใหม่" },
+  { id: "sheet", emoji: "📊", label: "ชีต", color: "bg-[#1f9d6b] text-white", action: "create", type: "sheet", badge: "ใหม่" },
   { id: "other", emoji: "📄", label: "เอกสาร", color: "bg-[#f2a33a] text-white", action: "create", type: "other" },
   { id: "uploads", emoji: "⬆️", label: "อัปโหลด", color: "bg-[#e9e2f4] text-purple-800", action: "uploads" },
   { id: "projects", emoji: "📚", label: "เอกสารของฉัน", color: "bg-[#e9e2f4] text-purple-800", action: "projects" },
@@ -134,7 +136,43 @@ export function StudioHome({ presetType }: { presetType?: DocType }) {
           <section className="card animate-rise mt-4 p-5 sm:p-6">
             <h2 className="text-xl">{DOC_TYPES[picker].emoji} สร้าง{DOC_TYPES[picker].label}</h2>
             <p className="text-[14px] text-ink-soft">{DOC_TYPES[picker].description}</p>
-            <button type="button" onClick={() => start(picker)} className="tap mt-4 inline-flex items-center gap-2 rounded-full bg-purple-600 px-5 py-2.5 text-[15px] font-medium text-white shadow-soft hover:bg-purple-700"><Plus size={16} /> สร้างใหม่ (มีแบบฟอร์มให้)</button>
+            {picker !== "slides" && picker !== "sheet" && (
+              <button type="button" onClick={() => start(picker)} className="tap mt-4 inline-flex items-center gap-2 rounded-full bg-purple-600 px-5 py-2.5 text-[15px] font-medium text-white shadow-soft hover:bg-purple-700"><Plus size={16} /> สร้างใหม่ (มีแบบฟอร์มให้)</button>
+            )}
+            {picker === "slides" && (
+              <div className="mt-4">
+                <p className="mb-2 text-[13px] text-ink-soft">🎞️ เริ่มงานนำเสนอใหม่</p>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+                  {SLIDE_TEMPLATES.map((t) => (
+                    <button key={t.id} type="button" onClick={() => router.push(`/studio/${createDoc("slides", { slideTemplate: t.id }).id}`)} className="card card-hover flex flex-col overflow-hidden text-left">
+                      <span className="grid aspect-video place-items-center bg-gradient-to-br from-[#ffe3c8] to-white text-4xl">{t.emoji}</span>
+                      <span className="p-3"><span className="block font-display text-[14px] text-purple-800">{t.title}</span><span className="block text-[12px] text-ink-soft">{t.description}</span></span>
+                    </button>
+                  ))}
+                </div>
+                <p className="mb-2 mt-4 text-[13px] text-ink-soft">หรือทำสไลด์บทเรียนจากเรื่องที่มีในเว็บ:</p>
+                <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                  {PLANS.slice(0, 6).map((p) => (
+                    <button key={p.id} type="button" onClick={() => router.push(`/studio/${createDoc("slides", { planId: p.id, slideTemplate: "lesson" }).id}`)} className="card card-hover flex items-center gap-3 px-3 py-2 text-left">
+                      <span className="text-2xl">{p.emoji}</span><span className="min-w-0 truncate font-display text-[15px] text-purple-800">เรื่อง {p.title}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            {picker === "sheet" && (
+              <div className="mt-4">
+                <p className="mb-2 text-[13px] text-ink-soft">📊 เริ่มสเปรดชีตใหม่</p>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+                  {SHEET_TEMPLATES.map((t) => (
+                    <button key={t.id} type="button" onClick={() => router.push(`/studio/${createDoc("sheet", { sheetTemplate: t.id }).id}`)} className="card card-hover flex flex-col overflow-hidden text-left">
+                      <span className="grid aspect-video place-items-center bg-gradient-to-br from-mint-soft to-white text-4xl">{t.emoji}</span>
+                      <span className="p-3"><span className="block font-display text-[14px] text-purple-800">{t.title}</span><span className="block text-[12px] text-ink-soft">{t.description}</span></span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             {(picker === "plan" || picker === "worksheet" || picker === "media") && (
               <div className="mt-4">
                 <p className="mb-2 text-[13px] text-ink-soft">หรือเริ่มจากเรื่องที่มีในเว็บ (ดึงข้อมูลหน่วย/เรื่องมาให้):</p>

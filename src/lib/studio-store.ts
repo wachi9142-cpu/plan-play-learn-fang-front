@@ -1,6 +1,6 @@
 "use client";
 
-import type { Block, DocStatus, DocType, StudioDoc } from "@/types";
+import type { Block, DocStatus, DocType, SheetData, Slide, SlideTheme, StudioDoc } from "@/types";
 import { getPlan, getUnit } from "@/data/plans";
 import { getSchedule } from "@/data/schedules";
 
@@ -94,7 +94,29 @@ const table = (rows: string[][], header = true): Block => ({ id: uid(), type: "t
 const callout = (emoji: string, html: string, tone: "purple" | "yellow" | "mint" | "pink" = "purple"): Block => ({ id: uid(), type: "callout", emoji, html, tone });
 const fields = (f: { label: string; value: string }[]): Block => ({ id: uid(), type: "fields", fields: f });
 
-export function createDoc(type: DocType, opts: { planId?: string; scheduleId?: string; title?: string } = {}): StudioDoc {
+export const newSlide = (theme: SlideTheme = "white", blocks: Block[] = []): Slide => ({ id: uid(), theme, blocks });
+
+/** แม่แบบงานนำเสนอ (เหมือน "เริ่มงานนำเสนอใหม่") */
+export const SLIDE_TEMPLATES: { id: string; emoji: string; title: string; description: string; make: (planTitle?: string) => Slide[] }[] = [
+  { id: "blank", emoji: "➕", title: "งานนำเสนอเปล่า", description: "เริ่มจากสไลด์ว่าง 1 หน้า", make: () => [newSlide("white", [h(1, "ชื่อเรื่อง"), p("คำอธิบาย…")])] },
+  { id: "album", emoji: "📷", title: "อัลบั้มรูปถ่าย", description: "หน้าปก + หน้ารูป 3 หน้า (ลากรูปมาวาง)", make: () => [newSlide("purple", [h(1, "📷 อัลบั้มกิจกรรม"), p("Little Purple Garden · ภาคเรียนที่ …")]), ...[1, 2, 3].map(() => newSlide("white", [h(2, "ชื่อกิจกรรม"), { id: uid(), type: "image", src: "", caption: "", width: 80, align: "center", rotate: 0 } as Block]))] },
+  { id: "story", emoji: "📖", title: "นิทาน / เล่าเรื่อง", description: "ปก + 4 ฉาก + จบ สำหรับเล่านิทานหน้าห้อง", make: () => [newSlide("yellow", [h(1, "📖 ชื่อนิทาน"), p("เล่าโดย Teacher Kaowfang")]), ...[1, 2, 3, 4].map((i) => newSlide("white", [h(2, `ฉากที่ ${i}`), { id: uid(), type: "image", src: "", caption: "", width: 60, align: "center", rotate: 0 } as Block, p("…")])), newSlide("pink", [h(1, "🌷 จบแล้วจ้า"), p("เด็ก ๆ ชอบตอนไหนที่สุดคะ?")])] },
+  { id: "lesson", emoji: "🎈", title: "บทเรียนตามหน่วย", description: "ปก · จุดประสงค์ · เนื้อหา · กิจกรรม · สรุป", make: (pt) => [newSlide("purple", [h(1, pt ? `หน่วย ${pt}` : "ชื่อหน่วย"), p("อนุบาล 1 · Little Purple Garden")]), newSlide("white", [h(2, "🎯 วันนี้เราจะเรียนรู้"), ul(["…", "…"])]), newSlide("white", [h(2, "📚 มาดูกันเถอะ"), { id: uid(), type: "image", src: "", caption: "", width: 60, align: "center", rotate: 0 } as Block]), newSlide("mint", [h(2, "🧸 กิจกรรม"), ol(["…", "…"])]), newSlide("sky", [h(2, "⭐ สรุป"), p("วันนี้หนูได้เรียนรู้อะไรบ้าง?")])] },
+  { id: "plan", emoji: "📋", title: "แผนงาน", description: "ภาพรวม · เป้าหมาย · ขั้นตอน · ตาราง", make: () => [newSlide("dark", [h(1, "แผนงาน"), p("ระบุภาคเรียน / โครงการ")]), newSlide("white", [h(2, "🎯 เป้าหมาย"), ul(["…"])]), newSlide("white", [h(2, "🗓️ ขั้นตอน"), table([["ช่วงเวลา", "กิจกรรม", "ผู้รับผิดชอบ"], ["", "", ""], ["", "", ""]])])] },
+];
+
+const grid = (r: number, c: number) => Array.from({ length: r }, () => Array.from({ length: c }, () => ""));
+
+/** แม่แบบสเปรดชีต (เหมือน "เริ่มสเปรดชีตใหม่") */
+export const SHEET_TEMPLATES: { id: string; emoji: string; title: string; description: string; make: () => SheetData }[] = [
+  { id: "blank", emoji: "➕", title: "สเปรดชีตเปล่า", description: "ตาราง 20 แถว × 8 คอลัมน์", make: () => ({ rows: grid(20, 8), headerRow: false }) },
+  { id: "todo", emoji: "✅", title: "รายการสิ่งที่ต้องทำ", description: "งาน · กำหนดส่ง · สถานะ · หมายเหตุ", make: () => ({ rows: [["✔", "สิ่งที่ต้องทำ", "กำหนดส่ง", "สถานะ", "หมายเหตุ"], ...grid(15, 5)], headerRow: true }) },
+  { id: "attendance", emoji: "🧒", title: "เช็คชื่อ / รายชื่อนักเรียน", description: "เลขที่ · ชื่อ · จ.–ศ. · รวม", make: () => ({ rows: [["เลขที่", "ชื่อ–นามสกุล", "จ.", "อ.", "พ.", "พฤ.", "ศ.", "รวม"], ...Array.from({ length: 20 }, (_, i) => [String(i + 1), "", "", "", "", "", "", `=COUNT(C${i + 2}:G${i + 2})`])], headerRow: true }) },
+  { id: "development", emoji: "🌱", title: "บันทึกพัฒนาการ", description: "ชื่อ · ร่างกาย · อารมณ์ · สังคม · สติปัญญา · เฉลี่ย", make: () => ({ rows: [["เลขที่", "ชื่อ–นามสกุล", "ร่างกาย", "อารมณ์–จิตใจ", "สังคม", "สติปัญญา", "เฉลี่ย"], ...Array.from({ length: 20 }, (_, i) => [String(i + 1), "", "", "", "", "", `=AVERAGE(C${i + 2}:F${i + 2})`])], headerRow: true }) },
+  { id: "budget", emoji: "💰", title: "งบประมาณกิจกรรม", description: "รายการ · จำนวน · ราคา/หน่วย · รวม (สูตรอัตโนมัติ)", make: () => ({ rows: [["รายการ", "จำนวน", "ราคา/หน่วย", "รวม"], ...Array.from({ length: 12 }, (_, i) => ["", "", "", `=B${i + 2}*C${i + 2}`]), ["รวมทั้งหมด", "", "", "=SUM(D2:D13)"]], headerRow: true }) },
+];
+
+export function createDoc(type: DocType, opts: { planId?: string; scheduleId?: string; title?: string; slideTemplate?: string; sheetTemplate?: string } = {}): StudioDoc {
   const id = uid();
   let title = opts.title ?? "";
   let blocks: Block[] = [];
@@ -166,6 +188,21 @@ export function createDoc(type: DocType, opts: { planId?: string; scheduleId?: s
       h(2, "วิธีใช้"),
       ol(["…", "…"]),
     ];
+  } else if (type === "slides") {
+    const plan = opts.planId ? getPlan(opts.planId) : undefined;
+    const tpl = SLIDE_TEMPLATES.find((t) => t.id === (opts.slideTemplate ?? "blank")) ?? SLIDE_TEMPLATES[0];
+    title = title || (plan ? `สไลด์ เรื่อง ${plan.title}` : tpl.id === "blank" ? "งานนำเสนอใหม่" : tpl.title);
+    links.gradeId = plan?.gradeId ?? "k1";
+    const doc: StudioDoc = { id, type, status: "draft", title, blocks: [], slides: tpl.make(plan?.title), links, createdAt: now(), updatedAt: now(), dirty: true };
+    const map = readAll(); map[id] = doc; writeAll(map);
+    return doc;
+  } else if (type === "sheet") {
+    const tpl = SHEET_TEMPLATES.find((t) => t.id === (opts.sheetTemplate ?? "blank")) ?? SHEET_TEMPLATES[0];
+    title = title || (tpl.id === "blank" ? "สเปรดชีตใหม่" : tpl.title);
+    links.gradeId = "k1";
+    const doc: StudioDoc = { id, type, status: "draft", title, blocks: [], sheet: tpl.make(), links, createdAt: now(), updatedAt: now(), dirty: true };
+    const map = readAll(); map[id] = doc; writeAll(map);
+    return doc;
   } else {
     title = title || "เอกสารใหม่";
     blocks = [h(1, "หัวข้อเอกสาร"), p("เริ่มพิมพ์ที่นี่…")];
@@ -181,6 +218,8 @@ export const DOC_TYPES: Record<DocType, { emoji: string; label: string; descript
   schedule: { emoji: "📅", label: "กำหนดการสอน", description: "ตาราง 20 สัปดาห์ เชื่อมกับแผนแต่ละเรื่อง", tint: "bg-sky-soft" },
   worksheet: { emoji: "📝", label: "ใบงาน", description: "หัวกระดาษ ชื่อ–นามสกุล–ห้อง + คำสั่ง + พื้นที่ใบงาน", tint: "bg-mint-soft" },
   media: { emoji: "🎨", label: "สื่อการเรียนการสอน", description: "บัตรภาพ โปสเตอร์ สื่อทำมือ พร้อมวิธีใช้", tint: "bg-pink-soft" },
+  slides: { emoji: "🎞️", label: "สไลด์ / งานนำเสนอ", description: "สไลด์ 16:9 สำหรับสอนหน้าห้อง เล่านิทาน อัลบั้มรูป", tint: "bg-[#ffe3c8]" },
+  sheet: { emoji: "📊", label: "สเปรดชีต", description: "ตารางข้อมูล เช็คชื่อ บันทึกพัฒนาการ งบประมาณ พร้อมสูตร", tint: "bg-mint-soft" },
   other: { emoji: "📄", label: "เอกสารอื่น ๆ", description: "เอกสารว่าง ใส่บล็อกได้อิสระ", tint: "bg-yellow-soft" },
 };
 
