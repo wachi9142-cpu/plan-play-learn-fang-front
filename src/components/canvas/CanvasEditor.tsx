@@ -42,6 +42,8 @@ export function CanvasEditor({ initial }: { initial: CanvasDoc }) {
   const [color, setColor] = useState("#7c3aed");
   const [fill, setFill] = useState("");
   const [size, setSize] = useState(6);
+  const [eraser, setEraser] = useState<"s" | "m" | "l">("m");
+  const ERASER = { s: 16, m: 36, l: 72 } as const;
   const [me, setMe] = useState<Participant | null>(() => (typeof window !== "undefined" ? getMe() : null));
   const [others, setOthers] = useState<Participant[]>([]);
   const [mode, setMode] = useState<SyncMode>("connecting");
@@ -102,7 +104,7 @@ export function CanvasEditor({ initial }: { initial: CanvasDoc }) {
   const replaceOp = (op: CanvasOp) => { setOps((o) => o.map((x) => (x.id === op.id ? op : x))); if (room) send({ t: "op", room, op }); };
   const undo = () => { const mine = [...ops].reverse().find((o) => o.by === meId); if (!mine) return; redo.current.push(mine); setOps((o) => o.filter((x) => x.id !== mine.id)); if (room) send({ t: "undo", room, opId: mine.id }); };
   const doRedo = () => { const op = redo.current.pop(); if (!op) return; setOps((o) => [...o, op]); if (room) send({ t: "op", room, op }); };
-  const clearAll = () => { if (!confirm("ล้างกระดาษทั้งหมด?")) return; setOps([]); redo.current = []; if (room) send({ t: "clear", room, by: meId }); };
+  const clearAll = () => { if (ops.length === 0) return; if (!confirm("ล้างกระดาษทั้งหมด? (ลบทุกอย่างที่วาดไว้)")) return; setOps([]); redo.current = []; if (room) send({ t: "clear", room, by: meId }); };
   const addText = () => { if (!textAt || !textVal.trim()) { setTextAt(null); return; } addOp({ id: uid(), by: meId, kind: "text", text: textVal.trim(), color, size: Math.max(18, size * 5), at: textAt }); setTextAt(null); setTextVal(""); };
   const addImage = (file: File) => {
     if (!file.type.startsWith("image/")) return;
@@ -162,7 +164,7 @@ export function CanvasEditor({ initial }: { initial: CanvasDoc }) {
         </div>
 
         {/* แถบเครื่องมือ */}
-        <div className="no-scrollbar flex items-center gap-1.5 overflow-x-auto px-3 pb-2 sm:px-4">
+        <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1 px-3 pb-2 sm:px-4">
           {TOOLS.map((t) => (
             <button key={t.id} type="button" title={t.label} onClick={() => { if (t.id === "image") fileRef.current?.click(); else setTool(t.id); }} className={cn("tap flex shrink-0 flex-col items-center rounded-xl px-2 py-1 text-[10px] text-ink-soft hover:bg-purple-50", tool === t.id && "bg-purple-100 text-purple-800")}>
               <span className="text-[18px] leading-none">{t.emoji}</span>{t.label}
@@ -178,14 +180,20 @@ export function CanvasEditor({ initial }: { initial: CanvasDoc }) {
           <div className="flex shrink-0 items-center gap-1" title="ขนาดหัวปากกา">
             {SIZES.map((s) => <button key={s} type="button" onClick={() => setSize(s)} className={cn("grid size-8 place-items-center rounded-full hover:bg-purple-50", size === s && "bg-purple-100")}><span className="rounded-full bg-ink" style={{ width: Math.min(22, s + 2), height: Math.min(22, s + 2) }} /></button>)}
           </div>
+          {tool === "eraser" && (
+            <div className="ml-1 flex shrink-0 items-center gap-1 rounded-full bg-purple-50 px-2 py-0.5 text-[12px]">
+              <span className="text-ink-soft">🧽 ขนาด</span>
+              {(["s", "m", "l"] as const).map((k) => <button key={k} type="button" onClick={() => setEraser(k)} className={cn("rounded-full px-2 py-0.5", eraser === k ? "bg-purple-600 text-white" : "hover:bg-white")}>{k === "s" ? "เล็ก" : k === "m" ? "กลาง" : "ใหญ่"}</button>)}
+            </div>
+          )}
           {["rect", "ellipse", "triangle", "star"].includes(tool) && (
             <label className="ml-1 inline-flex shrink-0 items-center gap-1 text-[12px] text-ink-soft">ทึบ <input type="checkbox" checked={!!fill} onChange={(e) => setFill(e.target.checked ? color : "")} /> {fill && <input type="color" value={fill} onChange={(e) => setFill(e.target.value)} className="size-6 rounded border border-line p-0" />}</label>
           )}
           <span className="mx-1 h-6 w-px shrink-0 bg-line" />
           <Tb onClick={undo} title="ย้อนกลับ (Ctrl+Z)"><Undo2 size={15} /></Tb>
           <Tb onClick={doRedo} title="ทำซ้ำ (Ctrl+Y)"><Redo2 size={15} /></Tb>
-          <Tb onClick={clearAll} title="ล้างกระดาษ" danger><Trash2 size={15} /></Tb>
-          <Tb onClick={() => setTool("eraser")} title="ยางลบ"><Eraser size={15} /></Tb>
+          <button type="button" onClick={() => setTool("eraser")} title="ยางลบ (ลบเฉพาะจุด)" className={cn("tap inline-flex shrink-0 items-center gap-1 rounded-full px-3 py-1.5 text-[12px]", tool === "eraser" ? "bg-purple-600 text-white" : "border border-line bg-white text-ink-soft hover:bg-purple-50")}><Eraser size={14} /> ยางลบ</button>
+          <button type="button" onClick={clearAll} title="ล้างทั้งหมด (ลบทุกอย่างบนกระดาษ)" className="tap inline-flex shrink-0 items-center gap-1 rounded-full border border-red-200 bg-white px-3 py-1.5 text-[12px] text-red-500 hover:bg-red-50"><Trash2 size={14} /> ล้างทั้งหมด</button>
           <Tb onClick={() => fileRef.current?.click()} title="เพิ่มรูป"><ImagePlus size={15} /></Tb>
         </div>
       </div>
@@ -209,7 +217,7 @@ export function CanvasEditor({ initial }: { initial: CanvasDoc }) {
       <div className="container-page flex flex-col gap-4 py-4 lg:flex-row">
         {/* กระดาษ */}
         <div className="min-w-0 flex-1">
-          <CanvasBoard ref={board} width={doc.width} height={doc.height} template={doc.template} ops={ops} tool={tool} color={color} size={size} fill={fill} me={meSafe} others={others}
+          <CanvasBoard ref={board} width={doc.width} height={doc.height} template={doc.template} ops={ops} tool={tool} color={color} size={size} fill={fill} eraserSize={ERASER[eraser]} me={meSafe} others={others}
             onOp={addOp} onMove={replaceOp}
             onCursor={(p) => { if (!room) return; const now = Date.now(); if (now - cursorT.current < 60 && p) return; cursorT.current = now; send({ t: "cursor", room, who: meId, at: p }); }}
             onTextAt={(p) => { setTextAt(p); setTextVal(""); }}

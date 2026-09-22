@@ -15,7 +15,7 @@ export interface BoardProps {
   width: number; height: number;
   template: CanvasTemplateId;
   ops: CanvasOp[];
-  tool: CanvasTool; color: string; size: number; fill?: string;
+  tool: CanvasTool; color: string; size: number; fill?: string; eraserSize?: number;
   me: Participant;
   others: Participant[];
   onOp: (op: CanvasOp) => void;
@@ -26,13 +26,14 @@ export interface BoardProps {
 }
 
 /** พื้นที่วาด: 2 layer (แม่แบบ / ผลงาน) + layer พรีวิวขณะลาก · รองรับเมาส์ ปากกา นิ้ว (pointer events) */
-export const CanvasBoard = forwardRef<BoardHandle, BoardProps>(function CanvasBoard({ width, height, template, ops, tool, color, size, fill, me, others, onOp, onMove, onCursor, onTextAt, readOnly }, ref) {
+export const CanvasBoard = forwardRef<BoardHandle, BoardProps>(function CanvasBoard({ width, height, template, ops, tool, color, size, fill, eraserSize = 24, me, others, onOp, onMove, onCursor, onTextAt, readOnly }, ref) {
   const wrap = useRef<HTMLDivElement>(null);
   const tplRef = useRef<HTMLCanvasElement>(null);
   const artRef = useRef<HTMLCanvasElement>(null);
   const liveRef = useRef<HTMLCanvasElement>(null);
   const drawing = useRef<{ op: CanvasOp; start: Pt; moved?: CanvasOp; last?: Pt } | null>(null);
   const [scale, setScale] = useState(1);
+  const [hover, setHover] = useState<Pt | null>(null);
 
   /* ---- ขนาดตามหน้าจอ ---- */
   useEffect(() => {
@@ -73,7 +74,7 @@ export const CanvasBoard = forwardRef<BoardHandle, BoardProps>(function CanvasBo
     if (tool === "move") { const hit = hitTest(ops, p, artRef.current?.getContext("2d") ?? undefined); if (hit) drawing.current = { op: hit, start: p, moved: hit, last: p }; return; }
     if (tool === "image") return;
     let op: CanvasOp;
-    if (tool === "pen" || tool === "brush" || tool === "eraser") op = { id: uid(), by: me.id, kind: "stroke", tool, color: tool === "eraser" ? "#000" : color, size: tool === "eraser" ? size * 2.5 : size, points: [p] };
+    if (tool === "pen" || tool === "brush" || tool === "eraser") op = { id: uid(), by: me.id, kind: "stroke", tool, color: tool === "eraser" ? "#000" : color, size: tool === "eraser" ? eraserSize : size, points: [p] };
     else op = { id: uid(), by: me.id, kind: "shape", shape: tool, color, size, fill: fill || undefined, from: p, to: p };
     drawing.current = { op, start: p };
     const c = liveCtx(); if (c) { c.clearRect(0, 0, width, height); if (op.kind === "stroke" && op.tool !== "eraser") drawOp(c, op); }
@@ -81,7 +82,7 @@ export const CanvasBoard = forwardRef<BoardHandle, BoardProps>(function CanvasBo
 
   const move = (e: React.PointerEvent) => {
     const p = pt(e);
-    onCursor(p);
+    onCursor(p); setHover(p);
     const d = drawing.current; if (!d) return;
     if (tool === "move" && d.moved) {
       const dx = p.x - (d.last?.x ?? p.x), dy = p.y - (d.last?.y ?? p.y); d.moved = moveOp(d.moved, dx, dy); d.last = p;
@@ -109,19 +110,21 @@ export const CanvasBoard = forwardRef<BoardHandle, BoardProps>(function CanvasBo
     onOp(d.op);
   };
 
-  const cursorCls = tool === "move" ? "cursor-move" : tool === "text" ? "cursor-text" : tool === "fill" ? "cursor-cell" : "cursor-crosshair";
+  const cursorCls = tool === "move" ? "cursor-move" : tool === "text" ? "cursor-text" : tool === "fill" ? "cursor-cell" : tool === "eraser" ? "cursor-none" : "cursor-crosshair";
 
   return (
-    <div ref={wrap} className="relative w-full select-none" style={{ aspectRatio: `${width} / ${height}` }}>
+    <div ref={wrap} className="relative w-full select-none overflow-hidden" style={{ aspectRatio: `${width} / ${height}` }}>
       <div className="absolute left-0 top-0 origin-top-left overflow-hidden rounded-2xl bg-white shadow-soft ring-1 ring-line" style={{ width, height, transform: `scale(${scale})` }}>
         <canvas ref={tplRef} width={width} height={height} className="absolute inset-0" />
         <canvas ref={artRef} width={width} height={height} className="absolute inset-0" />
         <canvas
           ref={liveRef} width={width} height={height}
           className={`absolute inset-0 touch-none ${cursorCls}`}
-          onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up} onPointerLeave={() => { onCursor(null); if (drawing.current) up(); }}
+          onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up} onPointerLeave={() => { onCursor(null); setHover(null); if (drawing.current) up(); }}
           onContextMenu={(e) => e.preventDefault()}
         />
+        {/* ยางลบ: วงกลมแสดงขนาดที่จะลบ */}
+        {tool === "eraser" && hover && <div className="pointer-events-none absolute z-10 rounded-full border-2 border-purple-500 bg-white/60 shadow" style={{ left: hover.x - eraserSize / 2, top: hover.y - eraserSize / 2, width: eraserSize, height: eraserSize }} />}
         {/* เคอร์เซอร์ของเพื่อนร่วมวาด */}
         {others.filter((o) => o.cursor).map((o) => (
           <div key={o.id} className="pointer-events-none absolute z-10 -translate-x-1 -translate-y-1 transition-transform duration-75" style={{ left: o.cursor!.x, top: o.cursor!.y }}>
