@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ArrowDown, ArrowUp, Plus, RotateCw, Trash2 } from "lucide-react";
-import type { Block, CropAspect, ImageAlign, StudioAsset } from "@/types";
+import type { Block, CropAspect, ImageAlign, StudioAsset, TextStyle } from "@/types";
 import { uid } from "@/lib/studio-store";
 import { fileEmoji, fmtSize, getAsset } from "@/lib/studio-assets";
 import { DRAG_MIME, useAssetUrl } from "./AssetPanel";
@@ -39,10 +39,22 @@ export function BlockView({
         <BlockBody block={block} onChange={onChange} readOnly={readOnly} />
       </div>
       {!readOnly && (
-        <div className="no-print flex justify-center opacity-0 transition group-hover:opacity-100">
-          <InsertMenu onPick={onInsertAfter} />
+        <div className="no-print absolute -right-1 top-1 z-10 hidden translate-x-full group-hover:block">
+          <QuickInsert onPick={onInsertAfter} />
         </div>
       )}
+    </div>
+  );
+}
+
+/** ปุ่ม + เล็ก ๆ ข้างบล็อก: แทรกบล็อกถัดจากบล็อกนี้ (เมนูโผล่เมื่อชี้) */
+function QuickInsert({ onPick }: { onPick: (t: Block["type"]) => void }) {
+  return (
+    <div className="group/q relative">
+      <button type="button" title="แทรกบล็อกถัดจากนี้" className="grid size-7 place-items-center rounded-lg border border-line bg-white text-purple-700 shadow-soft hover:bg-purple-50"><Plus size={14} /></button>
+      <div className="invisible absolute left-0 top-full z-20 w-40 rounded-xl border border-line bg-white p-1 shadow-lift group-hover/q:visible">
+        {INSERT.map((i) => <button key={i.type} type="button" onClick={() => onPick(i.type)} className="block w-full rounded-lg px-2 py-1 text-left text-[12px] hover:bg-purple-50">{i.emoji} {i.label}</button>)}
+      </div>
     </div>
   );
 }
@@ -109,15 +121,22 @@ function useImageSrc(block: Extract<Block, { type: "image" }>) {
   return block.assetId ? url : block.src;
 }
 
+/** แปลง TextStyle → CSS */
+export function textStyle(s?: TextStyle): React.CSSProperties | undefined {
+  if (!s) return undefined;
+  return { lineHeight: s.lineHeight, letterSpacing: s.letterSpacing !== undefined ? `${s.letterSpacing}px` : undefined, fontFamily: s.fontFamily, fontSize: s.fontSize ? `${s.fontSize}px` : undefined, textAlign: s.align };
+}
+
 const ASPECTS: Record<CropAspect, string | undefined> = { free: undefined, "1:1": "1 / 1", "4:3": "4 / 3", "3:4": "3 / 4", "16:9": "16 / 9" };
 
 /* ---------- editable text ---------- */
-function Editable({ html, onChange, className, placeholder, tag = "div", readOnly }: { html: string; onChange: (html: string) => void; className?: string; placeholder?: string; tag?: "div" | "span"; readOnly?: boolean }) {
+function Editable({ html, onChange, className, placeholder, tag = "div", readOnly, style }: { html: string; onChange: (html: string) => void; className?: string; placeholder?: string; tag?: "div" | "span"; readOnly?: boolean; style?: React.CSSProperties }) {
   const ref = useRef<HTMLElement>(null);
   const Tag = tag as "div";
   return (
     <Tag
       ref={ref as React.RefObject<HTMLDivElement>}
+      style={style}
       contentEditable={!readOnly}
       suppressContentEditableWarning
       data-placeholder={placeholder}
@@ -140,17 +159,17 @@ function BlockBody({ block, onChange, readOnly }: { block: Block; onChange: (b: 
               <option value={1}>H1</option><option value={2}>H2</option><option value={3}>H3</option>
             </select>
           )}
-          <Editable html={block.html} onChange={(html) => onChange({ ...block, html })} className={cn("flex-1 font-display text-purple-800", size)} placeholder="หัวข้อ" readOnly={readOnly} />
+          <Editable html={block.html} onChange={(html) => onChange({ ...block, html })} className={cn("flex-1 font-display text-purple-800", size)} placeholder="หัวข้อ" readOnly={readOnly} style={textStyle(block.style)} />
         </div>
       );
     }
     case "paragraph":
-      return <Editable html={block.html} onChange={(html) => onChange({ ...block, html })} className="text-[15px] leading-relaxed sm:text-base" placeholder="พิมพ์ข้อความ…" readOnly={readOnly} />;
+      return <Editable html={block.html} onChange={(html) => onChange({ ...block, html })} className="text-[15px] leading-relaxed sm:text-base" placeholder="พิมพ์ข้อความ…" readOnly={readOnly} style={textStyle(block.style)} />;
     case "bullets": {
       const List = block.ordered ? "ol" : "ul";
       return (
         <div>
-          <List className={cn("space-y-1 pl-6", block.ordered ? "list-decimal" : "list-disc")}>
+          <List className={cn("space-y-1 pl-6", block.ordered ? "list-decimal" : "list-disc")} style={textStyle(block.style)}>
             {block.items.map((it, i) => (
               <li key={i} className="text-[15px] sm:text-base">
                 <div className="flex items-start gap-1">
@@ -213,7 +232,7 @@ function BlockBody({ block, onChange, readOnly }: { block: Block; onChange: (b: 
           {readOnly ? <span className="text-2xl">{block.emoji}</span> : (
             <input value={block.emoji} onChange={(e) => onChange({ ...block, emoji: e.target.value })} className="w-9 bg-transparent text-center text-2xl outline-none" aria-label="อีโมจิ" />
           )}
-          <Editable html={block.html} onChange={(html) => onChange({ ...block, html })} className="flex-1 text-[15px]" placeholder="ข้อความ" readOnly={readOnly} />
+          <Editable html={block.html} onChange={(html) => onChange({ ...block, html })} className="flex-1 text-[15px]" placeholder="ข้อความ" readOnly={readOnly} style={textStyle(block.style)} />
           {!readOnly && (
             <select value={block.tone ?? "purple"} onChange={(e) => onChange({ ...block, tone: e.target.value as typeof block.tone })} className="no-print h-6 self-start rounded-md border border-line bg-white px-1 text-[11px]" aria-label="สีกล่อง">
               <option value="purple">ม่วง</option><option value="yellow">เหลือง</option><option value="mint">เขียว</option><option value="pink">ชมพู</option>

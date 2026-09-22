@@ -12,10 +12,13 @@ export type DocStatus = "draft" | "saved" | "ready";
 export type ImageAlign = "left" | "center" | "right";
 export type CropAspect = "free" | "1:1" | "4:3" | "3:4" | "16:9";
 
+/** สไตล์ระดับบล็อกข้อความ: ระยะบรรทัด ระยะตัวอักษร ฟอนต์ ขนาด */
+export interface TextStyle { lineHeight?: number; letterSpacing?: number; fontFamily?: string; fontSize?: number; align?: "left" | "center" | "right" }
+
 export type Block =
-  | { id: string; type: "heading"; level: 1 | 2 | 3; html: string }
-  | { id: string; type: "paragraph"; html: string }
-  | { id: string; type: "bullets"; items: string[]; ordered?: boolean }
+  | { id: string; type: "heading"; level: 1 | 2 | 3; html: string; style?: TextStyle }
+  | { id: string; type: "paragraph"; html: string; style?: TextStyle }
+  | { id: string; type: "bullets"; items: string[]; ordered?: boolean; style?: TextStyle }
   | { id: string; type: "table"; rows: string[][]; header?: boolean }
   | {
       id: string; type: "image";
@@ -28,7 +31,7 @@ export type Block =
       crop?: { aspect: CropAspect; x: number; y: number }; // x,y = object-position (%)
     }
   | { id: string; type: "file"; assetId: string; name: string; mime: string; size: number } // ไฟล์แนบ (PDF/Word/PPT)
-  | { id: string; type: "callout"; emoji: string; html: string; tone?: "purple" | "yellow" | "mint" | "pink" }
+  | { id: string; type: "callout"; emoji: string; html: string; tone?: "purple" | "yellow" | "mint" | "pink"; style?: TextStyle }
   | { id: string; type: "divider" }
   | { id: string; type: "fields"; fields: { label: string; value: string }[] };
 
