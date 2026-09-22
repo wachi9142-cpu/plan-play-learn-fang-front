@@ -1,24 +1,33 @@
 "use client";
 
-import { useRef } from "react";
-import { ArrowDown, ArrowUp, Plus, Trash2 } from "lucide-react";
-import type { Block } from "@/types";
+import { useEffect, useRef, useState } from "react";
+import { ArrowDown, ArrowUp, Plus, RotateCw, Trash2 } from "lucide-react";
+import type { Block, CropAspect, ImageAlign, StudioAsset } from "@/types";
 import { uid } from "@/lib/studio-store";
+import { fileEmoji, fmtSize, getAsset } from "@/lib/studio-assets";
+import { DRAG_MIME, useAssetUrl } from "./AssetPanel";
 import { cn } from "@/lib/cn";
 
 /** แก้ไขบล็อกเดียว (contentEditable) */
 export function BlockView({
-  block, onChange, onDelete, onMove, onInsertAfter, readOnly = false,
+  block, onChange, onDelete, onMove, onInsertAfter, onDropAsset, readOnly = false,
 }: {
   block: Block;
   onChange: (b: Block) => void;
   onDelete: () => void;
   onMove: (dir: -1 | 1) => void;
   onInsertAfter: (type: Block["type"]) => void;
+  onDropAsset?: (assetId: string) => void;   // วาง asset ที่ลากมา → แทรกหลังบล็อกนี้
   readOnly?: boolean;
 }) {
+  const [over, setOver] = useState(false);
   return (
-    <div className={cn("group relative rounded-xl transition", !readOnly && "hover:bg-purple-50/60")}>
+    <div
+      onDragOver={(e) => { if (e.dataTransfer.types.includes(DRAG_MIME)) { e.preventDefault(); setOver(true); } }}
+      onDragLeave={() => setOver(false)}
+      onDrop={(e) => { const id = e.dataTransfer.getData(DRAG_MIME); if (id) { e.preventDefault(); setOver(false); onDropAsset?.(id); } }}
+      className={cn("group relative rounded-xl transition", !readOnly && "hover:bg-purple-50/60", over && "ring-2 ring-purple-400 ring-offset-2")}
+    >
       {!readOnly && (
         <div className="no-print absolute -left-1 top-1 z-10 hidden -translate-x-full flex-col gap-0.5 pr-1 group-hover:flex">
           <IconBtn title="เลื่อนขึ้น" onClick={() => onMove(-1)}><ArrowUp size={14} /></IconBtn>
@@ -52,6 +61,7 @@ const INSERT: { type: Block["type"]; emoji: string; label: string }[] = [
   { type: "bullets", emoji: "•", label: "รายการ" },
   { type: "table", emoji: "▦", label: "ตาราง" },
   { type: "image", emoji: "🖼️", label: "รูปภาพ" },
+  { type: "file", emoji: "📎", label: "ไฟล์แนบ" },
   { type: "callout", emoji: "💜", label: "กล่องเน้น" },
   { type: "fields", emoji: "📋", label: "ข้อมูลหัวเอกสาร" },
   { type: "divider", emoji: "—", label: "เส้นคั่น" },
@@ -77,12 +87,29 @@ export function newBlock(type: Block["type"]): Block {
     case "paragraph": return { id, type, html: "" };
     case "bullets": return { id, type, items: ["รายการที่ 1"] };
     case "table": return { id, type, rows: [["หัวข้อ 1", "หัวข้อ 2", "หัวข้อ 3"], ["", "", ""], ["", "", ""]], header: true };
-    case "image": return { id, type, src: "", caption: "" };
+    case "image": return { id, type, src: "", caption: "", width: 70, align: "center", rotate: 0 };
+    case "file": return { id, type, assetId: "", name: "", mime: "", size: 0 };
     case "callout": return { id, type, emoji: "💜", html: "ข้อความเน้น…", tone: "purple" };
     case "fields": return { id, type, fields: [{ label: "หน่วย", value: "" }, { label: "เรื่อง", value: "" }, { label: "วันที่", value: "" }] };
     case "divider": return { id, type };
   }
 }
+
+/** สร้างบล็อกจาก asset ที่อัปโหลด (รูป → image, อื่น ๆ → file) */
+export function blockFromAsset(a: StudioAsset): Block {
+  if (a.kind === "image") return { id: uid(), type: "image", src: "", assetId: a.id, caption: "", width: 70, align: "center", rotate: 0 };
+  return { id: uid(), type: "file", assetId: a.id, name: a.name, mime: a.mime, size: a.size };
+}
+
+/** รูปจาก asset (IndexedDB) หรือ src ตรง ๆ */
+function useImageSrc(block: Extract<Block, { type: "image" }>) {
+  const [asset, setAsset] = useState<StudioAsset | null>(null);
+  useEffect(() => { let ok = true; if (block.assetId) getAsset(block.assetId).then((a) => ok && setAsset(a ?? null)); else setAsset(null); return () => { ok = false; }; }, [block.assetId]);
+  const url = useAssetUrl(asset);
+  return block.assetId ? url : block.src;
+}
+
+const ASPECTS: Record<CropAspect, string | undefined> = { free: undefined, "1:1": "1 / 1", "4:3": "4 / 3", "3:4": "3 / 4", "16:9": "16 / 9" };
 
 /* ---------- editable text ---------- */
 function Editable({ html, onChange, className, placeholder, tag = "div", readOnly }: { html: string; onChange: (html: string) => void; className?: string; placeholder?: string; tag?: "div" | "span"; readOnly?: boolean }) {
@@ -176,34 +203,9 @@ function BlockBody({ block, onChange, readOnly }: { block: Block; onChange: (b: 
         </div>
       );
     case "image":
-      return (
-        <figure className="text-center">
-          {block.src ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={block.src} alt={block.caption ?? ""} style={{ width: `${block.width ?? 70}%` }} className="mx-auto rounded-xl border border-line" />
-          ) : (
-            <div className="no-print rounded-xl border-2 border-dashed border-purple-200 bg-purple-50 p-6 text-[14px] text-ink-soft">🖼️ ยังไม่มีรูป — เลือกไฟล์หรือวางลิงก์ด้านล่าง</div>
-          )}
-          {!readOnly && (
-            <div className="no-print mt-2 flex flex-wrap items-center justify-center gap-2 text-[12px]">
-              <label className="cursor-pointer rounded-full border border-line bg-white px-3 py-1 text-purple-700 hover:bg-purple-50">
-                เลือกไฟล์รูป
-                <input type="file" accept="image/*" className="hidden" onChange={(e) => {
-                  const f = e.target.files?.[0]; if (!f) return;
-                  const reader = new FileReader();
-                  reader.onload = () => onChange({ ...block, src: String(reader.result) });
-                  reader.readAsDataURL(f);
-                }} />
-              </label>
-              <input type="url" placeholder="หรือวางลิงก์รูป https://…" defaultValue={block.src.startsWith("data:") ? "" : block.src} onBlur={(e) => e.target.value && onChange({ ...block, src: e.target.value })} className="w-56 rounded-full border border-line px-3 py-1" />
-              <label className="flex items-center gap-1 text-ink-soft">กว้าง <input type="range" min={20} max={100} value={block.width ?? 70} onChange={(e) => onChange({ ...block, width: Number(e.target.value) })} /></label>
-            </div>
-          )}
-          <figcaption className="mt-1">
-            <Editable html={block.caption ?? ""} onChange={(caption) => onChange({ ...block, caption })} className="text-center text-[13px] text-ink-soft" placeholder="คำบรรยายภาพ (ถ้ามี)" readOnly={readOnly} />
-          </figcaption>
-        </figure>
-      );
+      return <ImageBlock block={block} onChange={onChange} readOnly={readOnly} />;
+    case "file":
+      return <FileBlock block={block} readOnly={readOnly} />;
     case "callout": {
       const tones = { purple: "bg-purple-50 border-purple-200", yellow: "bg-yellow-soft border-yellow-accent/60", mint: "bg-mint-soft border-[#9fd8bb]", pink: "bg-pink-soft border-pink-accent/60" };
       return (
@@ -237,4 +239,83 @@ function BlockBody({ block, onChange, readOnly }: { block: Block; onChange: (b: 
     case "divider":
       return <hr className="my-2 border-t-2 border-dashed border-purple-200" />;
   }
+}
+
+/* ---------- image block: ย่อ/ขยาย จัดตำแหน่ง ครอป หมุน ---------- */
+function ImageBlock({ block, onChange, readOnly }: { block: Extract<Block, { type: "image" }>; onChange: (b: Block) => void; readOnly?: boolean }) {
+  const src = useImageSrc(block);
+  const align: ImageAlign = block.align ?? "center";
+  const rotate = block.rotate ?? 0;
+  const crop = block.crop ?? { aspect: "free" as CropAspect, x: 50, y: 50 };
+  const justify = align === "left" ? "justify-start" : align === "right" ? "justify-end" : "justify-center";
+  return (
+    <figure>
+      <div className={cn("flex", justify)}>
+        {src ? (
+          <div style={{ width: `${block.width ?? 70}%`, aspectRatio: ASPECTS[crop.aspect] }} className="overflow-hidden rounded-xl border border-line bg-white">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={src}
+              alt={block.caption ?? ""}
+              draggable={false}
+              style={{ transform: `rotate(${rotate}deg)`, objectPosition: `${crop.x}% ${crop.y}%`, width: rotate % 180 ? "auto" : "100%", height: rotate % 180 ? "100%" : (crop.aspect === "free" ? "auto" : "100%") }}
+              className={cn("mx-auto block", crop.aspect !== "free" && "size-full object-cover")}
+            />
+          </div>
+        ) : (
+          <div className="no-print w-full rounded-xl border-2 border-dashed border-purple-200 bg-purple-50 p-6 text-center text-[14px] text-ink-soft">🖼️ ลากรูปจากแถบด้านซ้ายมาวางที่นี่ หรือเลือกไฟล์/วางลิงก์ด้านล่าง</div>
+        )}
+      </div>
+
+      {!readOnly && (
+        <div className="no-print mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 rounded-xl bg-cream px-3 py-2 text-[12px]">
+          <label className="cursor-pointer rounded-full border border-line bg-white px-3 py-1 text-purple-700 hover:bg-purple-50">
+            เลือกไฟล์รูป
+            <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (!f) return; const r = new FileReader(); r.onload = () => onChange({ ...block, src: String(r.result), assetId: undefined }); r.readAsDataURL(f); }} />
+          </label>
+          <input type="url" placeholder="หรือวางลิงก์รูป" defaultValue={block.src.startsWith("data:") ? "" : block.src} onBlur={(e) => e.target.value && onChange({ ...block, src: e.target.value, assetId: undefined })} className="w-40 rounded-full border border-line px-3 py-1" />
+          <label className="flex items-center gap-1 text-ink-soft">↔ ขนาด <input type="range" min={15} max={100} value={block.width ?? 70} onChange={(e) => onChange({ ...block, width: Number(e.target.value) })} /> {block.width ?? 70}%</label>
+          <span className="flex items-center gap-0.5 rounded-full border border-line bg-white p-0.5">
+            {(["left", "center", "right"] as ImageAlign[]).map((a) => (
+              <button key={a} type="button" onClick={() => onChange({ ...block, align: a })} className={cn("rounded-full px-2 py-0.5", align === a ? "bg-purple-600 text-white" : "text-ink hover:bg-purple-50")}>{a === "left" ? "⬅ ซ้าย" : a === "center" ? "กลาง" : "ขวา ➡"}</button>
+            ))}
+          </span>
+          <button type="button" onClick={() => onChange({ ...block, rotate: (((rotate + 90) % 360) as 0 | 90 | 180 | 270) })} className="inline-flex items-center gap-1 rounded-full border border-line bg-white px-2.5 py-0.5 text-purple-700 hover:bg-purple-50"><RotateCw size={12} /> หมุน {rotate}°</button>
+          <label className="flex items-center gap-1 text-ink-soft">✂ ครอป
+            <select value={crop.aspect} onChange={(e) => onChange({ ...block, crop: { ...crop, aspect: e.target.value as CropAspect } })} className="rounded-md border border-line bg-white px-1 py-0.5">
+              <option value="free">ไม่ครอป</option><option value="1:1">1:1 จัตุรัส</option><option value="4:3">4:3</option><option value="3:4">3:4</option><option value="16:9">16:9</option>
+            </select>
+          </label>
+          {crop.aspect !== "free" && (
+            <>
+              <label className="flex items-center gap-1 text-ink-soft">↔ <input type="range" min={0} max={100} value={crop.x} onChange={(e) => onChange({ ...block, crop: { ...crop, x: Number(e.target.value) } })} /></label>
+              <label className="flex items-center gap-1 text-ink-soft">↕ <input type="range" min={0} max={100} value={crop.y} onChange={(e) => onChange({ ...block, crop: { ...crop, y: Number(e.target.value) } })} /></label>
+            </>
+          )}
+        </div>
+      )}
+      <figcaption className="mt-1">
+        <Editable html={block.caption ?? ""} onChange={(caption) => onChange({ ...block, caption })} className="text-center text-[13px] text-ink-soft" placeholder="คำบรรยายภาพ (ถ้ามี)" readOnly={readOnly} />
+      </figcaption>
+    </figure>
+  );
+}
+
+/* ---------- file block: ไฟล์แนบ PDF/Word/PPT ---------- */
+function FileBlock({ block, readOnly }: { block: Extract<Block, { type: "file" }>; readOnly?: boolean }) {
+  const [asset, setAsset] = useState<StudioAsset | null>(null);
+  useEffect(() => { let ok = true; if (block.assetId) getAsset(block.assetId).then((a) => ok && setAsset(a ?? null)); return () => { ok = false; }; }, [block.assetId]);
+  const url = useAssetUrl(asset);
+  if (!block.assetId) {
+    return <div className="no-print rounded-xl border-2 border-dashed border-purple-200 bg-purple-50 p-4 text-center text-[14px] text-ink-soft">📎 ลากไฟล์จากแถบด้านซ้าย (แท็บ “ไฟล์”) มาวางที่นี่</div>;
+  }
+  return (
+    <a href={url || undefined} target="_blank" rel="noopener" className="flex items-center gap-3 rounded-xl border border-line bg-cream px-4 py-3 hover:bg-purple-50">
+      <span className="text-3xl">{fileEmoji(block.mime, block.name)}</span>
+      <span className="min-w-0 flex-1">
+        <span className="block truncate font-medium text-purple-800">{block.name}</span>
+        <span className="block text-[12px] text-ink-soft">{fmtSize(block.size)} · {asset ? "กดเพื่อเปิด" : "ไม่พบไฟล์ในเครื่องนี้"}{readOnly ? "" : ""}</span>
+      </span>
+    </a>
+  );
 }

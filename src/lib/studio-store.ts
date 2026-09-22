@@ -1,6 +1,6 @@
 "use client";
 
-import type { Block, DocType, StudioDoc } from "@/types";
+import type { Block, DocStatus, DocType, StudioDoc } from "@/types";
 import { getPlan, getUnit } from "@/data/plans";
 import { getSchedule } from "@/data/schedules";
 
@@ -29,10 +29,11 @@ function writeAll(map: Record<string, StudioDoc>) {
 }
 
 export function listDocs(): StudioDoc[] {
-  return Object.values(readAll()).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+  return Object.values(readAll()).map(normalizeDoc).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
 }
 export function getDoc(id: string): StudioDoc | undefined {
-  return readAll()[id];
+  const d = readAll()[id];
+  return d ? normalizeDoc(d) : undefined;
 }
 export function saveDocLocal(doc: StudioDoc): StudioDoc {
   const map = readAll();
@@ -41,15 +42,23 @@ export function saveDocLocal(doc: StudioDoc): StudioDoc {
   writeAll(map);
   return next;
 }
-export function deleteDoc(id: string) {
+export async function deleteDoc(id: string) {
   const map = readAll();
   delete map[id];
   writeAll(map);
+  try { const { removeAssetsOfDoc } = await import("./studio-assets"); await removeAssetsOfDoc(id); } catch { /* ไม่มี IndexedDB */ }
 }
-export function duplicateDoc(id: string): StudioDoc | undefined {
+export async function duplicateDoc(id: string): Promise<StudioDoc | undefined> {
   const src = getDoc(id);
   if (!src) return;
-  const copy: StudioDoc = { ...src, id: uid(), title: `${src.title} (สำเนา)`, createdAt: now(), updatedAt: now(), syncedAt: undefined, dirty: true };
+  const newId = uid();
+  let blocks = src.blocks;
+  try {
+    const { copyAssets } = await import("./studio-assets");
+    const idMap = await copyAssets(src.id, newId);
+    blocks = src.blocks.map((b) => ("assetId" in b && b.assetId && idMap[b.assetId] ? { ...b, assetId: idMap[b.assetId] } : b)) as Block[];
+  } catch { /* ไม่มี IndexedDB */ }
+  const copy: StudioDoc = { ...src, id: newId, blocks, title: `${src.title} (สำเนา)`, status: "draft", createdAt: now(), updatedAt: now(), syncedAt: undefined, dirty: true };
   const map = readAll(); map[copy.id] = copy; writeAll(map);
   return copy;
 }
@@ -135,18 +144,53 @@ export function createDoc(type: DocType, opts: { planId?: string; scheduleId?: s
       table([["สัปดาห์ที่", "วัน เดือน ปี", "สาระการเรียนรู้", "หน่วยการจัดประสบการณ์", "หมายเหตุ"], ...rows]),
       callout("📌", sch?.footer ?? "ปิดเทอม", "mint"),
     ];
+  } else if (type === "worksheet") {
+    const plan = opts.planId ? getPlan(opts.planId) : undefined;
+    title = title || (plan ? `ใบงาน เรื่อง ${plan.title}` : "ใบงาน (ใหม่)");
+    links.gradeId = plan?.gradeId ?? "k1";
+    blocks = [
+      fields([{ label: "ชื่อ", value: "" }, { label: "นามสกุล", value: "" }, { label: "ห้อง", value: "" }, { label: "วันที่", value: "" }]),
+      h(2, `📝 ${plan ? `ใบงาน เรื่อง ${plan.title}` : "ชื่อใบงาน"}`),
+      callout("📌", "คำสั่ง: …", "yellow"),
+      p("ลากรูปจากแถบด้านซ้ายมาวางตรงนี้ หรือเพิ่มตาราง/ข้อความได้ตามต้องการ"),
+      table([["", "", ""], ["", "", ""]], false),
+    ];
+  } else if (type === "media") {
+    const plan = opts.planId ? getPlan(opts.planId) : undefined;
+    title = title || (plan ? `สื่อการเรียนการสอน เรื่อง ${plan.title}` : "สื่อการเรียนการสอน (ใหม่)");
+    links.gradeId = plan?.gradeId ?? "k1";
+    blocks = [
+      h(1, plan ? `🎨 สื่อ เรื่อง ${plan.title}` : "🎨 ชื่อสื่อการเรียนการสอน"),
+      fields([{ label: "ประเภทสื่อ", value: "บัตรภาพ / โปสเตอร์ / เพลง / นิทาน" }, { label: "ใช้กับหน่วย", value: plan ? (getUnit(plan.unitId)?.name ?? "") : "" }, { label: "ระดับชั้น", value: "อนุบาล 1" }]),
+      p("ลากรูปสื่อจากแถบด้านซ้ายมาวางตรงนี้ ปรับขนาด/หมุน/ครอปได้"),
+      h(2, "วิธีใช้"),
+      ol(["…", "…"]),
+    ];
   } else {
     title = title || "เอกสารใหม่";
     blocks = [h(1, "หัวข้อเอกสาร"), p("เริ่มพิมพ์ที่นี่…")];
   }
 
-  const doc: StudioDoc = { id, type, title, blocks, links, createdAt: now(), updatedAt: now(), dirty: true };
+  const doc: StudioDoc = { id, type, status: "draft", title, blocks, links, createdAt: now(), updatedAt: now(), dirty: true };
   const map = readAll(); map[id] = doc; writeAll(map);
   return doc;
 }
 
 export const DOC_TYPES: Record<DocType, { emoji: string; label: string; description: string; tint: string }> = {
-  plan: { emoji: "📄", label: "แผนการจัดประสบการณ์", description: "แบบฟอร์มแผน: จุดประสงค์ สาระ กิจกรรม สื่อ การประเมิน", tint: "bg-purple-100" },
+  plan: { emoji: "📖", label: "แผนการจัดประสบการณ์", description: "แบบฟอร์มแผน: จุดประสงค์ สาระ กิจกรรม สื่อ การประเมิน", tint: "bg-purple-100" },
   schedule: { emoji: "📅", label: "กำหนดการสอน", description: "ตาราง 20 สัปดาห์ เชื่อมกับแผนแต่ละเรื่อง", tint: "bg-sky-soft" },
-  other: { emoji: "📋", label: "เอกสาร / แบบฟอร์มอื่น ๆ", description: "เอกสารว่าง ใส่บล็อกได้อิสระ", tint: "bg-yellow-soft" },
+  worksheet: { emoji: "📝", label: "ใบงาน", description: "หัวกระดาษ ชื่อ–นามสกุล–ห้อง + คำสั่ง + พื้นที่ใบงาน", tint: "bg-mint-soft" },
+  media: { emoji: "🎨", label: "สื่อการเรียนการสอน", description: "บัตรภาพ โปสเตอร์ สื่อทำมือ พร้อมวิธีใช้", tint: "bg-pink-soft" },
+  other: { emoji: "📄", label: "เอกสารอื่น ๆ", description: "เอกสารว่าง ใส่บล็อกได้อิสระ", tint: "bg-yellow-soft" },
 };
+
+export const DOC_STATUS: Record<DocStatus, { emoji: string; label: string; cls: string }> = {
+  draft: { emoji: "📝", label: "แบบร่าง", cls: "bg-yellow-soft text-[#8a6a00]" },
+  saved: { emoji: "🟢", label: "บันทึกแล้ว", cls: "bg-mint-soft text-[#2e6b4c]" },
+  ready: { emoji: "📤", label: "พร้อมใช้งาน", cls: "bg-purple-100 text-purple-800" },
+};
+
+/** เอกสารเก่าที่ยังไม่มี status/blocks ใหม่ → เติมค่าเริ่มต้น */
+export function normalizeDoc(d: StudioDoc): StudioDoc {
+  return { ...d, status: d.status ?? "draft", tags: d.tags ?? [] };
+}

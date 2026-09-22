@@ -2,36 +2,65 @@
  * 🌱 Garden Studio — ระบบสร้าง/แก้ไขเอกสารของ Little Purple Garden
  *
  * เอกสาร = รายการบล็อก (block-based) เพิ่มประเภทบล็อก/ประเภทเอกสารใหม่ได้โดยไม่รื้อโครง
- * เก็บในเครื่อง (localStorage) เป็นหลัก + ซิงก์ขึ้นเซิร์ฟเวอร์เมื่อเชื่อมต่อได้และมี API
+ * - ข้อความ/โครงเอกสาร: localStorage
+ * - รูปภาพ/ไฟล์แนบ (assets): IndexedDB (รองรับไฟล์ใหญ่)
+ * - ซิงก์ขึ้นเซิร์ฟเวอร์เมื่อเชื่อมต่อได้และตั้งค่า API แล้ว
  */
-export type DocType = "plan" | "schedule" | "other";
+export type DocType = "plan" | "schedule" | "worksheet" | "media" | "other";
+export type DocStatus = "draft" | "saved" | "ready";
+
+export type ImageAlign = "left" | "center" | "right";
+export type CropAspect = "free" | "1:1" | "4:3" | "3:4" | "16:9";
 
 export type Block =
   | { id: string; type: "heading"; level: 1 | 2 | 3; html: string }
   | { id: string; type: "paragraph"; html: string }
   | { id: string; type: "bullets"; items: string[]; ordered?: boolean }
   | { id: string; type: "table"; rows: string[][]; header?: boolean }
-  | { id: string; type: "image"; src: string; caption?: string; width?: number }
+  | {
+      id: string; type: "image";
+      src: string;            // data URL / URL (ถ้าไม่ได้ใช้ assetId)
+      assetId?: string;       // → asset ใน IndexedDB
+      caption?: string;
+      width?: number;         // % ของความกว้างเอกสาร
+      align?: ImageAlign;
+      rotate?: 0 | 90 | 180 | 270;
+      crop?: { aspect: CropAspect; x: number; y: number }; // x,y = object-position (%)
+    }
+  | { id: string; type: "file"; assetId: string; name: string; mime: string; size: number } // ไฟล์แนบ (PDF/Word/PPT)
   | { id: string; type: "callout"; emoji: string; html: string; tone?: "purple" | "yellow" | "mint" | "pink" }
   | { id: string; type: "divider" }
-  | { id: string; type: "fields"; fields: { label: string; value: string }[] }; // ตารางข้อมูลหัวเอกสาร เช่น หน่วย/สัปดาห์/วันที่
+  | { id: string; type: "fields"; fields: { label: string; value: string }[] };
 
 export interface DocLinks {
-  planId?: string;        // → LessonPlan
-  scheduleId?: string;    // → Schedule
+  planId?: string;
+  scheduleId?: string;
   gradeId?: string;
+}
+
+export interface StudioAsset {
+  id: string;
+  docId: string;
+  name: string;
+  mime: string;
+  size: number;
+  kind: "image" | "file";
+  createdAt: string;
+  blob: Blob;
 }
 
 export interface StudioDoc {
   id: string;
   type: DocType;
+  status: DocStatus;
   title: string;
   blocks: Block[];
   links: DocLinks;
-  createdAt: string;      // ISO
-  updatedAt: string;      // ISO
-  syncedAt?: string;      // ISO — ครั้งล่าสุดที่ขึ้นเซิร์ฟเวอร์สำเร็จ
-  dirty: boolean;         // มีการแก้ไขที่ยังไม่ได้ซิงก์
+  tags?: string[];
+  createdAt: string;
+  updatedAt: string;
+  syncedAt?: string;
+  dirty: boolean;
 }
 
 export type SaveStatus = "saved" | "saving" | "unsaved" | "offline" | "local-only" | "error";
