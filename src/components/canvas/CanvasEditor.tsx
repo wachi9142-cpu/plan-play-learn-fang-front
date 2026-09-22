@@ -146,7 +146,7 @@ export function CanvasEditor({ initial }: { initial: CanvasDoc }) {
       {/* แถบบน */}
       <div className="no-print sticky top-16 z-30 border-b border-line bg-white/95 backdrop-blur">
         <div className="flex flex-wrap items-center gap-2 px-3 py-2 sm:px-4">
-          <Link href="/canvas" className="tap inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[14px] text-purple-700 hover:bg-purple-50"><ArrowLeft size={16} /> Canvas</Link>
+          <Link href="/canvas" className="tap inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[14px] text-purple-700 hover:bg-purple-50"><ArrowLeft size={16} /> 🎨 Garden Canvas</Link>
           <span className="rounded-full bg-pink-soft px-2.5 py-0.5 text-[12px] text-purple-800">🎨 {room ? "วาดร่วมกัน" : "วาดคนเดียว"}</span>
           <input value={doc.title} onChange={(e) => changeTitle(e.target.value)} placeholder="ชื่อกิจกรรม" className="min-w-0 flex-1 rounded-lg bg-transparent px-2 py-1 font-display text-[16px] text-purple-800 outline-none hover:bg-purple-50 focus:bg-purple-50" aria-label="ชื่อกิจกรรม" />
           <div className="ml-auto flex flex-wrap items-center gap-1.5">
