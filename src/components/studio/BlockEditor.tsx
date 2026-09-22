@@ -6,6 +6,7 @@ import type { Block, CropAspect, ImageAlign, StudioAsset, TextStyle } from "@/ty
 import { uid } from "@/lib/studio-store";
 import { fileEmoji, fmtSize, getAsset } from "@/lib/studio-assets";
 import { DRAG_MIME, useAssetUrl } from "./AssetPanel";
+import { TableBlock } from "./TableBlock";
 import { cn } from "@/lib/cn";
 
 /** แก้ไขบล็อกเดียว (contentEditable) */
@@ -189,38 +190,7 @@ function BlockBody({ block, onChange, readOnly }: { block: Block; onChange: (b: 
       );
     }
     case "table":
-      return (
-        <div>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-[14px] sm:text-[15px]">
-              <tbody>
-                {block.rows.map((row, r) => (
-                  <tr key={r}>
-                    {row.map((cell, c) => {
-                      const isHead = block.header && r === 0;
-                      const Cell = isHead ? "th" : "td";
-                      return (
-                        <Cell key={c} className={cn("border border-[#cfc3dd] px-2 py-1 align-top", isHead && "bg-purple-100 text-left font-display font-medium text-purple-800")}>
-                          <Editable html={cell} onChange={(html) => onChange({ ...block, rows: block.rows.map((rr, i) => (i === r ? rr.map((x, j) => (j === c ? html : x)) : rr)) })} className="min-h-[1.4em]" readOnly={readOnly} />
-                        </Cell>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          {!readOnly && (
-            <div className="no-print mt-1 flex flex-wrap gap-2 text-[12px]">
-              <button type="button" onClick={() => onChange({ ...block, rows: [...block.rows, block.rows[0].map(() => "")] })} className="text-purple-600 hover:underline">+ แถว</button>
-              <button type="button" onClick={() => onChange({ ...block, rows: block.rows.map((r) => [...r, ""]) })} className="text-purple-600 hover:underline">+ คอลัมน์</button>
-              <button type="button" onClick={() => block.rows.length > 1 && onChange({ ...block, rows: block.rows.slice(0, -1) })} className="text-ink-soft hover:underline">− แถวสุดท้าย</button>
-              <button type="button" onClick={() => block.rows[0].length > 1 && onChange({ ...block, rows: block.rows.map((r) => r.slice(0, -1)) })} className="text-ink-soft hover:underline">− คอลัมน์สุดท้าย</button>
-              <button type="button" onClick={() => onChange({ ...block, header: !block.header })} className="text-ink-soft hover:underline">{block.header ? "ไม่ใช้แถวหัว" : "ใช้แถวแรกเป็นหัว"}</button>
-            </div>
-          )}
-        </div>
-      );
+      return <TableBlock block={block} onChange={onChange} readOnly={readOnly} />;
     case "image":
       return <ImageBlock block={block} onChange={onChange} readOnly={readOnly} />;
     case "file":

@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowLeft, Copy, Printer, Save, Trash2, WifiOff, X } from "lucide-react";
+import { ArrowLeft, Copy, Save, Trash2, WifiOff, X } from "lucide-react";
+import { DownloadMenu } from "./DownloadMenu";
 import type { Block, DocStatus, SaveStatus, StudioAsset, StudioDoc, TextStyle } from "@/types";
 import { DOC_STATUS, DOC_TYPES, deleteDoc, duplicateDoc, saveDocLocal, syncDoc, syncPending } from "@/lib/studio-store";
 import { getAsset } from "@/lib/studio-assets";
@@ -126,7 +127,7 @@ export function DocEditor({ initial }: { initial: StudioDoc }) {
           <div className="ml-auto flex items-center gap-1.5">
             {!online && <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2.5 py-1 text-[12px] text-red-600"><WifiOff size={13} /> ออฟไลน์</span>}
             <span className="hidden items-center gap-1.5 text-[12px] text-ink-soft sm:inline-flex"><span className={cn("size-2.5 rounded-full", st.dot)} /> {st.label}</span>
-            <Tb onClick={() => window.print()} title="พิมพ์ / บันทึก PDF"><Printer size={15} /></Tb>
+            <DownloadMenu doc={doc} beforeExport={() => { if (timer.current) clearTimeout(timer.current); persist(); }} />
             <Tb onClick={async () => { const c = await duplicateDoc(doc.id); if (c) router.push(`/studio/${c.id}`); }} title="ทำสำเนา"><Copy size={15} /></Tb>
             <Tb onClick={async () => { if (confirm("ลบเอกสารนี้?")) { await deleteDoc(doc.id); router.push("/studio"); } }} title="ลบเอกสาร" danger><Trash2 size={15} /></Tb>
             <button type="button" onClick={() => { if (timer.current) clearTimeout(timer.current); persist(); }} className="tap inline-flex items-center gap-1.5 rounded-full bg-purple-600 px-4 py-1.5 text-[14px] font-medium text-white shadow-soft hover:bg-purple-700"><Save size={15} /> บันทึก</button>

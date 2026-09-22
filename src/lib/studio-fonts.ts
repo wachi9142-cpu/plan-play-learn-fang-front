@@ -27,6 +27,7 @@ export function ensureGoogleFonts() {
   const link = document.createElement("link");
   link.id = "lpg-google-fonts";
   link.rel = "stylesheet";
+  link.crossOrigin = "anonymous"; // ให้ html-to-image อ่าน cssRules ได้ตอนส่งออก PNG/JPG
   link.href = `https://fonts.googleapis.com/css2?${fams}&display=swap`;
   document.head.appendChild(link);
 }

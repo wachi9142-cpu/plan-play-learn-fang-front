@@ -94,6 +94,19 @@ const table = (rows: string[][], header = true): Block => ({ id: uid(), type: "t
 const callout = (emoji: string, html: string, tone: "purple" | "yellow" | "mint" | "pink" = "purple"): Block => ({ id: uid(), type: "callout", emoji, html, tone });
 const fields = (f: { label: string; value: string }[]): Block => ({ id: uid(), type: "fields", fields: f });
 
+/** ตารางแผนหน่วยการจัดประสบการณ์ (ตามแบบฟอร์มจริง): มาตรฐาน/ตัวบ่งชี้ | จุดประสงค์ | สาระการเรียนรู้ (ประสบการณ์สำคัญ | สาระที่ควรเรียนรู้) */
+export const unitPlanTable = (): Block => ({
+  id: uid(), type: "table", header: true,
+  rows: [
+    ["<b>มาตรฐาน/ตัวบ่งชี้/สภาพที่พึงประสงค์</b>", "<b>จุดประสงค์การเรียนรู้</b>", "<b>สาระการเรียนรู้</b>", ""],
+    ["", "", "<b>ประสบการณ์สำคัญ</b>", "<b>สาระที่ควรเรียนรู้</b>"],
+    ["<b>มฐ 1 ตบช 1.3</b><br>๑.๓.1 เล่นและทำกิจกรรมอย่างปลอดภัยด้วยตนเอง<br><b>มฐ 2 ตบช 2.1</b><br>2.1.1 …", "๑. เล่นและทำกิจกรรมอย่างปลอดภัยด้วยตนเอง<br><br>2. …", "<u>ด้านร่างกาย</u><br>๑. การปฏิบัติตามสุขอนามัย สุขนิสัยที่ดีในกิจวัตรประจำวัน<br>๒. การเคลื่อนไหวเคลื่อนที่<br>๓. …", "1. ส่วนประกอบต่าง ๆ ของร่างกาย/หน้าที่ของอวัยวะส่วนต่าง ๆ<br> - ตามีไว้ดู<br> - หูมีไว้ฟัง<br>2. …"],
+  ],
+  colWidths: [165, 165, 165, 165],
+  rowHeights: [0, 0, 320],
+  merges: [{ r: 0, c: 2, rowSpan: 1, colSpan: 2 }, { r: 0, c: 0, rowSpan: 2, colSpan: 1 }, { r: 0, c: 1, rowSpan: 2, colSpan: 1 }],
+});
+
 export const newSlide = (theme: SlideTheme = "white", blocks: Block[] = []): Slide => ({ id: uid(), theme, blocks });
 
 /** แม่แบบงานนำเสนอ (เหมือน "เริ่มงานนำเสนอใหม่") */
@@ -131,6 +144,8 @@ export function createDoc(type: DocType, opts: { planId?: string; scheduleId?: s
       ? plan.weeks.map((w) => [`สัปดาห์ที่ ${w.number}`, w.title, w.summary])
       : [["สัปดาห์ที่ 1", "", ""], ["สัปดาห์ที่ 2", "", ""]];
     blocks = [
+      h(2, `หน่วยการจัดประสบการณ์ ชั้นอนุบาลศึกษาปีที่ 1 สัปดาห์ที่ … หน่วย ${unit?.name ?? "…"}`),
+      unitPlanTable(),
       fields([
         { label: "ระดับชั้น", value: "อนุบาล 1" },
         { label: "หน่วยการเรียนรู้", value: unit?.name ?? "" },

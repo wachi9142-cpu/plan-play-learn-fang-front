@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { Block, StudioAsset, StudioDoc } from "@/types";
-import { DOC_TYPES, listDocs, uid } from "@/lib/studio-store";
+import { DOC_TYPES, listDocs, uid, unitPlanTable } from "@/lib/studio-store";
 import { PLANS, getUnit } from "@/data/plans";
 import { SCHEDULES } from "@/data/schedules";
 import { getGamesForPlan } from "@/data/games";
@@ -35,6 +35,7 @@ const fields = (f: { label: string; value: string }[]): Block => ({ id: uid(), t
 
 export const TEMPLATES: { id: string; emoji: string; title: string; description: string; make: () => Block[] }[] = [
   { id: "ws-header", emoji: "📝", title: "หัวกระดาษใบงาน", description: "ชื่อ–นามสกุล–ห้อง–วันที่ + คำสั่ง", make: () => [fields([{ label: "ชื่อ", value: "" }, { label: "นามสกุล", value: "" }, { label: "ห้อง", value: "" }, { label: "วันที่", value: "" }]), callout("📌", "คำสั่ง: …", "yellow")] },
+  { id: "unit-table", emoji: "📐", title: "ตารางแผนหน่วยการจัดประสบการณ์", description: "มาตรฐาน/ตัวบ่งชี้ · จุดประสงค์ · สาระการเรียนรู้ (รวมเซลล์ 2 ชั้น)", make: () => [h(2, "หน่วยการจัดประสบการณ์ ชั้นอนุบาลศึกษาปีที่ 1 สัปดาห์ที่ … หน่วย …"), unitPlanTable()] },
   { id: "plan-header", emoji: "📖", title: "หัวเอกสารแผน", description: "ระดับชั้น หน่วย เรื่อง สาระ ระยะเวลา ครู", make: () => [fields([{ label: "ระดับชั้น", value: "อนุบาล 1" }, { label: "หน่วยการเรียนรู้", value: "" }, { label: "เรื่อง", value: "" }, { label: "สาระการเรียนรู้", value: "" }, { label: "ระยะเวลา", value: "" }, { label: "ครูผู้สอน", value: "Teacher Kaowfang" }])] },
   { id: "objectives", emoji: "🎯", title: "จุดประสงค์ + สาระ", description: "สองหัวข้อพร้อมรายการ", make: () => [h(2, "🎯 จุดประสงค์"), ul(["เด็กสามารถ…"]), h(2, "📚 สาระการเรียนรู้"), ul(["…"])] },
   { id: "steps", emoji: "👣", title: "ขั้นตอนกิจกรรม", description: "ขั้นนำ–ขั้นสอน–ขั้นสรุป", make: () => [h(2, "🧸 กิจกรรม"), ol(["ขั้นนำ: …", "ขั้นสอน: …", "ขั้นสรุป: …"])] },
