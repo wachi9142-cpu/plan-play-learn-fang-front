@@ -14,10 +14,12 @@ const read = (): Curriculum[] => { try { return JSON.parse(localStorage.getItem(
 const write = (v: Curriculum[]) => { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch { /* */ } window.dispatchEvent(new Event(CURRICULUM_EVENT)); };
 const now = () => new Date().toISOString();
 
+/** สถานะหลักสูตร — ระบบไม่ถือว่า “ปีใหม่กว่า = ใช้งานอยู่” ผู้ดูแลกำหนดเองเสมอ */
 export const STATUS: Record<CurriculumStatus, { emoji: string; label: string; cls: string }> = {
-  active: { emoji: "🟢", label: "ใช้งาน", cls: "bg-mint-soft text-green-800" },
-  pending: { emoji: "🟡", label: "รอตรวจสอบ/รอประกาศ", cls: "bg-yellow-soft text-yellow-800" },
-  archived: { emoji: "⚪", label: "เก็บประวัติ", cls: "bg-cream text-ink-soft" },
+  active: { emoji: "🟢", label: "ใช้งานอยู่", cls: "bg-mint-soft text-green-800" },
+  pending: { emoji: "🟡", label: "ฉบับใหม่ / รอประกาศ", cls: "bg-yellow-soft text-yellow-800" },
+  announced: { emoji: "🔵", label: "ประกาศแล้ว / เตรียมใช้งาน", cls: "bg-sky-soft text-sky-900" },
+  archived: { emoji: "⚪", label: "ฉบับเก็บถาวร", cls: "bg-cream text-ink-soft" },
 };
 export const LEVELS: Record<CurriculumLevel, { emoji: string; label: string }> = {
   early: { emoji: "🌱", label: "ปฐมวัย" }, primary: { emoji: "📚", label: "ประถมศึกษา" }, secondary: { emoji: "🎓", label: "มัธยมศึกษา" }, other: { emoji: "📘", label: "อื่น ๆ" },

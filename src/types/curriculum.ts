@@ -1,6 +1,6 @@
 /** 📚 หลักสูตร — เพิ่มได้หลายฉบับ/หลายปี แต่ละฉบับมีโครงสร้างข้อมูลของตัวเอง (ไม่เขียนทับกัน) */
 
-export type CurriculumStatus = "active" | "pending" | "archived";
+export type CurriculumStatus = "active" | "pending" | "announced" | "archived";
 export type CurriculumLevel = "early" | "primary" | "secondary" | "other";
 
 export interface CurriculumFile { id: string; assetId: string; name: string; mime: string; size: number; kind: "main" | "attachment"; addedAt: string }
