@@ -106,7 +106,7 @@ export function StudioHome({ presetType }: { presetType?: DocType }) {
         <section className="rounded-3xl bg-gradient-to-br from-purple-100 via-pink-soft to-yellow-soft px-4 pb-6 pt-10 text-center sm:px-6 sm:pt-14">
           <p className="inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-1.5 text-[13px] font-medium text-purple-700 shadow-soft">💜 Garden Studio · ห้องสร้างสื่อ</p>
           <h1 className="mt-4 text-3xl sm:text-5xl">วันนี้จะสร้างอะไรดีคะ?</h1>
-          <p className="mt-2 text-[15px] text-ink-soft sm:text-base">พื้นที่สำหรับสร้าง แก้ไข จัดเก็บ และจัดเตรียมเอกสารการเรียนรู้</p>
+          <p className="mt-2 text-[15px] text-ink-soft sm:text-base">พื้นที่สำหรับสร้าง แก้ไข จัดเก็บ และจัดเตรียมเอกสารการเรียนรู้ · อยากวาดรูปหรือทำกิจกรรมร่วมกัน? ไปที่ <Link href="/canvas" className="font-medium text-purple-700 underline">🎨 Garden Canvas</Link></p>
           <label className="card mx-auto mt-6 flex max-w-2xl items-center gap-3 px-4 py-3">
             <Search size={20} className="text-purple-400" />
             <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="ค้นหาเอกสาร แม่แบบ หรือพิมพ์สิ่งที่อยากสร้าง…" className="min-w-0 flex-1 bg-transparent py-1 text-base outline-none" aria-label="ค้นหา" />

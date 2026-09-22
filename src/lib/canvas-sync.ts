@@ -10,8 +10,8 @@ import type { SyncMessage } from "@/types/canvas";
  */
 export type SyncMode = "ws" | "local" | "connecting";
 
-export interface CanvasSync {
-  send: (m: SyncMessage) => void;
+export interface CanvasSync<M = SyncMessage> {
+  send: (m: M) => void;
   close: () => void;
   mode: () => SyncMode;
 }
@@ -24,7 +24,7 @@ export function wsUrl() {
   return `${proto}://${window.location.hostname}:3003`;
 }
 
-export function connectRoom(room: string, onMessage: (m: SyncMessage) => void, onMode?: (m: SyncMode) => void): CanvasSync {
+export function connectRoom<M = SyncMessage>(room: string, onMessage: (m: M) => void, onMode?: (m: SyncMode) => void): CanvasSync<M> {
   let mode: SyncMode = "connecting";
   let ws: WebSocket | null = null;
   let bc: BroadcastChannel | null = null;
@@ -35,7 +35,7 @@ export function connectRoom(room: string, onMessage: (m: SyncMessage) => void, o
     if (bc || closed) return;
     try {
       bc = new BroadcastChannel(`lpg-canvas-${room}`);
-      bc.onmessage = (e) => onMessage(e.data as SyncMessage);
+      bc.onmessage = (e) => onMessage(e.data as M);
       setMode("local");
     } catch { setMode("local"); }
   };
@@ -48,7 +48,7 @@ export function connectRoom(room: string, onMessage: (m: SyncMessage) => void, o
     } catch { return useLocal(); }
     const timeout = setTimeout(() => { if (ws && ws.readyState !== WebSocket.OPEN) { ws.close(); } }, 2500);
     ws.onopen = () => { clearTimeout(timeout); setMode("ws"); bc?.close(); bc = null; };
-    ws.onmessage = (e) => { try { onMessage(JSON.parse(e.data as string) as SyncMessage); } catch { /* ข้าม */ } };
+    ws.onmessage = (e) => { try { onMessage(JSON.parse(e.data as string) as M); } catch { /* ข้าม */ } };
     ws.onerror = () => { /* onclose จะจัดการ */ };
     ws.onclose = () => { clearTimeout(timeout); ws = null; if (closed) return; useLocal(); setTimeout(() => { if (!closed) tryWs(); }, 8000); };
   };

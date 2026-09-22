@@ -11,7 +11,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const bare = /^\/worksheets\/[^/]+\/print/.test(pathname);
   if (bare) return <>{children}</>;
 
-  const studioEditor = /^\/studio\/[^/]+/.test(pathname);
+  const studioEditor = /^\/(studio|canvas)\/[^/]+/.test(pathname);
   return (
     <div className="flex min-h-dvh flex-col">
       <Header />

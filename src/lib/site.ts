@@ -80,6 +80,8 @@ export const NAV_ITEMS: NavItem[] = [
     tint: "bg-yellow-soft",
   },
   { href: "/studio", emoji: "🌱", label: "Garden Studio · ห้องสร้างสื่อ", description: "สร้าง แก้ไข และจัดเก็บแผน/กำหนดการสอน/เอกสาร บันทึกอัตโนมัติ", tint: "bg-mint-soft" },
+  { href: "/online-classroom", emoji: "💻", label: "ห้องเรียนออนไลน์", description: "เรียนสด แชตประจำห้อง ดาวให้กำลังใจ บันทึกการสอนและดูย้อนหลัง — ครู เด็ก ผู้ปกครอง", tint: "bg-sky-soft" },
+  { href: "/canvas", emoji: "🎨", label: "Garden Canvas · กระดาษสร้างสรรค์", description: "วาด เล่น ทดลอง และสร้างสรรค์ร่วมกัน — ครู เด็ก ผู้ปกครอง วาดบนกระดาษเดียวกันแบบ real-time", tint: "bg-pink-soft" },
   { href: "/activities", emoji: "🧸", label: "กิจกรรมการเรียนรู้", description: "ไอเดียกิจกรรมพร้อมจุดประสงค์และขั้นตอน", tint: "bg-pink-soft" },
   { href: "/media", emoji: "🎨", label: "สื่อการเรียนการสอน", description: "บัตรภาพ เพลง นิทาน และสื่อทำมือ", tint: "bg-yellow-soft" },
   { href: "/weekly", emoji: "🗓️", label: "แผนรายสัปดาห์", description: "ภาพรวมกิจกรรม จันทร์–ศุกร์ ของแต่ละสัปดาห์", tint: "bg-sky-soft" },
@@ -93,7 +95,7 @@ export const NAV_ITEMS: NavItem[] = [
 export const MAIN_MENU_COUNT = 6;
 
 /** ลำดับ "เมนู" ตามบรีฟ: กำหนดการสอน → แผนฯ → โครงการ → 6 กิจกรรมหลัก → เกม → ใบงาน → สื่อการเรียนการสอน */
-const MENU_ORDER = ["/schedules", "/plans", "/projects", "/core-activities", "/games", "/worksheets", "/media", "/studio"];
+const MENU_ORDER = ["/schedules", "/plans", "/projects", "/core-activities", "/games", "/worksheets", "/media", "/online-classroom", "/studio", "/canvas"];
 export const MENU_ITEMS: NavItem[] = MENU_ORDER.map((h) => NAV_ITEMS.find((n) => n.href === h)!);
 export const LIBRARY_ITEMS: NavItem[] = NAV_ITEMS.slice(MAIN_MENU_COUNT).filter((n) => !MENU_ORDER.includes(n.href));
 

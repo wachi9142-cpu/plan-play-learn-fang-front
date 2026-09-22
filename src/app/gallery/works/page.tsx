@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getGalleryByKind } from "@/data/gallery";
 import { PageHeader, Tag } from "@/components/ui";
 import { GalleryGrid } from "@/components/partials/GalleryGrid";
+import { PublishedWorks } from "@/components/partials/PublishedWorks";
 
 export const metadata: Metadata = { title: "ผลงานเด็ก" };
 
@@ -12,6 +13,7 @@ export default function WorksPage() {
       <PageHeader emoji="🖼️" title="ผลงานเด็ก" description="ผลงานศิลปะ งานปั้น และชิ้นงานจากกิจกรรมของเด็ก ๆ เชื่อมกับแผนที่ทำกิจกรรมนั้น">
         <Tag tone="purple">{items.length} ผลงาน</Tag>
       </PageHeader>
+      <PublishedWorks />
       <GalleryGrid items={items} emptyTitle="ยังไม่มีผลงานเด็ก" />
     </div>
   );
