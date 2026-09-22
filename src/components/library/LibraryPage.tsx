@@ -20,9 +20,10 @@ export function LibraryPage() {
   const [unit, setUnit] = useState("");
   const [q, setQ] = useState("");
   const [open, setOpen] = useState<LibItem | null>(null);
+  const [rooms, setRooms] = useState<ReturnType<typeof listRooms>>([]);
 
   useEffect(() => {
-    const load = () => buildLibrary().then(setItems).catch(() => setItems([]));
+    const load = () => { buildLibrary().then(setItems).catch(() => setItems([])); setRooms(listRooms()); };
     load();
     const evs = ["lpg-assets-change", CLASS_EVENT, CURRICULUM_EVENT, CANVAS_EVENT, "lpg-studio-change"];
     evs.forEach((e) => window.addEventListener(e, load));
@@ -33,7 +34,7 @@ export function LibraryPage() {
     (!kind || i.kind === kind) && (!source || i.source === source) && (!room || i.roomId === room) && (!unit || i.unitId === unit) &&
     (!q.trim() || `${i.title} ${i.sourceLabel} ${i.tags.join(" ")}`.toLowerCase().includes(q.trim().toLowerCase()))
   ), [items, kind, source, room, unit, q]);
-  const rooms = listRooms();
+
 
   return (
     <div className="container-page py-6 sm:py-10">

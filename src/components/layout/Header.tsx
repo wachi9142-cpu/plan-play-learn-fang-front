@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronDown, LogIn, Menu, X } from "lucide-react";
 import { PRIMARY_NAV, SITE, TOP_LINKS, type NavItem } from "@/lib/site";
 import { cn } from "@/lib/cn";
+import { ThaiClock } from "./ThaiClock";
 
 export function Header() {
   const pathname = usePathname();
@@ -51,21 +52,25 @@ export function Header() {
               <span className="hidden xl:inline">{item.emoji} </span>{item.label}
             </Link>
           ))}
-          <Link href="/login" className={cn("ml-2 inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-4 py-2 text-[15px] font-medium shadow-soft transition", pathname === "/login" ? "bg-purple-700 text-white" : "bg-purple-600 text-white hover:bg-purple-700")}>
+          <ThaiClock className="ml-1" />
+          <Link href="/login" className={cn("ml-1 inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-4 py-2 text-[15px] font-medium shadow-soft transition", pathname === "/login" ? "bg-purple-700 text-white" : "bg-purple-600 text-white hover:bg-purple-700")}>
             <LogIn size={16} /> เข้าสู่ระบบ
           </Link>
         </nav>
 
-        <button
+        <div className="flex items-center gap-2 lg:hidden">
+          <ThaiClock />
+          <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="tap grid place-items-center rounded-xl border border-line bg-white text-purple-700 lg:hidden"
+          className="tap grid place-items-center rounded-xl border border-line bg-white text-purple-700"
           aria-expanded={open}
           aria-controls="mobile-menu"
           aria-label={open ? "ปิดเมนู" : "เปิดเมนู"}
         >
           {open ? <X size={22} /> : <Menu size={22} />}
-        </button>
+          </button>
+        </div>
       </div>
     </header>
 

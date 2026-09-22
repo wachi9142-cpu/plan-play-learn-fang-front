@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowLeft, Copy, Save, Trash2, WifiOff, X } from "lucide-react";
+import { Copy, Save, Trash2, WifiOff, X } from "lucide-react";
 import { DownloadMenu } from "./DownloadMenu";
 import type { Block, DocStatus, SaveStatus, StudioAsset, StudioDoc, TextStyle } from "@/types";
 import { DOC_STATUS, DOC_TYPES, deleteDoc, duplicateDoc, saveDocLocal, syncDoc, syncPending, uid } from "@/lib/studio-store";
 import { getAsset } from "@/lib/studio-assets";
 import { BlockView, InsertMenu, blockFromAsset, newBlock } from "./BlockEditor";
 import { DRAG_MIME } from "./AssetPanel";
+import { BackButton } from "@/components/ui";
 import { FormatToolbar, Tb } from "./FormatToolbar";
 import { ElementsPanel, LinksPanel, ProjectsPanel, RAIL, TemplatesPanel, UploadsPanel, type RailTab } from "./SidePanels";
 import { CurriculumPanel, CurriculumSplit, type PickedLine } from "@/components/curriculum/CurriculumPanel";
@@ -133,7 +134,8 @@ export function DocEditor({ initial }: { initial: StudioDoc }) {
       {/* แถบบนของเอกสาร */}
       <div className="no-print sticky top-16 z-30 border-b border-line bg-white/95 backdrop-blur">
         <div className="flex flex-wrap items-center gap-2 px-3 py-2 sm:px-4">
-          <Link href="/studio" className="tap inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[14px] text-purple-700 hover:bg-purple-50"><ArrowLeft size={16} /> Studio</Link>
+          <BackButton fallback="/studio" />
+          <Link href="/studio" className="tap inline-flex items-center gap-1 rounded-full px-2.5 py-1.5 text-[14px] text-purple-700 hover:bg-purple-50">🌱 Studio</Link>
           <span className="rounded-full bg-purple-100 px-2.5 py-0.5 text-[12px] text-purple-800">{t.emoji} {t.label}</span>
           {doc.links.curriculumId && <button type="button" onClick={() => { setTab("curriculum"); setSplit(true); }} className="rounded-full bg-cream px-2.5 py-0.5 text-[12px] text-purple-700 ring-1 ring-line hover:bg-purple-50" title="เปิดหลักสูตรคู่กับแผน">📚 {curriculumTitle}</button>}
           <select value={doc.status} onChange={(e) => update({ status: e.target.value as DocStatus })} className={cn("h-7 rounded-full border-0 px-2.5 text-[12px] font-medium", ds.cls)} title="สถานะเอกสาร">

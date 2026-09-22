@@ -9,7 +9,7 @@ import { cn } from "@/lib/cn";
 import { CURRICULUM_EVENT, LEVELS, STATUS, addCurriculumFile, deleteCurriculum, duplicateStructure, fmtSize, getCurriculum, listCurricula, mainPdf, removeCurriculumFile, setStructure, toggleBookmark, updateCurriculum } from "@/lib/curriculum-store";
 import { getAsset, fileEmoji } from "@/lib/studio-assets";
 import { uid } from "@/lib/studio-store";
-import { EmptyState } from "@/components/ui";
+import { BackButton, EmptyState } from "@/components/ui";
 import { PdfReader } from "./PdfReader";
 
 type Tab = "info" | "read" | "structure";
@@ -30,7 +30,7 @@ export function CurriculumDetail({ id }: { id: string }) {
 
   return (
     <div className="container-page py-5 sm:py-8">
-      <Link href="/curriculum" className="text-[13px] text-purple-700 hover:underline">← หลักสูตรทั้งหมด</Link>
+      <span className="flex items-center gap-1"><BackButton fallback="/curriculum" /><Link href="/curriculum" className="text-[13px] text-purple-700 hover:underline">📚 หลักสูตรทั้งหมด</Link></span>
       <header className="mt-2 flex flex-wrap items-center gap-3">
         <span className="grid size-14 place-items-center rounded-2xl bg-purple-100 text-3xl">📕</span>
         <div className="min-w-0 flex-1"><h1 className="text-2xl leading-tight sm:text-3xl">{c.title}</h1><p className="text-[13px] text-ink-soft">{lv.emoji} {lv.label} · พ.ศ. {c.year} · เพิ่มโดย {c.addedBy} · {new Date(c.createdAt).toLocaleDateString("th-TH")}</p></div>

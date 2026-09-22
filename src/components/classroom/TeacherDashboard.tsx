@@ -9,6 +9,7 @@ import { connectRoom, type CanvasSync } from "@/lib/canvas-sync";
 import type { LiveMessage } from "@/types/classroom";
 import { participation } from "@/lib/live-room";
 import { WhoAmI } from "./WhoAmI";
+import { BackButton } from "@/components/ui";
 
 /** 🧑‍🏫 Teacher Dashboard — ภาพรวมทุกห้อง: จำนวนเด็ก · ออนไลน์ · สัญญาณ · การมีส่วนร่วม · ดาว · คลัง */
 export function TeacherDashboard() {
@@ -39,7 +40,7 @@ export function TeacherDashboard() {
 
   return (
     <div className="container-page py-6 sm:py-10">
-      <div className="flex flex-wrap items-center gap-3"><Link href="/online-classroom" className="text-[13px] text-purple-700 hover:underline">← ห้องเรียนออนไลน์</Link></div>
+      <div className="flex flex-wrap items-center gap-3"><BackButton fallback="/online-classroom" /><Link href="/online-classroom" className="text-[13px] text-purple-700 hover:underline">💻 ห้องเรียนออนไลน์</Link></div>
       <h1 className="mt-2 text-3xl">🧑‍🏫 Teacher Dashboard</h1>
       <p className="text-[14px] text-ink-soft">สวัสดีค่ะ {me.name} — ภาพรวมห้องเรียนทั้งหมด {rooms.length} ห้อง · 👧 {totalKids} คน · 🟢 ออนไลน์ตอนนี้ {totalOnline}</p>
       <div className="mt-3 flex flex-wrap gap-2 text-[12px]"><span className="rounded-full bg-white px-2.5 py-1 ring-1 ring-line">🌐 Connection: 🟢 ปกติ · 🟠 ไม่เสถียร · 🔴 หลุด</span><span className="rounded-full bg-white px-2.5 py-1 ring-1 ring-line">🙋 Participation: 🟢 ร่วม · 🟡 ไม่แน่ใจ · 🔴 ไม่ร่วม</span></div>

@@ -1,0 +1,8 @@
+import type { Metadata } from "next";
+import { PortfolioPage } from "@/components/portfolio/PortfolioPage";
+
+export const metadata: Metadata = { title: "แฟ้มผลงานเด็ก" };
+
+export default function Page() {
+  return <PortfolioPage />;
+}

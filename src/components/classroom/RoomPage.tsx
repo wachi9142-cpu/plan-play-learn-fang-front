@@ -11,6 +11,7 @@ import { ChatPanel } from "./ChatPanel";
 import { ArchivePanel } from "./ArchivePanel";
 import { MembersPanel, RoomSettings, StarsPanel } from "./RoomPanels";
 import { WhoAmI } from "./WhoAmI";
+import { BackButton } from "@/components/ui";
 import { Avatar, AvatarPicker } from "@/components/profile/Avatar";
 
 type Tab = "live" | "chat" | "archive" | "stars" | "members" | "settings";
@@ -49,7 +50,8 @@ export function RoomPage({ id, initialTab }: { id: string; initialTab?: Tab }) {
   return (
     <div className="container-page py-4 sm:py-6">
       <div className="flex flex-wrap items-center gap-3">
-        <Link href="/online-classroom" className="text-[13px] text-purple-700 hover:underline">← ห้องเรียนออนไลน์</Link>
+        <BackButton fallback="/online-classroom" />
+        <Link href="/online-classroom" className="text-[13px] text-purple-700 hover:underline">💻 ห้องเรียนออนไลน์</Link>
         <span className={cn("rounded-full px-2.5 py-0.5 text-[12px]", g.tint)}>{g.emoji} {g.label}</span>
         {room.status === "closed" && <span className="rounded-full bg-red-50 px-2.5 py-0.5 text-[12px] text-red-600">🔒 ปิดห้องชั่วคราว</span>}
         <button type="button" onClick={() => setAvatar(true)} className="ml-auto inline-flex items-center gap-2 rounded-full bg-white px-2 py-1 text-[13px] ring-1 ring-line hover:bg-purple-50"><Avatar name={me.name} size={26} /> {me.name} <span className="text-ink-soft">({isTeacher ? "ครู" : me.role === "parent" ? "ผู้ปกครอง" : "นักเรียน"})</span></button>

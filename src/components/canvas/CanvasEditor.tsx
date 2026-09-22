@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Check, Copy, Download, Eraser, ImagePlus, Link2, Loader2, Printer, Redo2, Save, Share2, Trash2, Undo2, Users } from "lucide-react";
+import { Check, Copy, Download, Eraser, ImagePlus, Link2, Loader2, Printer, Redo2, Save, Share2, Trash2, Undo2, Users } from "lucide-react";
 import type { CanvasDoc, CanvasOp, CanvasTemplateId, CanvasTool, EraserShape, Participant, Pt, SyncMessage } from "@/types/canvas";
 import { cn } from "@/lib/cn";
 import { CANVAS_TEMPLATES } from "@/lib/canvas-render";
 import { ROLE_EMOJI, addToPortfolio, getMe, saveCanvas } from "@/lib/canvas-store";
 import { connectRoom, type CanvasSync, type SyncMode } from "@/lib/canvas-sync";
 import { uid } from "@/lib/studio-store";
+import { BackButton } from "@/components/ui";
 import { CanvasBoard, type BoardHandle } from "./CanvasBoard";
 import { JoinDialog } from "./JoinDialog";
 
@@ -148,7 +149,8 @@ export function CanvasEditor({ initial }: { initial: CanvasDoc }) {
       {/* แถบบน */}
       <div className="no-print sticky top-16 z-30 border-b border-line bg-white/95 backdrop-blur">
         <div className="flex flex-wrap items-center gap-2 px-3 py-2 sm:px-4">
-          <Link href="/canvas" className="tap inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[14px] text-purple-700 hover:bg-purple-50"><ArrowLeft size={16} /> 🎨 Garden Canvas</Link>
+          <BackButton fallback="/canvas" />
+          <Link href="/canvas" className="tap inline-flex items-center gap-1 rounded-full px-2.5 py-1.5 text-[14px] text-purple-700 hover:bg-purple-50">🎨 Garden Canvas</Link>
           <span className="rounded-full bg-pink-soft px-2.5 py-0.5 text-[12px] text-purple-800">🎨 {room ? "วาดร่วมกัน" : "วาดคนเดียว"}</span>
           <input value={doc.title} onChange={(e) => changeTitle(e.target.value)} placeholder="ชื่อกิจกรรม" className="min-w-0 flex-1 rounded-lg bg-transparent px-2 py-1 font-display text-[16px] text-purple-800 outline-none hover:bg-purple-50 focus:bg-purple-50" aria-label="ชื่อกิจกรรม" />
           <div className="ml-auto flex flex-wrap items-center gap-1.5">

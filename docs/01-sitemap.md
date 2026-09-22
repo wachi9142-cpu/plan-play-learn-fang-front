@@ -38,13 +38,13 @@
 | เข้าห้องด้วยลิงก์/รหัสเชิญ | `/online-classroom/join/[code]` | ✅ |
 | 🌱 Garden Studio (เอกสาร/สไลด์/สเปรดชีต/ตาราง/ส่งออก) | `/studio`, `/studio/[id]` | ✅ |
 | 🎨 Garden Canvas (วาดคนเดียว / วาดร่วมกัน real-time) | `/canvas`, `/canvas/[id]`, `/canvas/room/[code]` | ✅ |
-| 📚 Garden Library (คลังสื่อรวม) | `/library` | ⏳ ถัดไป |
+| 🗂️ Garden Library (คลังสื่อรวมทุกระบบ) | `/library` | ✅ |
 | 📝 งาน/การบ้าน | ผ่านแชตห้อง (ประเภท "การบ้าน", "ส่งงาน") | 🟡 พื้นฐาน |
-| 🏆 Portfolio (แฟ้มผลงานเด็ก) | `/canvas` (แฟ้ม) + `/gallery/works` (เผยแพร่) | 🟡 พื้นฐาน · รอความคิดเห็นครู/หมวดหมู่ |
-| 📈 ติดตามพัฒนาการ 4 ด้าน | `/development` | ⏳ ถัดไป |
+| 🏆 Portfolio (หมวดหมู่ · ความคิดเห็นครู · Private/Gallery) | `/portfolio` | ✅ |
+| 📈 ติดตามพัฒนาการ 4 ด้าน | `/development` | ✅ |
 | ⭐ ระบบดาว | `/online-classroom/[id]?tab=stars` | ✅ |
 | 💬 Chat | `/online-classroom/[id]?tab=chat` | ✅ |
-| 👑 Admin / CMS | `/admin` | ⏳ ถัดไป |
+| 👑 Admin / CMS (ภาพรวม · ทางลัด · สำรอง/กู้คืน) | `/admin` | ✅ |
 
 ## Navigation ตามขนาดจอ
 - **มือถือ (≤ 767px)**: โลโก้ + ☰ (เมนูเต็มจอ) + แถบลอย (📢 📝 🎮 🏆 🔍)

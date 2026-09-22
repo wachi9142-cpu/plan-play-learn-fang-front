@@ -10,7 +10,7 @@ const mmss = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, 
 export interface GameOutcome { mistakes: number; total: number; seconds: number; timeUp: boolean; stars: number }
 
 /**
- * กรอบเกมที่ใช้ร่วมกันทุก engine: คำสั่ง · ความคืบหน้า · เริ่มใหม่ · จับเวลา (เฉพาะระดับที่กำหนด) · หน้าจบเกมแบบให้กำลังใจ
+ * กรอบเกมที่ใช้ร่วมกันทุก engine: คำสั่ง · ความคืบหน้า · เริ่มใหม่ · ⏱ จับเวลา (นับขึ้นทุกเกม · นับถอยหลังเมื่อกำหนด timeLimit) · หน้าจบเกมแบบให้กำลังใจ
  * mistakes/total → คำนวณดาว 2–5 · onDone ถูกเรียกครั้งเดียวเมื่อจบ
  */
 export function GameShell({ instruction, progress, done, onRestart, children, stats, mistakes = 0, total = 1, timeLimit, onDone }: {
@@ -54,7 +54,6 @@ export function GameShell({ instruction, progress, done, onRestart, children, st
     onDone?.({ mistakes, total, seconds: Math.round((Date.now() - start.current) / 1000), timeUp: timeUp && !done, stars });
   }, [finished]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const finalSec = Math.round((Date.now() - start.current) / 1000) > elapsed + 2 ? elapsed : elapsed;
   const praise = PRAISE[stars];
   return (
     <div className="card overflow-hidden">
@@ -78,7 +77,7 @@ export function GameShell({ instruction, progress, done, onRestart, children, st
             <p className="font-display text-2xl text-purple-800 sm:text-3xl">{timeUp && !done ? "หมดเวลาแล้ว ลองอีกครั้งนะ" : praise.title}</p>
             <div className="mt-1 flex gap-0.5 text-3xl" aria-label={`${stars} จาก 5 ดาว`}>{Array.from({ length: 5 }, (_, i) => <span key={i} className={i < stars ? "" : "opacity-25 grayscale"}>⭐</span>)}</div>
             <p className="font-display text-lg text-purple-700">{stars} / 5 คะแนน</p>
-            <p className="text-base text-ink-soft">“{timeUp && !done ? "ไม่เป็นไรนะ ค่อย ๆ คิดอีกทีนะ" : praise.text}”{stats && ` · ${stats}`} · ⏱ ใช้เวลา {mmss(finalSec)}</p>
+            <p className="text-base text-ink-soft">“{timeUp && !done ? "ไม่เป็นไรนะ ค่อย ๆ คิดอีกทีนะ" : praise.text}”{stats && ` · ${stats}`} · ⏱ ใช้เวลา {mmss(elapsed)}</p>
             <button type="button" onClick={restart} className="tap mt-2 inline-flex items-center gap-2 rounded-full bg-purple-600 px-6 py-3 text-base font-medium text-white shadow-soft hover:bg-purple-700"><RotateCcw size={18} /> เล่นอีกครั้ง</button>
           </div>
         )}

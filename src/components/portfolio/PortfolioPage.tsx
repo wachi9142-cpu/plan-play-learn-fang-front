@@ -90,7 +90,8 @@ const Chip = ({ active, onClick, children }: { active: boolean; onClick: () => v
 
 function Detail({ item, isTeacher, onClose }: { item: PortfolioItem; isTeacher: boolean; onClose: () => void }) {
   const [comment, setComment] = useState(item.teacherComment ?? "");
-  const rooms = listRooms();
+  const [rooms, setRooms] = useState<ReturnType<typeof listRooms>>([]);
+  useEffect(() => setRooms(listRooms()), []);
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-ink/60 p-3" onClick={onClose}>
       <div className="card max-h-[92dvh] w-full max-w-2xl overflow-y-auto p-4" onClick={(e) => e.stopPropagation()}>

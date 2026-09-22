@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { DEV_EVENT, DOMAINS, LEVELS, addDev, devChildren, listDev, removeDev, summary, updateDev, type Domain, type Level } from "@/lib/development-store";
@@ -18,12 +18,16 @@ export function DevelopmentPage() {
   const [add, setAdd] = useState(false);
   useEffect(() => { setMe(getClassMe()); const l = () => setTick((t) => t + 1); window.addEventListener(DEV_EVENT, l); window.addEventListener(CLASS_EVENT, l); return () => { window.removeEventListener(DEV_EVENT, l); window.removeEventListener(CLASS_EVENT, l); }; }, []);
   const isTeacher = me?.role === "teacher";
-  const kidsInRooms = useMemo(() => listRooms().flatMap((r) => listMembers(r.id).filter((m) => m.role === "child").map((m) => m.name)), [tick]); // eslint-disable-line react-hooks/exhaustive-deps
-  const allChildren = useMemo(() => Array.from(new Set([...kidsInRooms, ...devChildren()])), [kidsInRooms, tick]); // eslint-disable-line react-hooks/exhaustive-deps
+  const [allChildren, setAllChildren] = useState<string[]>([]);
+  useEffect(() => { const kids = listRooms().flatMap((r) => listMembers(r.id).filter((m) => m.role === "child").map((m) => m.name)); setAllChildren(Array.from(new Set([...kids, ...devChildren()]))); }, [tick]);
   const mine = me?.role === "parent" ? me.childName : me?.role === "child" ? me.name : undefined;
   const children = isTeacher ? allChildren : mine ? [mine] : [];
   const selected = child || children[0] || "";
-  const records = useMemo(() => listDev().filter((r) => r.childName === selected), [selected, tick]); // eslint-disable-line react-hooks/exhaustive-deps
+  const [records, setRecords] = useState<ReturnType<typeof listDev>>([]);
+  useEffect(() => { setRecords(listDev().filter((r) => r.childName === selected)); }, [selected, tick]);
+
+  const [sums, setSums] = useState<ReturnType<typeof summary>>([]);
+  useEffect(() => { if (selected) setSums(summary(selected)); }, [selected, tick, records.length]);
 
   if (me === undefined) return null;
   if (!me) return <div className="container-page py-8"><WhoAmI onDone={setMe} /></div>;
@@ -47,7 +51,7 @@ export function DevelopmentPage() {
           </div>
 
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {summary(selected).map(({ domain, count, latest }) => (
+            {sums.map(({ domain, count, latest }) => (
               <div key={domain.id} className={cn("card p-4", domain.tint)}>
                 <p className="text-3xl">{domain.emoji}</p>
                 <p className="font-display text-[16px] text-purple-800">{domain.label}</p>
@@ -88,8 +92,10 @@ export function DevelopmentPage() {
 }
 
 function AddDialog({ child, by, onClose }: { child: string; by: string; onClose: () => void }) {
-  const [f, setF] = useState({ domain: "physical" as Domain, note: "", level: "progress" as Level, indicator: "", curriculumId: activeCurricula()[0]?.id ?? "" });
-  const cur = activeCurricula().find((c) => c.id === f.curriculumId);
+  const [f, setF] = useState({ domain: "physical" as Domain, note: "", level: "progress" as Level, indicator: "", curriculumId: "" });
+  const [curs, setCurs] = useState<ReturnType<typeof activeCurricula>>([]);
+  useEffect(() => { const cs = activeCurricula(); setCurs(cs); setF((x) => ({ ...x, curriculumId: x.curriculumId || (cs[0]?.id ?? "") })); }, []);
+  const cur = curs.find((c) => c.id === f.curriculumId);
   const states = cur ? cur.structure.standards.flatMap((s) => s.indicators.flatMap((i) => i.states.map((st) => `${s.code} ${i.code} · ${st.code} ${st.text}`))) : [];
   return (
     <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-ink/40 p-4" onClick={onClose}>

@@ -80,6 +80,9 @@ export const NAV_ITEMS: NavItem[] = [
     tint: "bg-yellow-soft",
   },
   { href: "/studio", emoji: "🌱", label: "Garden Studio · ห้องสร้างสื่อ", description: "สร้าง แก้ไข และจัดเก็บแผน/กำหนดการสอน/เอกสาร บันทึกอัตโนมัติ", tint: "bg-mint-soft" },
+  { href: "/library", emoji: "🗂️", label: "Garden Library · คลังสื่อ", description: "รูป วิดีโอ เสียง PDF Word PPT และผลงาน รวมจากทุกระบบในที่เดียว", tint: "bg-mint-soft" },
+  { href: "/portfolio", emoji: "🏆", label: "แฟ้มผลงานเด็ก", description: "ผลงานเด็กพร้อมหมวดหมู่ ความคิดเห็นครู และการเลือกเผยแพร่", tint: "bg-pink-soft" },
+  { href: "/development", emoji: "📈", label: "ติดตามพัฒนาการ", description: "บันทึกพัฒนาการ 4 ด้าน เชื่อมกับสภาพที่พึงประสงค์ในหลักสูตร", tint: "bg-sky-soft" },
   { href: "/curriculum", emoji: "📚", label: "หลักสูตร", description: "หลักสูตรทุกฉบับ/ทุกปี พร้อมไฟล์ PDF อ่านในเว็บ และโครงสร้างมาตรฐาน–ตัวบ่งชี้–สภาพที่พึงประสงค์", tint: "bg-purple-50" },
   { href: "/online-classroom", emoji: "💻", label: "ห้องเรียนออนไลน์", description: "เรียนสด แชตประจำห้อง ดาวให้กำลังใจ บันทึกการสอนและดูย้อนหลัง — ครู เด็ก ผู้ปกครอง", tint: "bg-sky-soft" },
   { href: "/canvas", emoji: "🎨", label: "Garden Canvas · กระดาษสร้างสรรค์", description: "วาด เล่น ทดลอง และสร้างสรรค์ร่วมกัน — ครู เด็ก ผู้ปกครอง วาดบนกระดาษเดียวกันแบบ real-time", tint: "bg-pink-soft" },
@@ -96,7 +99,7 @@ export const NAV_ITEMS: NavItem[] = [
 export const MAIN_MENU_COUNT = 6;
 
 /** ลำดับ "เมนู" ตามบรีฟ: กำหนดการสอน → แผนฯ → โครงการ → 6 กิจกรรมหลัก → เกม → ใบงาน → สื่อการเรียนการสอน */
-const MENU_ORDER = ["/schedules", "/plans", "/projects", "/core-activities", "/games", "/worksheets", "/media", "/curriculum", "/online-classroom", "/studio", "/canvas"];
+const MENU_ORDER = ["/schedules", "/plans", "/projects", "/core-activities", "/games", "/worksheets", "/media", "/curriculum", "/online-classroom", "/library", "/portfolio", "/development", "/studio", "/canvas"];
 export const MENU_ITEMS: NavItem[] = MENU_ORDER.map((h) => NAV_ITEMS.find((n) => n.href === h)!);
 export const LIBRARY_ITEMS: NavItem[] = NAV_ITEMS.slice(MAIN_MENU_COUNT).filter((n) => !MENU_ORDER.includes(n.href));
 
