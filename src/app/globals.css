@@ -157,14 +157,18 @@ img, svg { max-width: 100%; height: auto; }
 }
 .sheet-compact { min-height: 0; padding: 8mm; }
 .sheet-header { border-bottom: 2px solid #333; padding-bottom: 8px; margin-bottom: 14px; }
-.sheet-body { flex: 1; }
+.sheet-body { flex: 1; display: flex; flex-direction: column; }
+.sheet-body > * { flex: 1; }
+.fill { flex: 1; min-height: 0; }
+.fill-col { flex: 1; display: flex; flex-direction: column; }
 .sheet-footer { margin-top: 14px; display: flex; justify-content: space-between; font-size: 12px; color: #777; border-top: 1px dashed #bbb; padding-top: 6px; }
 
-.trace-row { display: flex; align-items: center; gap: 6px; border-bottom: 1px solid #ddd; padding: 4px 0; min-height: 46px; }
-.trace-row > span { flex: 1; text-align: center; font-family: var(--font-display); font-size: 30px; line-height: 1; }
+/* แถวคัด: 1 ตัวต่อบรรทัด ตัวใหญ่ เว้นช่องกว้าง ให้เด็กเล็กเขียนสะดวก */
+.trace-row { display: flex; align-items: center; gap: 10px; border-bottom: 1.5px solid #ddd; padding: 6px 0; min-height: 56px; }
+.trace-row > span { flex: 1; text-align: center; font-family: var(--font-display); font-size: 44px; line-height: 1; }
 .trace-solid { color: #222; }
-.trace-ghost { color: #c8c8c8; }
-.trace-blank { border-bottom: 2px dotted #bbb; height: 28px; }
+.trace-ghost { color: #d0d0d0; }
+.trace-blank { border-bottom: 2px dotted #bbb; height: 44px; }
 
 /* emoji แบบเส้นจาง ๆ ให้เด็กระบายสี */
 .emoji-outline { filter: grayscale(1) contrast(1.4) brightness(0.95) opacity(0.4); }
