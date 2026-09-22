@@ -57,7 +57,7 @@ export default async function GamePage({ params }: { params: Promise<Params> }) 
           <h2 className="mb-3 text-lg">🎯 ข้อมูลเกม</h2>
           <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 text-[15px]">
             <dt className="text-ink-soft">👶 เหมาะสำหรับ</dt><dd><Tag tone="yellow">{game.ages ?? grade?.ages}</Tag> {bandsForRange(game.ages ?? grade?.ages).map((b) => { const band = AGE_BANDS.find((x) => x.id === b)!; return <Tag key={b} tone="mint">{band.emoji} {band.label}</Tag>; })}</dd>
-            <dt className="text-ink-soft">🏫 ระดับ</dt><dd><Tag tone="pink">{grade?.name}</Tag></dd>
+            <dt className="text-ink-soft">🏫 ระดับ</dt><dd><Tag tone="pink">{grade?.name ?? (game.gradeId === "primary" ? "ประถมศึกษา" : game.gradeId === "secondary" ? "มัธยมศึกษา" : game.gradeId)}</Tag></dd>
             <dt className="text-ink-soft">🎯 ระดับความยาก</dt><dd className="space-y-0.5 text-[13px]">{LEVELS.map((l) => { const i = applyDifficulty(game.config, l.id).info; return <div key={l.id}>{l.emoji} {l.label}: {i.questions} ข้อ · {i.note}{i.timeLimit ? ` · ⏱ ${i.timeLimit} วิ` : ""}</div>; })}</dd>
             <dt className="text-ink-soft">คะแนน</dt><dd>⭐ เต็ม 5 ดาว · บันทึกจำนวนครั้งที่เล่น</dd>
             <dt className="text-ink-soft">การเล่น</dt><dd>🌐 เล่นออนไลน์ได้ · 📥 ดาวน์โหลดเล่นออฟไลน์ได้ · 🔄 ซิงก์ผลเมื่อออนไลน์</dd>

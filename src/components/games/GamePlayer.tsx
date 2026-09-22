@@ -8,6 +8,8 @@ import { ColorMatchGame } from "./engines/ColorMatchGame";
 import { TilePuzzleGame } from "./engines/TilePuzzleGame";
 import { PairColumnsGame } from "./engines/PairColumnsGame";
 import { SlidingGame } from "./engines/SlidingGame";
+import { GridPathGame } from "./engines/GridPathGame";
+import { ConditionGame, DirectionGame, PatternGame, QuizGame } from "./engines/LogicGames";
 
 /** ตัวเลือก engine จาก config — เพิ่ม engine ใหม่ที่นี่ที่เดียว · extras มาจากระดับความยาก (เวลา/ตัวช่วย/ผลลัพธ์) */
 export function GamePlayer({ config, extras = {} }: { config: GameConfig; extras?: EngineExtras }) {
@@ -19,6 +21,11 @@ export function GamePlayer({ config, extras = {} }: { config: GameConfig; extras
     case "color-match": return <ColorMatchGame rounds={config.rounds} {...x} />;
     case "tile-puzzle": return <TilePuzzleGame scene={config.scene} size={config.size} hints={extras.hints} {...x} />;
     case "pair-columns": return <PairColumnsGame pairs={config.pairs} {...x} />;
+    case "grid-path": return <GridPathGame actor={config.actor} goal={config.goal} hint={config.hint} level={config.levels[extras.level ?? "easy"]} {...x} />;
+    case "direction": return <DirectionGame rounds={config.rounds} {...x} />;
+    case "pattern": return <PatternGame rounds={config.rounds} {...x} />;
+    case "condition": return <ConditionGame rounds={config.rounds} {...x} />;
+    case "quiz": return <QuizGame title={config.title} rounds={config.rounds} {...x} />;
     case "sliding": return <SlidingGame items={config.items} size={config.size ?? 3} theme={config.theme} scramble={extras.scramble ?? 6} {...x} />;
     case "shadow-match":
       return (

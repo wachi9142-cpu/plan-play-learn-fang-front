@@ -1,0 +1,103 @@
+import type { Worksheet } from "@/types";
+
+/**
+ * 💻 ใบงาน Coding & Computational Thinking — เพิ่มใบงานได้เรื่อย ๆ ที่นี่
+ * ปฐมวัย → ประถม → มัธยม · ทุกใบมี ages (เหมาะกับอายุ) · เชื่อมกับเกม (gameIds) และแผน (planIds)
+ */
+const base = { category: "coding" as const };
+const kinder = { ...base, gradeId: "k1", ages: "4–6 ปี" };
+const primary = { ...base, gradeId: "primary", ages: "7–12 ปี" };
+const secondary = { ...base, gradeId: "secondary", ages: "13–18 ปี" };
+const CT = "Computational Thinking";
+
+export const CODING_WORKSHEETS: Worksheet[] = [
+  /* 🌱 ปฐมวัย */
+  { id: "ws-code-trace-path", ...kinder, title: "ลากเส้นตามคำสั่ง", emoji: "➡️", description: "อ่านคำสั่งลูกศร แล้วลากเส้นจากจุดเริ่มต้นไปยังเป้าหมาย", skills: ["การเรียงลำดับ", CT, "การสังเกต"], tags: ["Coding", "ปฐมวัย", "กระต่ายนักผจญภัย"], planIds: ["coding-rabbit"], gameIds: ["code-direction", "code-rabbit-home"],
+    instructions: ["ครูอ่านคำสั่งลูกศรทีละอันพร้อมเด็ก", "เด็กใช้นิ้วเดินตามก่อน แล้วค่อยลากเส้นด้วยสีเทียน", "ถ้าหลงทาง ชวนเด็กเริ่มใหม่ — ไม่ใช้คำว่าผิด"],
+    template: { kind: "path", actor: "🐱", goal: "🐟", size: 4, start: [0, 3], target: [3, 0], commands: ["⬆️", "⬆️", "➡️", "➡️", "⬆️", "➡️"], prompt: "ลากเส้นให้แมวเดินตามคำสั่งไปหาปลา" } },
+  { id: "ws-code-rabbit-home", ...kinder, title: "ช่วยกระต่ายหาเส้นทางกลับบ้าน", emoji: "🐰", description: "วาดลูกศรตามเส้นทาง แล้ววงกลมคำสั่งที่ต้องใช้ — คู่กับเกมพากระต่ายกลับบ้าน", skills: ["การเรียงลำดับ", "การแก้ปัญหา", CT], tags: ["Coding", "ปฐมวัย", "กระต่ายนักผจญภัย"], planIds: ["coding-rabbit"], gameIds: ["code-rabbit-home"],
+    instructions: ["เล่นเกม 🎮 พากระต่ายกลับบ้าน ก่อน แล้วมาทำใบงาน", "เด็กวาดลูกศรลงในช่องตารางจากกระต่ายไปบ้าน (ห้ามผ่านต้นไม้)", "วงกลมคำสั่งลูกศรด้านล่างให้ตรงกับที่วาด"],
+    template: { kind: "path", actor: "🐰", goal: "🏠", size: 4, start: [0, 3], target: [3, 0], obstacles: [[1, 2], [2, 1]], commands: ["⬆️", "➡️", "⬇️", "⬅️", "⬆️", "➡️", "⬆️", "➡️"], prompt: "วาดลูกศรในช่องให้กระต่ายเดินกลับบ้าน แล้ววงกลมคำสั่งที่ใช้ (ห้ามผ่าน 🌳)" } },
+  { id: "ws-code-bee-flower", ...kinder, title: "พาผึ้งไปหาดอกไม้", emoji: "🐝", description: "หาเส้นทางให้ผึ้งบินไปเก็บน้ำหวาน", skills: ["การวางแผน", CT], tags: ["Coding", "ปฐมวัย"], planIds: ["coding-rabbit"], gameIds: ["code-bee-flower"],
+    instructions: ["ชวนเด็กดูว่าดอกไม้อยู่ทางไหนของผึ้ง", "วาดลูกศรทีละช่อง", "นับว่าใช้ลูกศรกี่อัน"],
+    template: { kind: "path", actor: "🐝", goal: "🌸", size: 4, start: [0, 0], target: [3, 3], obstacles: [[1, 1], [2, 2]], commands: ["⬇️", "➡️", "⬇️", "➡️", "⬇️", "➡️"], prompt: "วาดลูกศรพาผึ้งบินไปหาดอกไม้ (อ้อมต้นไม้นะ)" } },
+  { id: "ws-code-car-route", ...kinder, title: "เส้นทางรถน้อย", emoji: "🚗", description: "ขับรถไปให้ถึงธง วาดเส้นทางและวงกลมคำสั่ง", skills: ["การเรียงลำดับ", "การสังเกต"], tags: ["Coding", "ปฐมวัย"], planIds: ["coding-rabbit"], gameIds: ["code-car-goal"],
+    instructions: ["เด็กวาดเส้นทางจากรถไปธง", "วงกลมคำสั่งที่ใช้"],
+    template: { kind: "path", actor: "🚗", goal: "🏁", size: 4, start: [0, 2], target: [3, 1], obstacles: [[1, 1], [2, 2]], commands: ["⬆️", "➡️", "⬇️", "⬅️", "➡️", "➡️", "⬆️"], prompt: "ขับรถไปถึงธง วาดเส้นทางแล้ววงกลมคำสั่ง" } },
+  { id: "ws-code-sequence-pics", ...kinder, title: "เรียงลำดับภาพ อะไรทำก่อน–หลัง", emoji: "🔢", description: "ใส่ตัวเลข 1–4 ให้ภาพเรียงตามลำดับที่ถูกต้อง", skills: ["การเรียงลำดับ", "การคิดเป็นลำดับ"], tags: ["Coding", "ปฐมวัย", "ลำดับ"], planIds: ["coding-rabbit"], gameIds: ["code-sequence-steps"],
+    instructions: ["ครูเล่าเรื่องจากภาพ", "เด็กเขียนตัวเลขลำดับในช่อง"],
+    template: { kind: "sequence", scenes: [{ emoji: "🌱", label: "ใส่เมล็ด" }, { emoji: "💧", label: "รดน้ำ" }, { emoji: "🌿", label: "ต้นโต" }, { emoji: "🌻", label: "ดอกบาน" }] } },
+  { id: "ws-code-order-cards", ...kinder, title: "ต่อคำสั่งให้ถูกต้อง", emoji: "🧩", description: "ตัดบัตรคำสั่งลูกศรแล้วเรียงให้พาแมวไปหาปลา", skills: ["การเรียงลำดับ", CT], tags: ["Coding", "ปฐมวัย"], planIds: ["coding-rabbit"], gameIds: ["code-order-commands"],
+    instructions: ["ตัดบัตรคำสั่งด้านล่างออกมา", "เด็กเรียงบัตรเป็นแถวให้ตรงกับเส้นทาง", "ติดกาวลงในช่องคำสั่ง"],
+    template: { kind: "path", actor: "🐱", goal: "🐟", size: 3, start: [0, 2], target: [2, 0], commands: ["⬆️", "➡️", "⬇️", "⬅️", "⬆️", "➡️"], prompt: "เรียงบัตรคำสั่งให้แมวไปหาปลา", showTrace: true } },
+  { id: "ws-code-missing", ...kinder, title: "หาคำสั่งที่หายไป", emoji: "🔍", description: "เส้นทางมีให้แล้ว แต่คำสั่งขาดไป 1 อัน — เติมให้ครบ", skills: ["การสังเกต", "Debugging"], tags: ["Coding", "ปฐมวัย"], planIds: ["coding-rabbit"], gameIds: ["code-debug"],
+    instructions: ["เด็กเดินนิ้วตามเส้นทางจุด ๆ", "เขียนลูกศรที่หายไปลงในช่องว่าง"],
+    template: { kind: "commands", actor: "🐧", goal: "🐟", size: 3, start: [0, 2], target: [2, 0], sequence: ["⬆️", "❓", "➡️", "⬆️"], choices: ["⬆️", "➡️", "⬇️", "⬅️"], prompt: "ช่อง ❓ ควรเป็นลูกศรอะไร วงกลมคำตอบ" } },
+  { id: "ws-code-pattern", ...kinder, title: "เดินตาม Pattern", emoji: "🟢", description: "ดูแบบแผน 🔴🔵🔴🔵 แล้ววาดต่อให้ครบ", skills: ["Pattern", "การสังเกต"], tags: ["Coding", "ปฐมวัย", "Pattern"], planIds: ["coding-rabbit"], gameIds: ["code-pattern"],
+    instructions: ["อ่านแบบแผนออกเสียงพร้อมกัน", "เด็กวาด/ระบายช่องว่างให้ต่อแบบแผน"],
+    template: { kind: "pattern-sheet", rows: [["🔴", "🔵", "🔴", "🔵", "", ""], ["⭐", "⭐", "🌙", "⭐", "⭐", ""], ["🟥", "🟨", "🟦", "🟥", "", ""], ["🐱", "🐶", "🐶", "🐱", "", ""]] } },
+  { id: "ws-code-loop-easy", ...kinder, title: "ฝึกคำสั่งซ้ำ (Loop) แบบง่าย", emoji: "🔄", description: "ทำซ้ำ 3 ครั้ง: ➡️ — วาดผลลัพธ์ และเขียนคำสั่งสั้น ๆ ด้วย 🔁", skills: ["Pattern", CT, "Loop"], tags: ["Coding", "ปฐมวัย", "Loop"], planIds: ["coding-rabbit"], gameIds: ["code-loop"],
+    instructions: ["ครูอธิบาย 🔁 = ทำซ้ำ", "เด็กวาดลูกศรตามจำนวนรอบ", "ลองเขียนแบบสั้น: 🔁3 ➡️"],
+    template: { kind: "qa", items: [{ q: "🔁 3 ครั้ง: ➡️  → วาดลูกศรทั้งหมดที่ได้", lines: 1 }, { q: "🔁 2 ครั้ง: ⬆️ ➡️  → วาดลูกศรทั้งหมดที่ได้", lines: 1 }, { q: "⬆️⬆️⬆️⬆️ เขียนแบบสั้นด้วย 🔁 ได้ว่า…", lines: 1 }, { q: "➡️⬇️➡️⬇️➡️⬇️ เขียนแบบสั้นด้วย 🔁 ได้ว่า…", lines: 1 }] } },
+  { id: "ws-code-debug-easy", ...kinder, title: "หาทางที่ผิด / Debug เบื้องต้น", emoji: "❌", description: "คำสั่งชุดนี้พาไปไม่ถึง — กากบาทคำสั่งที่ทำให้หลง แล้วแก้ให้ถูก", skills: ["Debugging", "การสังเกต", "การแก้ปัญหา"], tags: ["Coding", "ปฐมวัย", "Debugging"], planIds: ["coding-rabbit"], gameIds: ["code-debug"],
+    instructions: ["เด็กเดินนิ้วตามคำสั่งบนตาราง", "พอเดินชนต้นไม้/ตกขอบ ให้กากบาทคำสั่งนั้น", "เขียนคำสั่งที่ถูกไว้ข้าง ๆ"],
+    template: { kind: "commands", actor: "🐰", goal: "🥕", size: 3, start: [0, 2], target: [2, 0], obstacles: [[1, 2]], sequence: ["➡️", "⬆️", "➡️", "⬆️"], choices: ["⬆️", "➡️", "⬇️", "⬅️"], prompt: "กากบาทคำสั่งที่ทำให้กระต่ายชนต้นไม้ แล้วเขียนคำสั่งที่ถูก" } },
+
+  /* 📚 ประถม */
+  { id: "ws-code-algorithm-basic", ...primary, title: "Algorithm เบื้องต้น", emoji: "🧮", description: "เขียนขั้นตอนทำสิ่งง่าย ๆ ให้ครบ เช่น แปรงฟัน ทำแซนด์วิช", skills: ["Algorithm", "การเรียงลำดับ", CT], tags: ["Coding", "ประถม", "Algorithm"], planIds: [], gameIds: ["code-algorithm-easy"],
+    instructions: ["อัลกอริทึม = ขั้นตอนที่ชัดเจนและทำตามได้", "เขียนทีละขั้น ห้ามข้าม"],
+    template: { kind: "qa", items: [{ q: "เขียนขั้นตอนการทำแซนด์วิชแฮมชีส (อย่างน้อย 5 ขั้น)", lines: 5 }, { q: "เขียนขั้นตอนการหาหนังสือในห้องสมุด", lines: 4 }, { q: "ถ้าสลับขั้นตอน 'ทาเนย' กับ 'ประกบขนมปัง' จะเกิดอะไรขึ้น?", lines: 2 }] } },
+  { id: "ws-code-flowchart-basic", ...primary, title: "Flowchart", emoji: "📊", description: "รู้จักสัญลักษณ์ผังงาน แล้ววาดผังงาน 'ข้ามถนน'", skills: ["Flowchart", "Logic", "การเรียงลำดับ"], tags: ["Coding", "ประถม", "Flowchart"], planIds: [], gameIds: ["code-flowchart"],
+    instructions: ["⏺️ เริ่ม/จบ · ▭ ทำงาน · 🔷 ตัดสินใจ · ➡️ ทิศทาง", "วาดผังงานลงในช่องว่าง"],
+    template: { kind: "qa", items: [{ q: "จับคู่สัญลักษณ์: วงรี = ______  สี่เหลี่ยม = ______  ข้าวหลามตัด = ______", lines: 1 }, { q: "วาดผังงาน 'ข้ามถนน' (เริ่ม → มองซ้ายขวา → รถมาไหม? → ถ้ามา รอ / ถ้าไม่มา ข้าม → จบ)", lines: 8 }] } },
+  { id: "ws-code-sequence-primary", ...primary, title: "Sequence", emoji: "📋", description: "เรียงคำสั่งโปรแกรมให้ถูกลำดับ และเขียนผลลัพธ์", skills: ["การเรียงลำดับ", CT], tags: ["Coding", "ประถม"], planIds: [], gameIds: ["code-sequence"],
+    instructions: ["อ่านคำสั่งทั้งหมดก่อน", "ใส่หมายเลข 1–5 ให้ถูกลำดับ"],
+    template: { kind: "sequence", scenes: [{ emoji: "🔥", label: "ต้มน้ำ" }, { emoji: "🍜", label: "ใส่เส้น" }, { emoji: "🧂", label: "ใส่เครื่องปรุง" }, { emoji: "⏱️", label: "รอ 3 นาที" }, { emoji: "🥣", label: "ตักใส่ชาม" }] } },
+  { id: "ws-code-pattern-primary", ...primary, title: "Pattern", emoji: "🔁", description: "หาแบบแผนของตัวเลขและรูป แล้วเติมให้ครบ", skills: ["Pattern", "Logic"], tags: ["Coding", "ประถม", "Pattern"], planIds: [], gameIds: ["code-pattern"],
+    instructions: ["หาว่าอะไรซ้ำ หรือเพิ่มขึ้นทีละเท่าไร"],
+    template: { kind: "pattern-sheet", rows: [["2", "4", "6", "8", "", ""], ["1", "1", "2", "3", "5", ""], ["🔺", "🔺", "🟦", "🔺", "🔺", ""], ["A", "C", "E", "G", "", ""], ["⬆️", "➡️", "⬇️", "⬅️", "⬆️", ""]] } },
+  { id: "ws-code-loop-primary", ...primary, title: "Loop", emoji: "🔄", description: "เปลี่ยนคำสั่งยาว ๆ ให้สั้นลงด้วยการทำซ้ำ และทายผลลัพธ์ของลูป", skills: ["Loop", CT, "Coding"], tags: ["Coding", "ประถม", "Loop"], planIds: [], gameIds: ["code-loop", "code-block-coding"],
+    instructions: ["🔁 n ครั้ง { คำสั่ง }"],
+    template: { kind: "qa", items: [{ q: "➡️➡️➡️➡️➡️ เขียนด้วย 🔁 ได้ว่า", lines: 1 }, { q: "⬆️➡️⬆️➡️⬆️➡️ เขียนด้วย 🔁 ได้ว่า", lines: 1 }, { q: "🔁 4 ครั้ง { ⬆️ ⬆️ ➡️ } ได้ทั้งหมดกี่ก้าว? เขียนคำสั่งเต็ม", lines: 2 }, { code: "for i in 1..5:\n  print(i * 3)", q: "โปรแกรมนี้พิมพ์อะไรบ้าง?", lines: 2 }] } },
+  { id: "ws-code-condition-primary", ...primary, title: "Condition (ถ้า…แล้ว…)", emoji: "🔀", description: "เขียนเงื่อนไข if/else จากสถานการณ์ในชีวิตประจำวัน", skills: ["Logic", "Condition", CT], tags: ["Coding", "ประถม", "Condition"], planIds: [], gameIds: ["code-condition"],
+    instructions: ["ถ้า (เงื่อนไข) → ทำ A · ไม่เช่นนั้น → ทำ B"],
+    template: { kind: "qa", items: [{ q: "ถ้าฝนตก → ______  ไม่เช่นนั้น → ______", lines: 1 }, { q: "เขียนเงื่อนไขของสัญญาณไฟจราจร (แดง/เหลือง/เขียว)", lines: 3 }, { code: "if score >= 50:\n  print('ผ่าน')\nelse:\n  print('ลองใหม่')", q: "ถ้า score = 48 โปรแกรมพิมพ์อะไร? ถ้า score = 50 ล่ะ?", lines: 2 }] } },
+  { id: "ws-code-debugging-primary", ...primary, title: "Debugging", emoji: "🐞", description: "หาข้อผิดพลาดในชุดคำสั่งและโค้ดสั้น ๆ แล้วแก้ไข", skills: ["Debugging", "การสังเกต", "การแก้ปัญหา"], tags: ["Coding", "ประถม", "Debugging"], planIds: [], gameIds: ["code-debug", "code-debug-code"],
+    instructions: ["อ่านทีละบรรทัด ทำตามในหัว", "วงกลมจุดที่ผิด แล้วเขียนวิธีแก้"],
+    template: { kind: "qa", items: [{ code: "for i in range(1, 5):\n  print(i)", q: "ตั้งใจพิมพ์ 1–5 แต่ได้ 1–4 — ผิดตรงไหน แก้อย่างไร?", lines: 2 }, { code: "i = 0\nwhile i < 3:\n  print('สวัสดี')", q: "โปรแกรมนี้ไม่มีวันหยุด เพราะอะไร? เพิ่มบรรทัดอะไร?", lines: 2 }, { q: "คำสั่ง ⬆️ ⬆️ ➡️ ⬇️ ➡️ พาหุ่นยนต์จาก (0,2) ไป (2,0) ไม่ถึง — คำสั่งไหนผิด?", lines: 1 }] } },
+  { id: "ws-code-pseudocode-primary", ...primary, title: "เขียน Pseudocode แบบง่าย", emoji: "📝", description: "เขียนโปรแกรมด้วยภาษาคน ก่อนเขียนโค้ดจริง", skills: ["Algorithm", CT, "Coding"], tags: ["Coding", "ประถม", "Pseudocode"], planIds: [], gameIds: ["code-algorithm-easy"],
+    instructions: ["ใช้คำว่า เริ่ม / รับค่า / ถ้า / ทำซ้ำ / แสดง / จบ"],
+    template: { kind: "qa", items: [{ q: "เขียน pseudocode: รับตัวเลข 2 ตัว แล้วแสดงตัวที่มากกว่า", lines: 6 }, { q: "เขียน pseudocode: นับ 1 ถึง 10 แล้วแสดงเฉพาะเลขคู่", lines: 6 }] } },
+  { id: "ws-code-block-primary", ...primary, title: "Block Coding Worksheet", emoji: "🤖", description: "วางแผนคำสั่งให้หุ่นยนต์บนตาราง 5×5 ด้วยคำสั่งไม่เกิน 6 ช่อง (ใช้ 🔁)", skills: ["Coding", CT, "การวางแผน"], tags: ["Coding", "ประถม", "Block Coding"], planIds: [], gameIds: ["code-block-coding"],
+    instructions: ["วาดเส้นทาง แล้วเขียนคำสั่งให้สั้นที่สุด", "ลองเทียบกับเกม 🎮 Block Coding"],
+    template: { kind: "path", actor: "🤖", goal: "🔋", size: 5, start: [0, 4], target: [4, 0], obstacles: [[2, 3], [2, 1], [1, 1]], commands: ["⬆️", "➡️", "⬇️", "⬅️", "🔁×2", "🔁×3"], prompt: "วาดเส้นทาง แล้วเขียนคำสั่งไม่เกิน 6 ช่อง (ใช้ 🔁 ได้)" } },
+
+  /* 🔎 มัธยม */
+  { id: "ws-code-algorithm-sec", ...secondary, title: "Algorithm", emoji: "📐", description: "เขียนอัลกอริทึมค้นหา/เรียงลำดับ และเปรียบเทียบจำนวนขั้นตอน", skills: ["Algorithm", "Logic", CT], tags: ["Coding", "มัธยม", "Algorithm"], planIds: [], gameIds: ["code-algorithm"],
+    instructions: ["เขียนเป็นขั้นตอนหรือ pseudocode", "นับจำนวนครั้งที่เปรียบเทียบ"],
+    template: { kind: "qa", items: [{ q: "อธิบาย Binary search ทีละขั้นด้วยตัวเลข [2, 5, 8, 12, 16, 23, 38] หา 23", lines: 5 }, { q: "Linear search กับ Binary search ต่างกันอย่างไร ข้อมูล 1,000 รายการ แต่ละแบบเปรียบเทียบอย่างมากกี่ครั้ง?", lines: 3 }, { q: "เขียน pseudocode ของ Bubble sort", lines: 6 }] } },
+  { id: "ws-code-flowchart-sec", ...secondary, title: "Flowchart", emoji: "📊", description: "วาดผังงานที่มีการวนซ้ำและตัดสินใจซ้อนกัน", skills: ["Flowchart", "Logic"], tags: ["Coding", "มัธยม", "Flowchart"], planIds: [], gameIds: ["code-flowchart"],
+    instructions: ["ใช้สัญลักษณ์มาตรฐาน", "ตรวจสอบว่าไม่มีทางออกที่ค้าง"],
+    template: { kind: "qa", items: [{ q: "วาดผังงาน: รับตัวเลข n แล้วแสดงว่าเป็นจำนวนเฉพาะหรือไม่", lines: 10 }, { q: "วาดผังงาน: รับคะแนน แสดงเกรด A/B/C/D/F", lines: 8 }] } },
+  { id: "ws-code-pseudocode-sec", ...secondary, title: "Pseudocode", emoji: "📝", description: "แปลงโจทย์เป็น pseudocode ที่มีตัวแปร ลูป และเงื่อนไข", skills: ["Algorithm", "Coding", CT], tags: ["Coding", "มัธยม", "Pseudocode"], planIds: [], gameIds: ["code-problems"],
+    instructions: ["ระบุ input / output ก่อน", "ใช้ตัวแปรชื่อสื่อความหมาย"],
+    template: { kind: "qa", items: [{ q: "รับรายการคะแนน แล้วหาค่าเฉลี่ยและคะแนนสูงสุด", lines: 8 }, { q: "ตรวจว่าคำที่รับมาเป็น palindrome หรือไม่", lines: 6 }] } },
+  { id: "ws-code-logic-sec", ...secondary, title: "Logic", emoji: "🧠", description: "ตารางค่าความจริง AND / OR / NOT / XOR และการอนุมาน", skills: ["Logic", CT], tags: ["Coding", "มัธยม", "Logic"], planIds: [], gameIds: ["code-logic"],
+    instructions: ["เติมตารางค่าความจริงให้ครบ"],
+    template: { kind: "qa", items: [{ q: "เติมตาราง: A B | A AND B | A OR B | A XOR B | NOT A  (4 กรณี)", lines: 5 }, { q: "ถ้า (x > 3) AND NOT (x > 7) — x เป็นค่าใดได้บ้าง (จำนวนเต็ม)?", lines: 2 }, { q: "ประโยค 'ถ้า P แล้ว Q' เป็นเท็จเมื่อใด?", lines: 2 }] } },
+  { id: "ws-code-variables-sec", ...secondary, title: "Variables", emoji: "📦", description: "ตัวแปร ชนิดข้อมูล การกำหนดค่า และการติดตามค่าทีละบรรทัด (trace table)", skills: ["Coding", "Logic"], tags: ["Coding", "มัธยม", "Variables"], planIds: [], gameIds: ["code-challenge"],
+    instructions: ["ทำ trace table: บรรทัด | ค่าตัวแปรหลังบรรทัดนั้น"],
+    template: { kind: "qa", items: [{ code: "a = 5\nb = a * 2\na = a + b\nb = a - 3", q: "ค่าของ a และ b หลังแต่ละบรรทัดคือเท่าไร? (trace table)", lines: 4 }, { q: "ชนิดข้อมูลของ 42 / 3.14 / 'สวัสดี' / True คืออะไร?", lines: 2 }, { code: "x = '7'\ny = 7\nprint(x + x, y + y)", q: "โปรแกรมพิมพ์อะไร? เพราะเหตุใด", lines: 2 }] } },
+  { id: "ws-code-condition-sec", ...secondary, title: "Condition", emoji: "🔀", description: "if / elif / else ซ้อนกัน และเงื่อนไขประกอบ", skills: ["Logic", "Condition", "Coding"], tags: ["Coding", "มัธยม", "Condition"], planIds: [], gameIds: ["code-condition"],
+    instructions: ["เขียนโค้ดหรือ pseudocode ก็ได้"],
+    template: { kind: "qa", items: [{ q: "เขียนโค้ดคิดค่าโดยสาร: อายุ < 6 ฟรี · 6–12 ครึ่งราคา · ≥ 60 ครึ่งราคา · อื่น ๆ เต็มราคา", lines: 6 }, { code: "if n % 3 == 0 and n % 5 == 0: print('FizzBuzz')\nelif n % 3 == 0: print('Fizz')\nelif n % 5 == 0: print('Buzz')\nelse: print(n)", q: "n = 9, 10, 15, 7 พิมพ์อะไรตามลำดับ?", lines: 2 }] } },
+  { id: "ws-code-loop-sec", ...secondary, title: "Loop", emoji: "🔄", description: "for / while / ลูปซ้อน และการคำนวณจำนวนรอบ", skills: ["Loop", "Coding", CT], tags: ["Coding", "มัธยม", "Loop"], planIds: [], gameIds: ["code-challenge"],
+    instructions: ["ติดตามค่าตัวแปรทุกรอบ"],
+    template: { kind: "qa", items: [{ code: "s = 0\nfor i in range(1, 11):\n  if i % 2 == 1:\n    s += i\nprint(s)", q: "ผลลัพธ์คือ? แสดงวิธีคิด", lines: 3 }, { code: "for i in range(3):\n  for j in range(4):\n    print('*', end='')\n  print()", q: "โปรแกรมพิมพ์รูปอะไร? บรรทัดใน print('*') ทำงานกี่ครั้ง?", lines: 3 }, { q: "เขียนโค้ดพิมพ์สูตรคูณแม่ 7 (7×1 ถึง 7×12) ด้วย while", lines: 5 }] } },
+  { id: "ws-code-debugging-sec", ...secondary, title: "Debugging", emoji: "🔧", description: "หาบั๊กเชิงตรรกะและ off-by-one ในโค้ดจริง", skills: ["Debugging", "Logic", "Coding"], tags: ["Coding", "มัธยม", "Debugging"], planIds: [], gameIds: ["code-debug-code"],
+    instructions: ["ระบุบรรทัด · สาเหตุ · วิธีแก้"],
+    template: { kind: "qa", items: [{ code: "def avg(xs):\n  total = 0\n  for x in xs:\n    total = x\n  return total / len(xs)", q: "avg([2, 4, 6]) ควรได้ 4 แต่ได้ 2 — บั๊กอยู่ตรงไหน?", lines: 2 }, { code: "count = 0\nfor ch in word:\n  if ch in 'aeiou':\n    count == count + 1\nprint(count)", q: "ทำไมได้ 0 เสมอ? แก้อย่างไร", lines: 2 }, { code: "xs = [3, 1, 2]\nfor i in range(len(xs)):\n  if xs[i] > xs[i+1]:\n    xs[i], xs[i+1] = xs[i+1], xs[i]", q: "โค้ดนี้ error ที่รอบสุดท้าย เพราะอะไร?", lines: 2 }] } },
+  { id: "ws-code-challenge-sec", ...secondary, title: "Coding Challenge", emoji: "🏆", description: "โจทย์ท้าทาย: เขียนโปรแกรมแก้ปัญหาให้ครบทุกกรณี", skills: ["Coding", "Algorithm", "การแก้ปัญหา"], tags: ["Coding", "มัธยม", "Challenge"], planIds: [], gameIds: ["code-challenge", "code-problems"],
+    instructions: ["เขียนได้ทั้ง Python / pseudocode", "ทดสอบด้วยตัวอย่างอย่างน้อย 3 กรณี"],
+    template: { kind: "qa", items: [{ q: "เขียนฟังก์ชันตรวจว่าปีที่รับมาเป็นปีอธิกสุรทิน (leap year) หรือไม่ พร้อมตัวอย่างทดสอบ", lines: 6 }, { q: "เขียนโปรแกรมตรวจว่าวงเล็บในสตริง เช่น '(()[])' จับคู่ถูกต้อง (ใช้ stack)", lines: 8 }, { q: "หาผลรวมเลขคี่ 1..n เมื่อ n = 1,000,000 โดยไม่ต้องวนลูป — อธิบายสูตร", lines: 3 }] } },
+];

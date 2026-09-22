@@ -82,7 +82,7 @@ export function GameSession({ game }: { game: Game }) {
         <span className="text-ink-soft">{prepared.info.note}</span>
         <button type="button" onClick={() => setLevel(null)} className="ml-auto rounded-full border border-line bg-white px-3 py-1 text-purple-700 hover:bg-purple-50">เปลี่ยนระดับ</button>
       </div>
-      <GamePlayer key={`${level}-${runKey}`} config={prepared.config} extras={{ timeLimit: prepared.info.timeLimit, hints: prepared.info.hints, scramble: prepared.info.scramble, onDone }} />
+      <GamePlayer key={`${level}-${runKey}`} config={prepared.config} extras={{ timeLimit: prepared.info.timeLimit, hints: prepared.info.hints, scramble: prepared.info.scramble, level, onDone }} />
       {last && (
         <div className="card flex flex-wrap items-center gap-3 p-3 text-[13px]">
           <span>📊 บันทึกผลแล้ว: {lv.label} {"⭐".repeat(last.stars)} · {last.seconds} วินาที</span>

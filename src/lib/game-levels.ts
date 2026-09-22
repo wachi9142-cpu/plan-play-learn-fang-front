@@ -53,6 +53,26 @@ export function applyDifficulty(config: GameConfig, level: Difficulty): { config
       const sc = level === "easy" ? 4 : level === "medium" ? 14 : 40;
       return { config, info: { questions: n - 1, scramble: sc, note: level === "easy" ? "สลับตำแหน่งเพียงเล็กน้อย" : level === "medium" ? "ต้องคิดลำดับการเลื่อนมากขึ้น" : "กระจัดกระจาย ต้องวางแผนหลายขั้น (ไม่จับเวลา)" } };
     }
+    case "grid-path": {
+      const L = config.levels[level];
+      return { config, info: { questions: 1, note: `กระดาน ${L.size}×${L.size}${L.obstacles?.length ? ` · สิ่งกีดขวาง ${L.obstacles.length}` : ""}${L.repeat ? " · ใช้ 🔁 ทำซ้ำได้" : ""}${L.mode === "debug" ? " · หาคำสั่งที่ผิด" : L.mode === "trace" ? " · มีเส้นทางให้ดู" : ""}` } };
+    }
+    case "direction": {
+      const rounds = take(config.rounds, level === "easy" ? 4 : level === "medium" ? 6 : config.rounds.length);
+      return { config: { ...config, rounds }, info: { questions: rounds.length, timeLimit: level === "hard" ? 8 * rounds.length : undefined, note: `${rounds.length} ข้อ${level === "hard" ? " · จับเวลา" : ""}` } };
+    }
+    case "pattern": {
+      const pool = config.rounds.filter((r) => !r.level || r.level === level); const rounds = pool.length ? pool : config.rounds;
+      return { config: { ...config, rounds }, info: { questions: rounds.length, timeLimit: level === "hard" ? 15 * rounds.length : undefined, note: level === "easy" ? "แบบแผน AB สั้น ๆ" : level === "medium" ? "แบบแผน ABB / ABC" : "แบบแผนยาวและซับซ้อน · จับเวลา" } };
+    }
+    case "condition": {
+      const rounds = take(config.rounds, level === "easy" ? 4 : level === "medium" ? 6 : config.rounds.length);
+      return { config: { ...config, rounds }, info: { questions: rounds.length, timeLimit: level === "hard" ? 10 * rounds.length : undefined, note: `${rounds.length} สถานการณ์${level === "hard" ? " · จับเวลา" : ""}` } };
+    }
+    case "quiz": {
+      const pool = config.rounds.filter((r) => !r.level || r.level === level); const rounds = pool.length ? pool : config.rounds;
+      return { config: { ...config, rounds }, info: { questions: rounds.length, timeLimit: level === "hard" ? 45 * rounds.length : undefined, note: `${rounds.length} ข้อ${level === "hard" ? " · จับเวลา" : ""}` } };
+    }
     case "shadow-match": {
       const items = take(config.items, level === "easy" ? 3 : level === "medium" ? 5 : config.items.length);
       return { config: { ...config, items }, info: { questions: items.length, timeLimit: level === "hard" ? 15 * items.length : undefined, note: `จับคู่เงา ${items.length} คู่${level === "hard" ? " · จับเวลา" : ""}` } };

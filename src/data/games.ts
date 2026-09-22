@@ -1,3 +1,4 @@
+import { CODING_GAMES } from "./games-coding";
 import type { Game, GameCategory } from "@/types";
 
 export const GAME_CATEGORIES: Record<GameCategory, { emoji: string; label: string }> = {
@@ -9,7 +10,14 @@ export const GAME_CATEGORIES: Record<GameCategory, { emoji: string; label: strin
   letter: { emoji: "🔤", label: "เกมจับคู่ภาพ/ตัวอักษร" },
   shadow: { emoji: "🌑", label: "เกมจับคู่กับเงา" },
   logic: { emoji: "🧠", label: "ตรรกะและการคิด" },
+  coding: { emoji: "💻", label: "Coding & Logic" },
+  math: { emoji: "➕", label: "คณิตศาสตร์" },
+  language: { emoji: "🔤", label: "ภาษา" },
+  science: { emoji: "🔬", label: "วิทยาศาสตร์" },
+  creative: { emoji: "🎨", label: "Creative" },
 };
+
+export { SKILLS } from "./game-skills";
 
 /**
  * คลังเกมออนไลน์ — เพิ่มเกมใหม่ = เพิ่ม object ใหม่ (เลือก engine ที่มีอยู่ + ใส่ config)
@@ -251,6 +259,7 @@ export const GAMES: Game[] = [
     skills: ["รูปทรงเรขาคณิต", "การสังเกต", "การวางแผน"], gradeId: "k2", ages: "4–6 ปี", category: "logic", planIds: ["myself"], activityType: "game",
     config: { engine: "sliding", items: ["🔺", "🟦", "🟢", "⭐", "💜", "🔶", "🟥", "🔵"], size: 3, theme: "purple" },
   },
+  ...CODING_GAMES,
 ];
 
 
