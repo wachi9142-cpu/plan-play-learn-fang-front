@@ -25,6 +25,8 @@ export const metadata: Metadata = {
   },
   description: SITE.description,
   icons: { icon: "/logo-lpg.webp", apple: "/logo-lpg.webp" },
+  manifest: "/manifest.webmanifest",
+  appleWebApp: { capable: true, title: "Purple Garden", statusBarStyle: "default" },
 };
 
 export const viewport: Viewport = {

@@ -7,6 +7,8 @@ import { getCoreActivity } from "@/data/core-activities";
 import { Breadcrumb, Tag } from "@/components/ui";
 import { GameSession } from "@/components/games";
 import { LEVELS, applyDifficulty } from "@/lib/game-levels";
+import { OfflineButtons } from "@/components/games/OfflineGames";
+import { AGE_BANDS, bandsForRange } from "@/lib/age-bands";
 
 type Params = { id: string };
 
@@ -44,7 +46,8 @@ export default async function GamePage({ params }: { params: Promise<Params> }) 
         </div>
       </div>
 
-      <div className="animate-rise delay-1">
+      <div className="animate-rise mb-4"><OfflineButtons game={game} /></div>
+      <div id="play" className="animate-rise delay-1">
         <GameSession game={game} />
       </div>
 
@@ -53,11 +56,13 @@ export default async function GamePage({ params }: { params: Promise<Params> }) 
         <div className="card p-5">
           <h2 className="mb-3 text-lg">🎯 ข้อมูลเกม</h2>
           <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 text-[15px]">
-            <dt className="text-ink-soft">เหมาะกับ</dt><dd><Tag tone="pink">{grade?.name}</Tag> <Tag tone="yellow">👶 {game.ages ?? grade?.ages}</Tag></dd>
-            <dt className="text-ink-soft">ระดับ</dt><dd className="space-y-0.5 text-[13px]">{LEVELS.map((l) => { const i = applyDifficulty(game.config, l.id).info; return <div key={l.id}>{l.emoji} {l.label}: {i.questions} ข้อ · {i.note}{i.timeLimit ? ` · ⏱ ${i.timeLimit} วิ` : ""}</div>; })}</dd>
+            <dt className="text-ink-soft">👶 เหมาะสำหรับ</dt><dd><Tag tone="yellow">{game.ages ?? grade?.ages}</Tag> {bandsForRange(game.ages ?? grade?.ages).map((b) => { const band = AGE_BANDS.find((x) => x.id === b)!; return <Tag key={b} tone="mint">{band.emoji} {band.label}</Tag>; })}</dd>
+            <dt className="text-ink-soft">🏫 ระดับ</dt><dd><Tag tone="pink">{grade?.name}</Tag></dd>
+            <dt className="text-ink-soft">🎯 ระดับความยาก</dt><dd className="space-y-0.5 text-[13px]">{LEVELS.map((l) => { const i = applyDifficulty(game.config, l.id).info; return <div key={l.id}>{l.emoji} {l.label}: {i.questions} ข้อ · {i.note}{i.timeLimit ? ` · ⏱ ${i.timeLimit} วิ` : ""}</div>; })}</dd>
             <dt className="text-ink-soft">คะแนน</dt><dd>⭐ เต็ม 5 ดาว · บันทึกจำนวนครั้งที่เล่น</dd>
-            <dt className="text-ink-soft">ประเภท</dt><dd><Tag tone="purple">{cat.emoji} {cat.label}</Tag></dd>
-            <dt className="text-ink-soft">ทักษะ</dt><dd className="flex flex-wrap gap-1.5">{game.skills.map((s) => <Tag key={s} tone="mint">{s}</Tag>)}</dd>
+            <dt className="text-ink-soft">การเล่น</dt><dd>🌐 เล่นออนไลน์ได้ · 📥 ดาวน์โหลดเล่นออฟไลน์ได้ · 🔄 ซิงก์ผลเมื่อออนไลน์</dd>
+            <dt className="text-ink-soft">🧩 หมวดหมู่</dt><dd><Tag tone="purple">{cat.emoji} {cat.label}</Tag></dd>
+            <dt className="text-ink-soft">🧠 ทักษะ</dt><dd className="flex flex-wrap gap-1.5">{game.skills.map((s) => <Tag key={s} tone="mint">{s}</Tag>)}</dd>
             {core && (
               <>
                 <dt className="text-ink-soft">กิจกรรมหลัก</dt>

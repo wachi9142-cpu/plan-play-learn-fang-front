@@ -5,8 +5,11 @@ import { useEffect, useMemo, useState } from "react";
 import type { Game } from "@/types";
 import { cn } from "@/lib/cn";
 import { LEVELS, applyDifficulty, levelOf, type Difficulty } from "@/lib/game-levels";
-import { GAME_EVENT, addResult, bestStars, fixedLevel, getPlayer, resultsOf, setPlayer, suggestLevel } from "@/lib/game-store";
+import { GAME_EVENT, addResult, bestStars, fixedLevel, resultsOf, suggestLevel } from "@/lib/game-store";
 import { Avatar } from "@/components/profile/Avatar";
+import { listOffline } from "@/lib/offline";
+import { PLAYER_EVENT, bandForAge, getCurrentPlayer, setCurrentPlayer, touchPlayer, type PlayerProfile } from "@/lib/players";
+import { PlayerPicker } from "./PlayerPicker";
 import { GamePlayer } from "./GamePlayer";
 import type { GameOutcome } from "./GameShell";
 
@@ -15,17 +18,17 @@ import type { GameOutcome } from "./GameShell";
  * ไม่มีการจัดอันดับ — แสดงเฉพาะพัฒนาการของเด็กคนนั้น
  */
 export function GameSession({ game }: { game: Game }) {
-  const [player, setPlayerState] = useState("");
-  const [nameInput, setNameInput] = useState("");
+  const [profile, setProfile] = useState<PlayerProfile | null>(null);
+  const player = profile?.name ?? "";
   const [level, setLevel] = useState<Difficulty | null>(null);
   const [runKey, setRunKey] = useState(0);
   const [tick, setTick] = useState(0);
   const [suggest, setSuggest] = useState<{ to: Difficulty; text: string } | null>(null);
   const [last, setLast] = useState<GameOutcome | null>(null);
 
-  useEffect(() => { setPlayerState(getPlayer()); const l = () => setTick((t) => t + 1); window.addEventListener(GAME_EVENT, l); return () => window.removeEventListener(GAME_EVENT, l); }, []);
+  useEffect(() => { setProfile(getCurrentPlayer()); const l = () => setTick((t) => t + 1); const pl = () => setProfile(getCurrentPlayer()); window.addEventListener(GAME_EVENT, l); window.addEventListener(PLAYER_EVENT, pl); return () => { window.removeEventListener(GAME_EVENT, l); window.removeEventListener(PLAYER_EVENT, pl); }; }, []);
   const fixed = useMemo(() => (player ? fixedLevel(player, game.id) : null), [player, game.id, tick]); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => { if (fixed && !level) setLevel(fixed.level); }, [fixed, level]);
+  useEffect(() => { if (level) return; if (fixed) setLevel(fixed.level); else { const o = listOffline().find((g) => g.gameId === game.id); if (o?.level) setLevel(o.level); } }, [fixed, level, game.id]);
 
   const prepared = useMemo(() => (level ? applyDifficulty(game.config, level) : null), [game.config, level]);
   const history = player ? resultsOf(player, game.id) : [];
@@ -34,30 +37,20 @@ export function GameSession({ game }: { game: Game }) {
     if (!level) return;
     setLast(o);
     addResult({ gameId: game.id, player: player || "หนู", level, stars: o.stars, mistakes: o.mistakes, total: o.total, seconds: o.seconds, timeUp: o.timeUp });
+    if (profile) touchPlayer(profile.id);
     setSuggest(suggestLevel(player || "หนู", game.id, level));
   };
   const play = (l: Difficulty) => { setLevel(l); setSuggest(null); setLast(null); setRunKey((k) => k + 1); };
 
-  /* ---- 1) ชื่อผู้เล่น ---- */
-  if (!player) {
-    return (
-      <div className="card p-5 text-center sm:p-8">
-        <p className="text-4xl">{game.emoji}</p>
-        <h2 className="mt-2 text-xl">หนูชื่ออะไรคะ?</h2>
-        <p className="text-[13px] text-ink-soft">ใส่ชื่อเพื่อให้ระบบจำผลการเล่นและระดับที่เหมาะกับหนู (ครูดูพัฒนาการได้ ไม่มีการจัดอันดับ)</p>
-        <form onSubmit={(e) => { e.preventDefault(); const n = nameInput.trim() || "หนู"; setPlayer(n); setPlayerState(n); }} className="mx-auto mt-4 flex max-w-sm gap-2">
-          <input autoFocus value={nameInput} onChange={(e) => setNameInput(e.target.value)} placeholder="เช่น น้องมะลิ" className="min-w-0 flex-1 rounded-xl border border-line px-3 py-2 text-[15px] outline-none focus:border-purple-400" />
-          <button type="submit" className="tap rounded-full bg-purple-600 px-5 py-2 text-[15px] font-medium text-white">เริ่ม 🎮</button>
-        </form>
-      </div>
-    );
-  }
+  /* ---- 1) โปรไฟล์ผู้เล่น (หลายคนต่อครอบครัว) ---- */
+  if (!profile) return <PlayerPicker emoji={game.emoji} onPick={setProfile} />;
+  const band = bandForAge(profile.age);
 
   /* ---- 2) เลือกระดับ ---- */
   if (!level || !prepared) {
     return (
       <div className="card p-5 sm:p-8">
-        <div className="flex items-center gap-3"><Avatar name={player} size={40} /><div><p className="font-display text-[16px] text-purple-800">สวัสดี {player} 👋</p><p className="text-[12px] text-ink-soft"><button type="button" onClick={() => { setPlayer(""); setPlayerState(""); }} className="underline">เปลี่ยนชื่อ</button></p></div></div>
+        <div className="flex items-center gap-3"><Avatar name={player} size={40} /><div><p className="font-display text-[16px] text-purple-800">สวัสดี {player} 👋 <span className="text-[12px] font-normal text-ink-soft">{profile.age} ปี · {band.emoji} {band.label}</span></p><p className="text-[12px] text-ink-soft"><button type="button" onClick={() => { setCurrentPlayer(null); setProfile(null); }} className="underline">เปลี่ยนผู้เล่น</button></p></div></div>
         <h2 className="mt-4 text-center text-xl">🎮 เลือกระดับเกม</h2>
         <div className="mt-3 grid gap-2 sm:grid-cols-3">
           {LEVELS.map((l) => {
