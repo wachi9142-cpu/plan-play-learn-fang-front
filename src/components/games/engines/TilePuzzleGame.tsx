@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BigTile, GameShell, shuffle } from "@/components/games/GameShell";
+import { BigTile, GameShell, shuffle, type GameOutcome } from "@/components/games/GameShell";
 
 /** 🖼️ เกมภาพตัดต่อ — แตะ 2 ช่องเพื่อสลับที่ จนเหมือนภาพต้นแบบ */
-export function TilePuzzleGame({ scene, size }: { scene: string[]; size: number }) {
+export function TilePuzzleGame({ scene, size, hints = false, timeLimit, onDone }: { scene: string[]; size: number; hints?: boolean; timeLimit?: number; onDone?: (o: GameOutcome) => void }) {
   const [tiles, setTiles] = useState<number[]>([]);   // tiles[pos] = index ของช่องในภาพต้นแบบ
   const [sel, setSel] = useState<number | null>(null);
   const [swaps, setSwaps] = useState(0);
@@ -31,7 +31,7 @@ export function TilePuzzleGame({ scene, size }: { scene: string[]; size: number 
   const gridCols = size === 3 ? "grid-cols-3" : "grid-cols-2";
 
   return (
-    <GameShell instruction="แตะ 2 ช่องเพื่อสลับที่ ต่อภาพให้เหมือนต้นแบบ" done={done} onRestart={restart} stats={`สลับ ${swaps} ครั้ง`}>
+    <GameShell instruction={hints ? "แตะ 2 ช่องเพื่อสลับที่ (มีเลขบอกตำแหน่งช่วย)" : "แตะ 2 ช่องเพื่อสลับที่ ต่อภาพให้เหมือนต้นแบบ"} done={done} onRestart={restart} stats={`สลับ ${swaps} ครั้ง`} mistakes={Math.max(0, swaps - (scene.length - 1))} total={scene.length} timeLimit={timeLimit} onDone={onDone}>
       <div className="flex flex-col items-center gap-5 sm:flex-row sm:items-start sm:justify-center sm:gap-8">
         {/* ต้นแบบ */}
         <div className="shrink-0">
@@ -54,8 +54,8 @@ export function TilePuzzleGame({ scene, size }: { scene: string[]; size: number 
                 state={sel === pos ? "selected" : done || sceneIdx === pos ? "correct" : "idle"}
                 ariaLabel={`ช่องที่ ${pos + 1}`}
               >
-                {scene[sceneIdx]}
-              </BigTile>
+                {hints ? <span className="relative">{scene[sceneIdx]}<span className="absolute -right-3 -top-3 rounded-full bg-purple-600 px-1.5 text-[11px] text-white">{sceneIdx + 1}</span></span> : scene[sceneIdx]}
+            </BigTile>
             ))}
           </div>
         </div>

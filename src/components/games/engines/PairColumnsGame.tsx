@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BigTile, GameShell, shuffle } from "@/components/games/GameShell";
+import { BigTile, GameShell, shuffle, type GameOutcome } from "@/components/games/GameShell";
 
 type Pair = { left: string; right: string; label: string };
 
@@ -10,10 +10,12 @@ interface Props {
   /** แสดงฝั่งขวาเป็นเงาดำ (เกมจับคู่กับเงา) */
   shadowRight?: boolean;
   instruction?: { idle: string; picked: (left: string) => string };
+  timeLimit?: number;
+  onDone?: (o: GameOutcome) => void;
 }
 
 /** 🔤 เกมจับคู่ 2 คอลัมน์ — แตะฝั่งซ้าย (ตัวอักษร/รูป) แล้วแตะฝั่งขวา (ภาพ/เงา) */
-export function PairColumnsGame({ pairs, shadowRight = false, instruction }: Props) {
+export function PairColumnsGame({ pairs, shadowRight = false, instruction, timeLimit, onDone }: Props) {
   const [lefts, setLefts] = useState<Pair[]>([]);
   const [rights, setRights] = useState<Pair[]>([]);
   const [selLeft, setSelLeft] = useState<string | null>(null);
@@ -49,7 +51,8 @@ export function PairColumnsGame({ pairs, shadowRight = false, instruction }: Pro
       }
       done={done}
       onRestart={restart}
-      stats={wrongs === 0 ? "จับคู่ถูกหมดเลย!" : `ผิดไป ${wrongs} ครั้ง`}
+      stats={wrongs === 0 ? "จับคู่ถูกหมดเลย!" : `ลองใหม่ ${wrongs} ครั้ง`}
+      mistakes={wrongs} total={pairs.length} timeLimit={timeLimit} onDone={onDone}
     >
       <div className="mx-auto grid max-w-md grid-cols-2 gap-4 sm:gap-8">
         <div className="grid gap-3">

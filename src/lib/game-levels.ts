@@ -9,7 +9,7 @@ export const LEVELS: { id: Difficulty; emoji: string; label: string; en: string;
 ];
 export const levelOf = (d: Difficulty) => LEVELS.find((l) => l.id === d)!;
 
-export interface LevelInfo { questions: number; timeLimit?: number; note: string }
+export interface LevelInfo { questions: number; timeLimit?: number; note: string; scramble?: number; hints?: boolean }
 
 /**
  * แปลง config ของเกมตามระดับ — เกมทุกตัวได้ 3 ระดับอัตโนมัติจากข้อมูลชุดเดียว
@@ -42,11 +42,16 @@ export function applyDifficulty(config: GameConfig, level: Difficulty): { config
       return { config: { ...config, rounds }, info: { questions: rounds.length, timeLimit: level === "hard" ? 12 * rounds.length : undefined, note: `${rounds.length} สี${level === "easy" ? " · 2 ตัวเลือก" : level === "hard" ? " · จับเวลา" : ""}` } };
     }
     case "tile-puzzle": {
-      return { config, info: { questions: config.scene.length, timeLimit: level === "hard" ? 120 : undefined, note: level === "easy" ? "มีเลขบอกตำแหน่งช่วย" : level === "hard" ? "ไม่มีตัวช่วย · จับเวลา" : "ต่อภาพ 3×3" } };
+      return { config, info: { questions: config.scene.length, timeLimit: level === "hard" ? 120 : undefined, hints: level === "easy", note: level === "easy" ? "มีเลขบอกตำแหน่งช่วย" : level === "hard" ? "ไม่มีตัวช่วย · จับเวลา" : "ต่อภาพ 3×3" } };
     }
     case "pair-columns": {
       const pairs = take(config.pairs, level === "easy" ? 3 : level === "medium" ? 5 : config.pairs.length);
       return { config: { ...config, pairs }, info: { questions: pairs.length, timeLimit: level === "hard" ? 15 * pairs.length : undefined, note: `จับคู่ ${pairs.length} คู่${level === "hard" ? " · จับเวลา" : ""}` } };
+    }
+    case "sliding": {
+      const n = (config.size ?? 3) ** 2;
+      const sc = level === "easy" ? 4 : level === "medium" ? 14 : 40;
+      return { config, info: { questions: n - 1, scramble: sc, note: level === "easy" ? "สลับตำแหน่งเพียงเล็กน้อย" : level === "medium" ? "ต้องคิดลำดับการเลื่อนมากขึ้น" : "กระจัดกระจาย ต้องวางแผนหลายขั้น (ไม่จับเวลา)" } };
     }
     case "shadow-match": {
       const items = take(config.items, level === "easy" ? 3 : level === "medium" ? 5 : config.items.length);

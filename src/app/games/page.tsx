@@ -9,10 +9,12 @@ export const metadata: Metadata = { title: "เกมการศึกษา" }
 export default function GamesPage() {
   return (
     <div className="container-page py-8 sm:py-12">
-      <PageHeader emoji="🎮" title="เกมการศึกษา" description="คลังเกมออนไลน์สำหรับเด็กอนุบาล 1 เล่นได้เลยบนเว็บไซต์ ทั้งมือถือ แท็บเล็ต และคอมพิวเตอร์">
+      <PageHeader emoji="🎮" title="เกมการศึกษา" description="คลังเกมออนไลน์สำหรับเด็กอนุบาล เล่นได้เลยบนเว็บไซต์ ทั้งมือถือ แท็บเล็ต และคอมพิวเตอร์ — ทุกเกมเลือกระดับ 🟢 ง่าย · 🟡 ปานกลาง · 🔴 ยาก ได้ก่อนเล่น">
         <div className="flex flex-wrap items-center gap-2">
           <Tag tone="purple">{GAMES.length} เกม</Tag>
-          <Tag tone="pink">อนุบาล 1</Tag>
+          <Tag tone="pink">อนุบาล 1–3</Tag>
+          <Tag tone="mint">🟢🟡🔴 3 ระดับทุกเกม</Tag>
+          <Link href="/games/progress" className="inline-flex items-center rounded-full bg-purple-100 px-3 py-0.5 text-[13px] font-medium leading-6 text-purple-800 hover:underline">📊 พัฒนาการ / ครูตั้งค่าระดับ</Link>
           <Link href="/core-activities/game" className="inline-flex items-center rounded-full bg-yellow-soft px-3 py-0.5 text-[13px] font-medium leading-6 text-[#8a6a00] hover:underline">
             🧩 ดูหมวด “กิจกรรมเกมการศึกษา” ใน 6 กิจกรรมหลัก
           </Link>

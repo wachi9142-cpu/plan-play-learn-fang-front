@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BigTile, GameShell, shuffle } from "@/components/games/GameShell";
+import { BigTile, GameShell, shuffle, type GameOutcome } from "@/components/games/GameShell";
 
 type Round = { items: string[]; odd: string; hint: string };
 
 /** 🔍 เกมสังเกตและค้นหา — แตะสิ่งที่ไม่เข้าพวก */
-export function OddOneOutGame({ rounds }: { rounds: Round[] }) {
+export function OddOneOutGame({ rounds, timeLimit, onDone }: { rounds: Round[]; timeLimit?: number; onDone?: (o: GameOutcome) => void }) {
   const [round, setRound] = useState(0);
   const [items, setItems] = useState<string[]>([]);
   const [picked, setPicked] = useState<number | null>(null);
@@ -35,7 +35,8 @@ export function OddOneOutGame({ rounds }: { rounds: Round[] }) {
       progress={{ current: done ? rounds.length : round, total: rounds.length }}
       done={done}
       onRestart={restart}
-      stats={wrongs === 0 ? "ถูกทุกข้อเลย!" : `ผิดไป ${wrongs} ครั้ง ไม่เป็นไรนะ`}
+      stats={wrongs === 0 ? "ถูกทุกข้อเลย!" : `ลองใหม่ ${wrongs} ครั้ง`}
+      mistakes={wrongs} total={rounds.length} timeLimit={timeLimit} onDone={onDone}
     >
       <div className="mx-auto grid max-w-md grid-cols-2 gap-3 sm:gap-4">
         {items.map((it, i) => (

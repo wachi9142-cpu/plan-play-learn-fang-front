@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BigTile, GameShell, shuffle } from "@/components/games/GameShell";
+import { BigTile, GameShell, shuffle, type GameOutcome } from "@/components/games/GameShell";
+type GameOutcomeCb = (o: GameOutcome) => void;
 
 type Pair = { emoji: string; label: string };
 type Card = { key: number; emoji: string; label: string };
 
 /** 🧩 เกมจับคู่ (memory) — เปิดการ์ด 2 ใบให้เหมือนกัน */
-export function MemoryGame({ pairs }: { pairs: Pair[] }) {
+export function MemoryGame({ pairs, timeLimit, onDone }: { pairs: Pair[]; timeLimit?: number; onDone?: GameOutcomeCb }) {
   const [cards, setCards] = useState<Card[]>([]);
   const [open, setOpen] = useState<number[]>([]);
   const [matched, setMatched] = useState<Set<string>>(new Set());
@@ -39,10 +40,10 @@ export function MemoryGame({ pairs }: { pairs: Pair[] }) {
   };
 
   const done = cards.length > 0 && matched.size === pairs.length;
-  const cols = pairs.length <= 4 ? "grid-cols-4" : "grid-cols-3 sm:grid-cols-4";
+  const cols = pairs.length <= 3 ? "grid-cols-3" : pairs.length <= 4 ? "grid-cols-4" : pairs.length <= 8 ? "grid-cols-4" : "grid-cols-4 sm:grid-cols-6";
 
   return (
-    <GameShell instruction="แตะการ์ด 2 ใบ หาคู่ที่เหมือนกัน" done={done} onRestart={restart} stats={`ใช้ ${moves} ครั้ง`}>
+    <GameShell instruction="แตะการ์ด 2 ใบ หาคู่ที่เหมือนกัน" done={done} onRestart={restart} stats={`ใช้ ${moves} ครั้ง`} mistakes={Math.max(0, moves - pairs.length)} total={pairs.length} timeLimit={timeLimit} onDone={onDone}>
       <div className={`mx-auto grid max-w-lg gap-2.5 sm:gap-3 ${cols}`}>
         {cards.map((c, i) => {
           const isOpen = open.includes(i) || matched.has(c.emoji);

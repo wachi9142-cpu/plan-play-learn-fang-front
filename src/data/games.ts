@@ -8,6 +8,7 @@ export const GAME_CATEGORIES: Record<GameCategory, { emoji: string; label: strin
   color: { emoji: "🎨", label: "เกมจับคู่สี" },
   letter: { emoji: "🔤", label: "เกมจับคู่ภาพ/ตัวอักษร" },
   shadow: { emoji: "🌑", label: "เกมจับคู่กับเงา" },
+  logic: { emoji: "🧠", label: "ตรรกะและการคิด" },
 };
 
 /**
@@ -213,7 +214,45 @@ export const GAMES: Game[] = [
       ],
     },
   },
+  /* 🧠 ตรรกะและการคิด — เกมเลื่อน (Sliding Puzzle) ใช้กลไกเดียวกันกับตัวเลข ตัวอักษร รูปภาพ สี รูปทรง */
+  {
+    id: "slide-numbers", title: "เกมเลื่อนตัวเลข 1–8", emoji: "🔢", cover: "bg-purple-100",
+    description: "แตะตัวเลขที่อยู่ติดช่องว่างเพื่อเลื่อน เรียงให้เป็น 1 → 8 ฝึกการคิด สังเกต และวางแผน",
+    skills: ["เรียงลำดับตัวเลข", "การวางแผน", "การสังเกต", "สมาธิ"], gradeId: "k2", ages: "4–6 ปี", category: "logic", planIds: ["myself"], activityType: "game",
+    config: { engine: "sliding", items: ["1", "2", "3", "4", "5", "6", "7", "8"], size: 3, theme: "purple" },
+  },
+  {
+    id: "slide-thai", title: "เกมเลื่อนตัวอักษร ก–ซ", emoji: "🔤", cover: "bg-pink-soft",
+    description: "เลื่อนตัวอักษรไทยให้เรียงตามลำดับ ก ข ฃ ค ฅ ฆ ง จ",
+    skills: ["ลำดับตัวอักษร", "การวางแผน", "การสังเกต"], gradeId: "k2", ages: "4–6 ปี", category: "logic", planIds: ["myself"], activityType: "game",
+    config: { engine: "sliding", items: ["ก", "ข", "ฃ", "ค", "ฅ", "ฆ", "ง", "จ"], size: 3, theme: "pink" },
+  },
+  {
+    id: "slide-abc", title: "เกมเลื่อนตัวอักษร A–H", emoji: "🅰️", cover: "bg-sky-soft",
+    description: "เลื่อนตัวอักษรอังกฤษให้เรียง A → H",
+    skills: ["ลำดับตัวอักษร A–Z", "การวางแผน"], gradeId: "k2", ages: "4–6 ปี", category: "logic", planIds: ["myself"], activityType: "game",
+    config: { engine: "sliding", items: ["A", "B", "C", "D", "E", "F", "G", "H"], size: 3, theme: "yellow" },
+  },
+  {
+    id: "slide-animals", title: "เกมเลื่อนภาพสัตว์", emoji: "🐾", cover: "bg-mint-soft",
+    description: "เลื่อนชิ้นภาพสัตว์ให้เรียงตามภาพเป้าหมาย (ดูภาพเป้าหมายด้านข้าง)",
+    skills: ["การสังเกต", "การจำตำแหน่ง", "การวางแผน"], gradeId: "k1", ages: "3–5 ปี", category: "logic", planIds: ["animals"], activityType: "game",
+    config: { engine: "sliding", items: ["🐶", "🐱", "🐰", "🐻", "🐼", "🐸", "🐥", "🐷"], size: 3, theme: "green" },
+  },
+  {
+    id: "slide-colors", title: "เกมเลื่อนสี", emoji: "🎨", cover: "bg-yellow-soft",
+    description: "เลื่อนช่องสีให้เรียงตามสายรุ้ง 🔴 🟠 🟡 🟢 🔵 🟣 🟤 ⚫",
+    skills: ["จำแนกสี", "ลำดับ", "การวางแผน"], gradeId: "k1", ages: "3–5 ปี", category: "logic", planIds: ["myself"], activityType: "game",
+    config: { engine: "sliding", items: ["🔴", "🟠", "🟡", "🟢", "🔵", "🟣", "🟤", "⚫"], size: 3, theme: "pink" },
+  },
+  {
+    id: "slide-shapes", title: "เกมเลื่อนรูปทรง", emoji: "🔷", cover: "bg-purple-100",
+    description: "เลื่อนรูปทรงให้เรียงตามภาพเป้าหมาย ฝึกจำแนกรูปทรงเรขาคณิต",
+    skills: ["รูปทรงเรขาคณิต", "การสังเกต", "การวางแผน"], gradeId: "k2", ages: "4–6 ปี", category: "logic", planIds: ["myself"], activityType: "game",
+    config: { engine: "sliding", items: ["🔺", "🟦", "🟢", "⭐", "💜", "🔶", "🟥", "🔵"], size: 3, theme: "purple" },
+  },
 ];
+
 
 export const getGame = (id: string) => GAMES.find((g) => g.id === id);
 export const getGamesForPlan = (planId: string) => GAMES.filter((g) => g.planIds.includes(planId));

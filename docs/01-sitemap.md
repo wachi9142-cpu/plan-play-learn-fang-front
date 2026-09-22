@@ -15,7 +15,7 @@
 | แผนการจัดประสบการณ์ | `/plans`, `/plans/[plan]`, `/plans/[plan]/[week]` | ✅ |
 | โครงการ | `/projects`, `/projects/[id]` | ✅ |
 | 6 กิจกรรมหลัก | `/core-activities`, `/core-activities/[type]` | ✅ |
-| เกมการศึกษา (เล่นได้) | `/games`, `/games/[id]` | ✅ 10 เกม |
+| เกมการศึกษา (เล่นได้ · 3 ระดับทุกเกม) | `/games`, `/games/[id]`, `/games/progress` | ✅ 16 เกม |
 | ใบงาน (พิมพ์ A4) | `/worksheets`, `/worksheets/[id]`, `/worksheets/[id]/print` | ✅ 34 ใบงาน |
 | สื่อการเรียนการสอน | `/media` | ✅ |
 | ปฏิทินโรงเรียน | `/calendar` | ✅ |
