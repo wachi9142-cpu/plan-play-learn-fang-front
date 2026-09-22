@@ -4,9 +4,12 @@ export type CanvasTool = "pen" | "brush" | "line" | "rect" | "ellipse" | "triang
 
 export interface Pt { x: number; y: number }
 
+/** รูปแบบหัวยางลบ */
+export type EraserShape = "circle" | "heart" | "cloud" | "square";
+
 /** ทุกการวาดเป็น "op" เพื่อ undo/redo และส่งให้ผู้ร่วมวาดคนอื่น */
 export type CanvasOp =
-  | { id: string; by: string; kind: "stroke"; tool: "pen" | "brush" | "eraser"; color: string; size: number; points: Pt[] }
+  | { id: string; by: string; kind: "stroke"; tool: "pen" | "brush" | "eraser"; color: string; size: number; points: Pt[]; shape?: EraserShape }
   | { id: string; by: string; kind: "shape"; shape: "line" | "rect" | "ellipse" | "triangle" | "star"; color: string; size: number; fill?: string; from: Pt; to: Pt }
   | { id: string; by: string; kind: "fill"; color: string; at: Pt }
   | { id: string; by: string; kind: "text"; text: string; color: string; size: number; font?: string; at: Pt }

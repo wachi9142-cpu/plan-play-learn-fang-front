@@ -1,4 +1,4 @@
-import type { CanvasOp, CanvasTemplateId, Pt } from "@/types/canvas";
+import type { CanvasOp, CanvasTemplateId, EraserShape, Pt } from "@/types/canvas";
 
 /* ---------- แม่แบบพื้นหลัง (วาดใต้ผลงาน ลบไม่ได้) ---------- */
 export const CANVAS_TEMPLATES: { id: CanvasTemplateId; emoji: string; title: string; description: string }[] = [
@@ -74,13 +74,40 @@ export function drawTemplate(ctx: CanvasRenderingContext2D, id: CanvasTemplateId
   ctx.restore();
 }
 
+/* ---------- หัวยางลบ: วงกลม / หัวใจ / ก้อนเมฆ / สี่เหลี่ยม ---------- */
+export function shapePath(ctx: CanvasRenderingContext2D, shape: EraserShape, x: number, y: number, size: number) {
+  const r = size / 2;
+  ctx.beginPath();
+  if (shape === "square") ctx.rect(x - r, y - r, size, size);
+  else if (shape === "heart") {
+    const t = y - r * 0.55;
+    ctx.moveTo(x, y + r * 0.9);
+    ctx.bezierCurveTo(x - r * 1.6, y - r * 0.1, x - r * 0.9, t - r * 0.5, x, t + r * 0.1);
+    ctx.bezierCurveTo(x + r * 0.9, t - r * 0.5, x + r * 1.6, y - r * 0.1, x, y + r * 0.9);
+    ctx.closePath();
+  } else if (shape === "cloud") {
+    ctx.arc(x - r * 0.45, y + r * 0.15, r * 0.5, 0, Math.PI * 2);
+    ctx.arc(x + r * 0.45, y + r * 0.15, r * 0.5, 0, Math.PI * 2);
+    ctx.arc(x, y - r * 0.25, r * 0.6, 0, Math.PI * 2);
+    ctx.rect(x - r * 0.5, y + r * 0.1, r, r * 0.55);
+  } else ctx.arc(x, y, r, 0, Math.PI * 2);
+}
+/** ประทับรูปยางลบไปตามเส้น (เว้นระยะ ~ 1/5 ของขนาด) */
+export function stampAlong(ctx: CanvasRenderingContext2D, shape: EraserShape, from: Pt, to: Pt, size: number) {
+  const d = Math.hypot(to.x - from.x, to.y - from.y); const step = Math.max(2, size / 5); const n = Math.max(1, Math.ceil(d / step));
+  for (let i = 0; i <= n; i++) { const k = i / n; shapePath(ctx, shape, from.x + (to.x - from.x) * k, from.y + (to.y - from.y) * k, size); ctx.fill(); }
+}
+
 /* ---------- วาด op ---------- */
 export function drawOp(ctx: CanvasRenderingContext2D, op: CanvasOp) {
   ctx.save();
   if (op.kind === "stroke") {
     if (op.points.length === 0) { ctx.restore(); return; }
     ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.lineWidth = op.size; ctx.strokeStyle = op.color;
-    if (op.tool === "eraser") ctx.globalCompositeOperation = "destination-out";
+    if (op.tool === "eraser") {
+      ctx.globalCompositeOperation = "destination-out";
+      if (op.shape && op.shape !== "circle") { ctx.fillStyle = "#000"; for (let i = 0; i < op.points.length; i++) stampAlong(ctx, op.shape, op.points[Math.max(0, i - 1)], op.points[i], op.size); ctx.restore(); return; }
+    }
     if (op.tool === "brush") { ctx.globalAlpha = 0.55; ctx.shadowColor = op.color; ctx.shadowBlur = op.size * 0.6; }
     ctx.beginPath(); ctx.moveTo(op.points[0].x, op.points[0].y);
     if (op.points.length === 1) ctx.lineTo(op.points[0].x + 0.01, op.points[0].y);

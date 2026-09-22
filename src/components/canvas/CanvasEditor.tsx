@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Check, Copy, Download, Eraser, ImagePlus, Link2, Loader2, Printer, Redo2, Save, Share2, Trash2, Undo2, Users } from "lucide-react";
-import type { CanvasDoc, CanvasOp, CanvasTemplateId, CanvasTool, Participant, Pt, SyncMessage } from "@/types/canvas";
+import type { CanvasDoc, CanvasOp, CanvasTemplateId, CanvasTool, EraserShape, Participant, Pt, SyncMessage } from "@/types/canvas";
 import { cn } from "@/lib/cn";
 import { CANVAS_TEMPLATES } from "@/lib/canvas-render";
 import { ROLE_EMOJI, addToPortfolio, getMe, saveCanvas } from "@/lib/canvas-store";
@@ -44,6 +44,8 @@ export function CanvasEditor({ initial }: { initial: CanvasDoc }) {
   const [size, setSize] = useState(6);
   const [eraser, setEraser] = useState<"s" | "m" | "l">("m");
   const ERASER = { s: 16, m: 36, l: 72 } as const;
+  const [eraserShape, setEraserShape] = useState<EraserShape>("circle");
+  const ERASER_SHAPES: { id: EraserShape; emoji: string; label: string }[] = [{ id: "circle", emoji: "⚪", label: "วงกลม" }, { id: "heart", emoji: "💗", label: "หัวใจ" }, { id: "cloud", emoji: "☁️", label: "ก้อนเมฆ" }, { id: "square", emoji: "⬜", label: "สี่เหลี่ยม" }];
   const [me, setMe] = useState<Participant | null>(() => (typeof window !== "undefined" ? getMe() : null));
   const [others, setOthers] = useState<Participant[]>([]);
   const [mode, setMode] = useState<SyncMode>("connecting");
@@ -184,6 +186,9 @@ export function CanvasEditor({ initial }: { initial: CanvasDoc }) {
             <div className="ml-1 flex shrink-0 items-center gap-1 rounded-full bg-purple-50 px-2 py-0.5 text-[12px]">
               <span className="text-ink-soft">🧽 ขนาด</span>
               {(["s", "m", "l"] as const).map((k) => <button key={k} type="button" onClick={() => setEraser(k)} className={cn("rounded-full px-2 py-0.5", eraser === k ? "bg-purple-600 text-white" : "hover:bg-white")}>{k === "s" ? "เล็ก" : k === "m" ? "กลาง" : "ใหญ่"}</button>)}
+              <span className="mx-1 h-4 w-px bg-line" />
+              <span className="text-ink-soft">รูปแบบ</span>
+              {ERASER_SHAPES.map((s) => <button key={s.id} type="button" title={s.label} onClick={() => setEraserShape(s.id)} className={cn("rounded-full px-1.5 py-0.5 text-[15px] leading-none", eraserShape === s.id ? "bg-purple-600" : "hover:bg-white")}>{s.emoji}</button>)}
             </div>
           )}
           {["rect", "ellipse", "triangle", "star"].includes(tool) && (
@@ -217,7 +222,7 @@ export function CanvasEditor({ initial }: { initial: CanvasDoc }) {
       <div className="container-page flex flex-col gap-4 py-4 lg:flex-row">
         {/* กระดาษ */}
         <div className="min-w-0 flex-1">
-          <CanvasBoard ref={board} width={doc.width} height={doc.height} template={doc.template} ops={ops} tool={tool} color={color} size={size} fill={fill} eraserSize={ERASER[eraser]} me={meSafe} others={others}
+          <CanvasBoard ref={board} width={doc.width} height={doc.height} template={doc.template} ops={ops} tool={tool} color={color} size={size} fill={fill} eraserSize={ERASER[eraser]} eraserShape={eraserShape} me={meSafe} others={others}
             onOp={addOp} onMove={replaceOp}
             onCursor={(p) => { if (!room) return; const now = Date.now(); if (now - cursorT.current < 60 && p) return; cursorT.current = now; send({ t: "cursor", room, who: meId, at: p }); }}
             onTextAt={(p) => { setTextAt(p); setTextVal(""); }}
