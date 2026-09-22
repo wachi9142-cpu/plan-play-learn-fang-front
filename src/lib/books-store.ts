@@ -70,8 +70,11 @@ export function currentRole(): Role {
   return me.role === "teacher" ? "teacher" : me.role === "parent" ? "parent" : "student";
 }
 export const canManageBooks = (role = currentRole()) => role === "admin" || role === "teacher";
-/** ครูเพิ่มได้ทุกหมวดยกเว้นเอกสารทางการ/หลักสูตร ซึ่งสงวนให้ผู้ดูแล (ปรับได้ภายหลังเมื่อมีระบบสิทธิ์จริง) */
-export const canAddToCategory = (cat: ShelfCategory, role = currentRole()) => role === "admin" || (role === "teacher" && cat !== "official");
+/**
+ * ครู/ผู้ดูแลเพิ่มหนังสือได้ทุกหมวด — เมื่อมีระบบบัญชีจริง จะจำกัดหมวดที่ครูแต่ละคนได้รับอนุญาต
+ * (เช่น สงวนหมวด 📕 หลักสูตรและเอกสารทางการ ไว้ให้ Admin) ผ่าน `allowedCategories` ของบัญชีนั้น
+ */
+export const canAddToCategory = (_cat: ShelfCategory, role = currentRole()) => role === "admin" || role === "teacher";
 const RANK: Record<Visibility, number> = { admin: 4, teacher: 3, parent: 2, student: 1, public: 0 };
 const ROLE_RANK: Record<Role, number> = { admin: 4, teacher: 3, parent: 2, student: 1, guest: 0 };
 /** เห็นเล่มนี้ไหม: เผยแพร่แล้ว + สิทธิ์ถึง (ครู/ผู้ดูแลเห็นทุกเล่มรวมแบบร่าง) */

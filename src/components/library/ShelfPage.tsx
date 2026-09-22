@@ -23,7 +23,8 @@ export function ShelfPage() {
   useEffect(() => { setRole(currentRole()); const l = () => setBooks(shelfBooks()); l(); window.addEventListener(BOOK_EVENT, l); window.addEventListener(CURRICULUM_EVENT, l); return () => { window.removeEventListener(BOOK_EVENT, l); window.removeEventListener(CURRICULUM_EVENT, l); }; }, []);
 
   const list = useMemo(() => books.filter((b) => (!cat || b.category === cat) && (!q.trim() || `${b.title} ${b.author ?? ""} ${b.description ?? ""} ${b.tags.join(" ")}`.toLowerCase().includes(q.trim().toLowerCase()))), [books, cat, q]);
-  const grouped = cat ? [[cat, list] as const] : SHELF_CATEGORIES.map((c) => [c.id, list.filter((b) => b.category === c.id)] as const).filter(([, l]) => l.length > 0);
+  /** ครู/ผู้ดูแลเห็นทุกหมวดเสมอ (แม้ยังว่าง) เพื่อกดเพิ่มหนังสือเข้าหมวดนั้นได้ */
+  const grouped = cat ? [[cat, list] as const] : SHELF_CATEGORIES.map((c) => [c.id, list.filter((b) => b.category === c.id)] as const).filter(([, l]) => l.length > 0 || canManageBooks(role));
 
   return (
     <div className="container-page py-5 sm:py-8">
@@ -64,6 +65,7 @@ export function ShelfPage() {
                 </div>
               </div>
             )}
+            {items.length === 0 && <p className="mt-2 rounded-xl bg-cream px-3 py-2 text-[13px] text-ink-soft">ยังไม่มีหนังสือในหมวดนี้ — กดปุ่มด้านบนเพื่อเพิ่ม</p>}
             {others.length > 0 && (
               <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
                 {others.map((b) => <ShelfCard key={b.id} book={b} onOpen={() => setOpen(b)} />)}
