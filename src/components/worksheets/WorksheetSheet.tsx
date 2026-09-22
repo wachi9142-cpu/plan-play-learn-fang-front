@@ -1,5 +1,6 @@
 import type { Worksheet, WorksheetTemplate } from "@/types";
 import { SITE } from "@/lib/site";
+import { VehicleIcon } from "./VehicleIcon";
 
 /**
  * เรนเดอร์ใบงานเป็นหน้ากระดาษ A4 (ใช้ทั้งดูตัวอย่างและพิมพ์)
@@ -146,6 +147,28 @@ function Template({ t }: { t: WorksheetTemplate }) {
           <div className="mt-4 flex-1 rounded-2xl border-2 border-dashed border-[#bbb]" />
           <div className="mt-6 grid gap-10">
             {Array.from({ length: t.lines ?? 3 }, (_, i) => <div key={i} className="h-px bg-[#999]" />)}
+          </div>
+        </div>
+      );
+    case "match-color":
+      return (
+        <div className="fill grid grid-cols-[1fr_auto_1fr] items-stretch">
+          <div className="grid" style={{ gridAutoRows: "1fr" }}>
+            {t.colors.map((c, i) => (
+              <div key={i} className="flex items-center justify-between pr-2">
+                <VehicleIcon kind={t.icon} color={c.hex} size={112} />
+                <span className="size-4 rounded-full bg-[#222]" />
+              </div>
+            ))}
+          </div>
+          <div className="w-36" />
+          <div className="grid" style={{ gridAutoRows: "1fr" }}>
+            {t.order.map((idx, i) => (
+              <div key={i} className="flex items-center justify-between pl-2">
+                <span className="size-4 rounded-full bg-[#222]" />
+                <span className="size-16 rounded-full" style={{ background: t.colors[idx].hex }} aria-label={t.colors[idx].name} />
+              </div>
+            ))}
           </div>
         </div>
       );

@@ -5,6 +5,7 @@ import { SCHEDULES, getSchedule } from "@/data/schedules";
 import { getGrade } from "@/data/plans";
 import { Breadcrumb, PageHeader, Tag } from "@/components/ui";
 import { ScheduleTable } from "@/components/partials/ScheduleTable";
+import { OpenInStudio } from "@/components/studio/OpenInStudio";
 
 type Params = { id: string };
 
@@ -37,6 +38,7 @@ export default async function ScheduleDetailPage({ params }: { params: Promise<P
           <Tag tone="sky">{schedule.semester} {schedule.year}</Tag>
           <Tag tone="purple">{schedule.rows.length} สัปดาห์</Tag>
         </div>
+        <div className="mt-3"><OpenInStudio type="schedule" scheduleId={schedule.id} label="🌱 เปิดกำหนดการนี้ใน Garden Studio (แก้ไข/พิมพ์)" /></div>
       </PageHeader>
 
       <p className="animate-rise mb-4 rounded-2xl bg-yellow-soft px-4 py-3 text-[15px]">

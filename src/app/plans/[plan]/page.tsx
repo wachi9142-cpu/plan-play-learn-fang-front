@@ -8,6 +8,7 @@ import { getProjectsForPlan } from "@/data/projects";
 import { getSchedulesForPlan } from "@/data/schedules";
 import { getGamesForPlan } from "@/data/games";
 import { Breadcrumb, PageHeader, Tag } from "@/components/ui";
+import { OpenInStudio } from "@/components/studio/OpenInStudio";
 
 type Params = { plan: string };
 
@@ -50,6 +51,7 @@ export default async function PlanDetailPage({ params }: { params: Promise<Param
           <Tag tone="sky">{plan.duration}</Tag>
           {total > 0 && <Tag tone="mint">{total} กิจกรรม</Tag>}
         </div>
+        <div className="mt-3"><OpenInStudio type="plan" planId={plan.id} label="🌱 เปิดแผนนี้ใน Garden Studio (แก้ไข/พิมพ์)" /></div>
       </PageHeader>
 
       {/* อยู่ในกำหนดการสอนชุดไหน */}

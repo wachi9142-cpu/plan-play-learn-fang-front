@@ -27,6 +27,22 @@ export default function PlansPage() {
         </div>
       </PageHeader>
 
+      {/* 🌱 Garden Studio — สร้างเอกสารใหม่ */}
+      <section className="animate-rise mb-10 card bg-gradient-to-r from-mint-soft via-white to-purple-50 p-5 sm:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="text-xl sm:text-2xl">🌱 สร้างเอกสารใหม่ใน Garden Studio</h2>
+            <p className="text-[14px] text-ink-soft">ห้องสร้างสื่อ — พิมพ์ จัดรูปแบบ เพิ่มตาราง/รูป บันทึกอัตโนมัติ และเชื่อมกับแผน/กำหนดการ</p>
+          </div>
+          <Link href="/studio" className="text-[14px] font-medium text-purple-700 hover:underline">เปิด Garden Studio →</Link>
+        </div>
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          <Link href="/studio?type=plan" className="card card-hover flex items-center gap-3 p-4"><span className="grid size-12 shrink-0 place-items-center rounded-xl bg-purple-100 text-2xl">📄</span><span className="font-display text-[15px] text-purple-800">สร้างแผนการจัดประสบการณ์</span></Link>
+          <Link href="/studio?type=schedule" className="card card-hover flex items-center gap-3 p-4"><span className="grid size-12 shrink-0 place-items-center rounded-xl bg-sky-soft text-2xl">📅</span><span className="font-display text-[15px] text-purple-800">สร้างกำหนดการสอน</span></Link>
+          <Link href="/studio?type=other" className="card card-hover flex items-center gap-3 p-4"><span className="grid size-12 shrink-0 place-items-center rounded-xl bg-yellow-soft text-2xl">📋</span><span className="font-display text-[15px] text-purple-800">สร้างเอกสาร/แบบฟอร์มอื่น ๆ</span></Link>
+        </div>
+      </section>
+
       <section className="animate-rise delay-1 mb-12">
         <h2 className="mb-4 text-xl sm:text-2xl">🔎 ค้นหาแผน</h2>
         <PlanSearch plans={plans} units={UNITS} />

@@ -18,7 +18,8 @@ export type WorksheetTemplate =
   | { kind: "odd"; rows: string[][] }                                          // วงกลมภาพที่ไม่เข้าพวก
   | { kind: "sequence"; scenes: { emoji: string; label: string }[] }           // เรียงลำดับเหตุการณ์ (ใส่ตัวเลขในช่อง)
   | { kind: "blank"; prompt: string; lines?: number }                          // ช่องว่างให้วาด/เขียน
-  | { kind: "grid-copy"; source: string[]; size: number };                     // ภาพเหมือน: วาดตามตาราง
+  | { kind: "grid-copy"; source: string[]; size: number }                      // ภาพเหมือน: วาดตามตาราง
+  | { kind: "match-color"; icon: "motorbike" | "car"; colors: { hex: string; name: string }[]; order: number[] }; // โยงเส้นยานพาหนะกับวงกลมสี (order = ลำดับสีฝั่งขวา)
 
 export interface WorksheetFile {
   url: string;               // /worksheets/xxx.pdf หรือ URL ภายนอก

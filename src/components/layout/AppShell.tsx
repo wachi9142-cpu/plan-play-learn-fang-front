@@ -11,12 +11,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const bare = /^\/worksheets\/[^/]+\/print/.test(pathname);
   if (bare) return <>{children}</>;
 
+  const studioEditor = /^\/studio\/[^/]+/.test(pathname);
   return (
     <div className="flex min-h-dvh flex-col">
       <Header />
       <main className="flex-1">{children}</main>
-      <Footer />
-      <FloatingDock />
+      {!studioEditor && <Footer />}
+      {!studioEditor && <FloatingDock />}
     </div>
   );
 }

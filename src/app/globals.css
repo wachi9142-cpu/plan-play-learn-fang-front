@@ -186,3 +186,12 @@ img, svg { max-width: 100%; height: auto; }
   .sheet { box-shadow: none; border: 0; border-radius: 0; width: 210mm; min-height: 297mm; page-break-after: always; }
   .sheet-viewport { overflow: visible; }
 }
+
+/* ---------- Garden Studio ---------- */
+.editable:empty::before { content: attr(data-placeholder); color: #b3a9c0; }
+.editable:focus:empty::before { content: ""; }
+.doc-page { background: #fff; }
+@media print {
+  .doc-page { box-shadow: none; border: 0; border-radius: 0; max-width: none; padding: 0; }
+  .editable { outline: none !important; box-shadow: none !important; }
+}

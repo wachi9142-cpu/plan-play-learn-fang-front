@@ -79,6 +79,7 @@ export const NAV_ITEMS: NavItem[] = [
     description: "คลังใบงานแยกหมวด ค้นหา/กรองด้วยแท็ก พิมพ์ได้ทันที",
     tint: "bg-yellow-soft",
   },
+  { href: "/studio", emoji: "🌱", label: "Garden Studio · ห้องสร้างสื่อ", description: "สร้าง แก้ไข และจัดเก็บแผน/กำหนดการสอน/เอกสาร บันทึกอัตโนมัติ", tint: "bg-mint-soft" },
   { href: "/activities", emoji: "🧸", label: "กิจกรรมการเรียนรู้", description: "ไอเดียกิจกรรมพร้อมจุดประสงค์และขั้นตอน", tint: "bg-pink-soft" },
   { href: "/media", emoji: "🎨", label: "สื่อการเรียนการสอน", description: "บัตรภาพ เพลง นิทาน และสื่อทำมือ", tint: "bg-yellow-soft" },
   { href: "/weekly", emoji: "🗓️", label: "แผนรายสัปดาห์", description: "ภาพรวมกิจกรรม จันทร์–ศุกร์ ของแต่ละสัปดาห์", tint: "bg-sky-soft" },
@@ -92,7 +93,7 @@ export const NAV_ITEMS: NavItem[] = [
 export const MAIN_MENU_COUNT = 6;
 
 /** ลำดับ "เมนู" ตามบรีฟ: กำหนดการสอน → แผนฯ → โครงการ → 6 กิจกรรมหลัก → เกม → ใบงาน → สื่อการเรียนการสอน */
-const MENU_ORDER = ["/schedules", "/plans", "/projects", "/core-activities", "/games", "/worksheets", "/media"];
+const MENU_ORDER = ["/schedules", "/plans", "/projects", "/core-activities", "/games", "/worksheets", "/media", "/studio"];
 export const MENU_ITEMS: NavItem[] = MENU_ORDER.map((h) => NAV_ITEMS.find((n) => n.href === h)!);
 export const LIBRARY_ITEMS: NavItem[] = NAV_ITEMS.slice(MAIN_MENU_COUNT).filter((n) => !MENU_ORDER.includes(n.href));
 
