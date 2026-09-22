@@ -172,6 +172,59 @@ function Template({ t }: { t: WorksheetTemplate }) {
           </div>
         </div>
       );
+    case "path": {
+      const cells = Array.from({ length: t.size * t.size }, (_, i) => [i % t.size, Math.floor(i / t.size)] as const);
+      return (
+        <div>
+          <p className="mb-3 text-[15px] text-[#333]">✏️ {t.prompt}</p>
+          <div className="mx-auto grid w-full max-w-[120mm] gap-1 rounded-2xl border-2 border-[#333] p-2" style={{ gridTemplateColumns: `repeat(${t.size}, 1fr)` }}>
+            {cells.map(([c, r], i) => { const ob = (t.obstacles ?? []).some(([oc, or]) => oc === c && or === r); const isA = t.start[0] === c && t.start[1] === r; const isG = t.target[0] === c && t.target[1] === r; return <span key={i} className="grid aspect-square place-items-center rounded-lg border border-[#999] text-[40px] leading-none">{ob ? "🌳" : isA ? t.actor : isG ? t.goal : ""}</span>; })}
+          </div>
+          <p className="mt-4 text-[14px] text-[#333]">🔘 วงกลมคำสั่งที่ใช้ (เรียงตามลำดับ) / ✂️ ตัดเป็นบัตรคำสั่งได้</p>
+          <div className="mt-2 flex flex-wrap gap-2">{t.commands.map((c, i) => <span key={i} className="grid h-14 min-w-14 place-items-center rounded-xl border-2 border-dashed border-[#666] px-2 text-[28px]">{c}</span>)}</div>
+          <p className="mt-4 text-[14px] text-[#333]">📝 เขียนคำสั่งเรียงตามลำดับ:</p>
+          <div className="mt-2 flex flex-wrap gap-2">{Array.from({ length: Math.max(6, t.commands.length) }, (_, i) => <span key={i} className="grid size-14 place-items-center rounded-xl border-2 border-[#333] text-[12px] text-[#999]">{i + 1}</span>)}</div>
+        </div>
+      );
+    }
+    case "commands": {
+      const cells = Array.from({ length: t.size * t.size }, (_, i) => [i % t.size, Math.floor(i / t.size)] as const);
+      return (
+        <div>
+          <p className="mb-3 text-[15px] text-[#333]">✏️ {t.prompt}</p>
+          <div className="flex flex-col items-start gap-6 sm:flex-row">
+            <div className="grid w-full max-w-[90mm] shrink-0 gap-1 rounded-2xl border-2 border-[#333] p-2" style={{ gridTemplateColumns: `repeat(${t.size}, 1fr)` }}>
+              {cells.map(([c, r], i) => { const ob = (t.obstacles ?? []).some(([oc, or]) => oc === c && or === r); const isA = t.start[0] === c && t.start[1] === r; const isG = t.target[0] === c && t.target[1] === r; return <span key={i} className="grid aspect-square place-items-center rounded-lg border border-[#999] text-[36px] leading-none">{ob ? "🌳" : isA ? t.actor : isG ? t.goal : ""}</span>; })}
+            </div>
+            <div className="flex-1">
+              <p className="text-[14px] text-[#333]">คำสั่ง:</p>
+              <div className="mt-2 flex flex-wrap gap-2">{t.sequence.map((c, i) => <span key={i} className={`grid size-16 place-items-center rounded-xl border-2 text-[30px] ${c === "❓" ? "border-dashed border-[#333] bg-[#f5f5f5]" : "border-[#666]"}`}>{c}</span>)}</div>
+              <p className="mt-4 text-[14px] text-[#333]">ตัวเลือก (วงกลมคำตอบ):</p>
+              <div className="mt-2 flex flex-wrap gap-3">{t.choices.map((c, i) => <span key={i} className="grid size-14 place-items-center rounded-full border-2 border-[#333] text-[28px]">{c}</span>)}</div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    case "pattern-sheet":
+      return (
+        <div className="space-y-3">
+          <p className="text-[15px] text-[#333]">✏️ ดูแบบแผน แล้ววาด/เขียนช่องว่างให้ต่อกัน</p>
+          {t.rows.map((row, i) => <div key={i} className="flex flex-wrap gap-2">{row.map((c, j) => <span key={j} className={`grid size-16 place-items-center rounded-xl border-2 text-[30px] ${c ? "border-[#999]" : "border-dashed border-[#333] bg-[#fafafa]"}`}>{c}</span>)}</div>)}
+        </div>
+      );
+    case "qa":
+      return (
+        <ol className="space-y-5">
+          {t.items.map((it, i) => (
+            <li key={i} className="text-[15px] text-[#222]">
+              <p className="font-medium">{i + 1}. {it.q}</p>
+              {it.code && <pre className="mt-2 whitespace-pre-wrap rounded-xl border border-[#bbb] bg-[#f7f7f7] p-3 font-mono text-[13px] leading-relaxed">{it.code}</pre>}
+              <div className="mt-2 space-y-3">{Array.from({ length: it.lines }, (_, k) => <div key={k} className="h-7 border-b border-dotted border-[#666]" />)}</div>
+            </li>
+          ))}
+        </ol>
+      );
     case "grid-copy":
       return (
         <div className="mx-auto grid w-full max-w-[150mm] gap-1.5 rounded-2xl border-2 border-[#ccc] p-3" style={{ gridTemplateColumns: `repeat(${t.size}, 1fr)` }}>

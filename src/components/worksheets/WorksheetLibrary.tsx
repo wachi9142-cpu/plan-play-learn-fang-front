@@ -6,6 +6,8 @@ import { useSearchParams } from "next/navigation";
 import { Search, X, Printer } from "lucide-react";
 import type { Worksheet, WorksheetCategory } from "@/types";
 import { WORKSHEET_CATEGORIES } from "@/data/worksheets";
+import { AGE_BANDS, bandsForRange, type AgeBandId } from "@/lib/age-bands";
+import { getGrade } from "@/data/plans";
 import { getPlan } from "@/data/plans";
 import { EmptyState, Tag } from "@/components/ui";
 import { cn } from "@/lib/cn";
@@ -21,6 +23,10 @@ export function WorksheetLibrary({ worksheets, tags, initialCategory = null }: P
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<WorksheetCategory | null>(initialCategory);
   const [tag, setTag] = useState<string | null>(null);
+  const [band, setBand] = useState<AgeBandId | null>(null);
+  const [skill, setSkill] = useState<string | null>(null);
+  const agesOf = (w: Worksheet) => w.ages ?? getGrade(w.gradeId)?.ages;
+  const skills = useMemo(() => { const m = new Map<string, number>(); worksheets.forEach((w) => w.skills.forEach((s) => m.set(s, (m.get(s) ?? 0) + 1))); return Array.from(m.entries()).sort((a, b) => b[1] - a[1]).slice(0, 18); }, [worksheets]);
 
   // รองรับลิงก์ /worksheets?cat=math จากแถบลอย/หน้าอื่น
   const catParam = useSearchParams().get("cat");
@@ -36,11 +42,13 @@ export function WorksheetLibrary({ worksheets, tags, initialCategory = null }: P
     return worksheets.filter((w) => {
       if (cat && w.category !== cat) return false;
       if (tag && !w.tags.includes(tag)) return false;
+      if (band && !bandsForRange(agesOf(w)).includes(band)) return false;
+      if (skill && !w.skills.includes(skill)) return false;
       if (!query) return true;
       const plans = w.planIds.map((id) => getPlan(id)?.title ?? "").join(" ");
       return [w.title, w.description, ...w.skills, ...w.tags, plans].join(" ").toLowerCase().includes(query);
     });
-  }, [q, cat, tag, worksheets]);
+  }, [q, cat, tag, band, skill, worksheets]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // จัดกลุ่มตามหมวดเมื่อยังไม่เลือกหมวด
   const grouped = cat ? [[cat, results] as const] : cats.map((c) => [c, results.filter((w) => w.category === c)] as const).filter(([, l]) => l.length > 0);
@@ -61,6 +69,16 @@ export function WorksheetLibrary({ worksheets, tags, initialCategory = null }: P
       </label>
 
       {/* หมวด */}
+      <div className="mt-4 flex flex-wrap gap-1.5">
+        <span className="self-center text-[13px] text-ink-soft">👶 อายุ:</span>
+        <Mini active={band === null} onClick={() => setBand(null)}>ทุกวัย</Mini>
+        {AGE_BANDS.filter((b) => b.id !== "adult").map((b) => <Mini key={b.id} active={band === b.id} onClick={() => setBand(band === b.id ? null : b.id)}>{b.emoji} {b.label} ({worksheets.filter((w) => bandsForRange(agesOf(w)).includes(b.id)).length})</Mini>)}
+      </div>
+      <div className="mt-2 flex flex-wrap gap-1.5">
+        <span className="self-center text-[13px] text-ink-soft">🧠 ทักษะ:</span>
+        <Mini active={skill === null} onClick={() => setSkill(null)}>ทั้งหมด</Mini>
+        {skills.map(([sk, n]) => <Mini key={sk} active={skill === sk} onClick={() => setSkill(skill === sk ? null : sk)}>{sk} ({n})</Mini>)}
+      </div>
       <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
         <CatChip active={cat === null} onClick={() => setCat(null)} emoji="📝" label="ทั้งหมด" n={worksheets.length} tint="bg-white" />
         {cats.map((c) => {
@@ -157,4 +175,8 @@ export function WorksheetCard({ w, delay = 0 }: { w: Worksheet; delay?: number }
       </div>
     </article>
   );
+}
+
+function Mini({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+  return <button type="button" onClick={onClick} aria-pressed={active} className={`tap rounded-full px-2.5 py-0.5 text-[12px] ring-1 transition ${active ? "bg-purple-600 text-white ring-purple-600" : "bg-white text-ink ring-line hover:bg-purple-50"}`}>{children}</button>;
 }

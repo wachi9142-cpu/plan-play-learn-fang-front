@@ -1,4 +1,5 @@
 import type { Worksheet, WorksheetCategory } from "@/types";
+import { CODING_WORKSHEETS } from "./worksheets-coding";
 
 export const WORKSHEET_CATEGORIES: Record<WorksheetCategory, { emoji: string; label: string; tint: string }> = {
   language: { emoji: "🔤", label: "ภาษาและการเขียน", tint: "bg-purple-100" },
@@ -6,6 +7,9 @@ export const WORKSHEET_CATEGORIES: Record<WorksheetCategory, { emoji: string; la
   color: { emoji: "🎨", label: "สีและรูปทรง", tint: "bg-pink-soft" },
   thinking: { emoji: "🧠", label: "ฝึกทักษะการคิด", tint: "bg-yellow-soft" },
   unit: { emoji: "🌱", label: "ใบงานตามหน่วยการเรียนรู้", tint: "bg-mint-soft" },
+  science: { emoji: "🔬", label: "วิทยาศาสตร์", tint: "bg-sky-soft" },
+  nature: { emoji: "🌿", label: "ธรรมชาติ", tint: "bg-mint-soft" },
+  coding: { emoji: "💻", label: "Coding & Computational Thinking", tint: "bg-purple-100" },
 };
 
 const THAI = "กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ".split("");
@@ -492,6 +496,7 @@ export const WORKSHEETS: Worksheet[] = [
     instructions: ["เด็กชี้นับผลไม้ทีละภาพ", "วงกลมตัวเลขที่ตรงกับจำนวน", "ระบายสีผลไม้"],
     template: { kind: "count", groups: [{ emoji: "🍎", count: 2 }, { emoji: "🍌", count: 3 }, { emoji: "🍇", count: 1 }, { emoji: "🍊", count: 3 }], choices: [1, 2, 3] },
   },
+  ...CODING_WORKSHEETS,
 ];
 
 export const getWorksheet = (id: string) => WORKSHEETS.find((w) => w.id === id);
@@ -504,3 +509,5 @@ export function allWorksheetTags() {
   for (const w of WORKSHEETS) for (const t of w.tags) count.set(t, (count.get(t) ?? 0) + 1);
   return [...count.entries()].sort((a, b) => b[1] - a[1]).map(([tag, n]) => ({ tag, n }));
 }
+
+export const getWorksheetsForGame = (gameId: string) => WORKSHEETS.filter((w) => w.gameIds?.includes(gameId));
