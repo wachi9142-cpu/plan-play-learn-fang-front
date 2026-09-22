@@ -80,7 +80,7 @@ export const NAV_ITEMS: NavItem[] = [
     tint: "bg-yellow-soft",
   },
   { href: "/studio", emoji: "🌱", label: "Garden Studio · ห้องสร้างสื่อ", description: "สร้าง แก้ไข และจัดเก็บแผน/กำหนดการสอน/เอกสาร บันทึกอัตโนมัติ", tint: "bg-mint-soft" },
-  { href: "/library", emoji: "🗂️", label: "Garden Library · คลังสื่อ", description: "รูป วิดีโอ เสียง PDF Word PPT และผลงาน รวมจากทุกระบบในที่เดียว", tint: "bg-mint-soft" },
+  { href: "/library/media", emoji: "🗂️", label: "คลังสื่อรวม", description: "รูป วิดีโอ เสียง PDF Word PPT และผลงาน รวมจากทุกระบบในที่เดียว", tint: "bg-mint-soft" },
   { href: "/portfolio", emoji: "🏆", label: "แฟ้มผลงานเด็ก", description: "ผลงานเด็กพร้อมหมวดหมู่ ความคิดเห็นครู และการเลือกเผยแพร่", tint: "bg-pink-soft" },
   { href: "/development", emoji: "📈", label: "ติดตามพัฒนาการ", description: "บันทึกพัฒนาการ 4 ด้าน เชื่อมกับสภาพที่พึงประสงค์ในหลักสูตร", tint: "bg-sky-soft" },
   { href: "/curriculum", emoji: "📚", label: "หลักสูตร", description: "หลักสูตรทุกฉบับ/ทุกปี พร้อมไฟล์ PDF อ่านในเว็บ และโครงสร้างมาตรฐาน–ตัวบ่งชี้–สภาพที่พึงประสงค์", tint: "bg-purple-50" },
@@ -99,9 +99,16 @@ export const NAV_ITEMS: NavItem[] = [
 export const MAIN_MENU_COUNT = 6;
 
 /** ลำดับ "เมนู" ตามบรีฟ: กำหนดการสอน → แผนฯ → โครงการ → 6 กิจกรรมหลัก → เกม → ใบงาน → สื่อการเรียนการสอน */
-const MENU_ORDER = ["/schedules", "/plans", "/projects", "/core-activities", "/games", "/worksheets", "/media", "/curriculum", "/online-classroom", "/library", "/portfolio", "/development", "/studio", "/canvas"];
+const MENU_ORDER = ["/schedules", "/plans", "/projects", "/core-activities", "/games", "/worksheets", "/media", "/curriculum", "/online-classroom", "/portfolio", "/development", "/studio", "/canvas"];
 export const MENU_ITEMS: NavItem[] = MENU_ORDER.map((h) => NAV_ITEMS.find((n) => n.href === h)!);
 export const LIBRARY_ITEMS: NavItem[] = NAV_ITEMS.slice(MAIN_MENU_COUNT).filter((n) => !MENU_ORDER.includes(n.href));
+
+/** เมนู "ห้องสมุด": ชั้นหนังสือ (ผู้ใหญ่) · มุมหนังสือ (เด็ก) · คลังสื่อรวม */
+export const LIBRARY_NAV: NavLink[] = [
+  { href: "/library/shelf", emoji: "📚", label: "ชั้นหนังสือ — สำหรับครูและผู้ใหญ่" },
+  { href: "/library/kids", emoji: "🧸", label: "มุมหนังสือ — สำหรับเด็ก" },
+  { href: "/library/media", emoji: "🗂️", label: "คลังสื่อรวม (ไฟล์จากทุกระบบ)" },
+];
 
 /** เมนู "เกี่ยวกับ": ข้อมูลโรงเรียน → ระดับชั้น → อาคาร/นักเรียน/บุคลากร */
 export const ABOUT_ITEMS: NavLink[] = [
@@ -140,10 +147,18 @@ export const PRIMARY_NAV: NavItem[] = [
   },
   {
     href: "/menu",
-    emoji: "📚",
-    label: "เมนู",
-    description: "หมวดหมู่หลักของเว็บไซต์",
+    emoji: "🎒",
+    label: "การเรียนรู้",
+    description: "กำหนดการสอน แผน โครงการ กิจกรรมหลัก เกม ใบงาน สื่อ และ Coding",
     tint: "bg-purple-100",
     children: MENU_ITEMS.map(({ href, emoji, label }) => ({ href, emoji, label })),
+  },
+  {
+    href: "/library",
+    emoji: "📚",
+    label: "ห้องสมุด",
+    description: "ชั้นหนังสือสำหรับครูและผู้ใหญ่ · มุมหนังสือสำหรับเด็ก",
+    tint: "bg-pink-soft",
+    children: LIBRARY_NAV,
   },
 ];

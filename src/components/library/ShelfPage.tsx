@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Download, Plus, Search, Trash2, Upload } from "lucide-react";
-import type { Book, ShelfCategory } from "@/types/book";
+import type { Book, DocType, PublishState, ShelfCategory, Visibility } from "@/types/book";
 import { cn } from "@/lib/cn";
-import { BOOK_EVENT, SHELF_CATEGORIES, attachBookFile, createBook, deleteBook, fmtSize, setBookCover, shelfBooks, updateBook } from "@/lib/books-store";
+import { BOOK_EVENT, DOC_TYPES, PUBLISH_STATES, SHELF_CATEGORIES, VISIBILITIES, attachBookFile, canAddToCategory, canManageBooks, createBook, currentRole, deleteBook, fmtSize, setBookCover, shelfBooks, updateBook } from "@/lib/books-store";
 import { CURRICULUM_EVENT, STATUS as CUR_STATUS } from "@/lib/curriculum-store";
 import type { CurriculumStatus } from "@/types/curriculum";
 import { getAsset } from "@/lib/studio-assets";
@@ -18,8 +18,9 @@ export function ShelfPage() {
   const [cat, setCat] = useState<ShelfCategory | null>(null);
   const [q, setQ] = useState("");
   const [open, setOpen] = useState<Book | null>(null);
-  const [add, setAdd] = useState(false);
-  useEffect(() => { const l = () => setBooks(shelfBooks()); l(); window.addEventListener(BOOK_EVENT, l); window.addEventListener(CURRICULUM_EVENT, l); return () => { window.removeEventListener(BOOK_EVENT, l); window.removeEventListener(CURRICULUM_EVENT, l); }; }, []);
+  const [add, setAdd] = useState<ShelfCategory | null>(null);
+  const [role, setRole] = useState<ReturnType<typeof currentRole>>("guest");
+  useEffect(() => { setRole(currentRole()); const l = () => setBooks(shelfBooks()); l(); window.addEventListener(BOOK_EVENT, l); window.addEventListener(CURRICULUM_EVENT, l); return () => { window.removeEventListener(BOOK_EVENT, l); window.removeEventListener(CURRICULUM_EVENT, l); }; }, []);
 
   const list = useMemo(() => books.filter((b) => (!cat || b.category === cat) && (!q.trim() || `${b.title} ${b.author ?? ""} ${b.description ?? ""} ${b.tags.join(" ")}`.toLowerCase().includes(q.trim().toLowerCase()))), [books, cat, q]);
   const grouped = cat ? [[cat, list] as const] : SHELF_CATEGORIES.map((c) => [c.id, list.filter((b) => b.category === c.id)] as const).filter(([, l]) => l.length > 0);
@@ -31,7 +32,9 @@ export function ShelfPage() {
       <section className="mt-2 rounded-3xl bg-gradient-to-br from-purple-100 via-cream to-sky-soft px-4 py-8 sm:px-6">
         <h1 className="text-3xl sm:text-4xl">📚 ชั้นหนังสือ</h1>
         <p className="mt-1 text-[15px] text-ink-soft">พื้นที่แห่งความรู้สำหรับครูและผู้ใหญ่ — ครู บุคลากร และผู้ปกครอง</p>
-        <button type="button" onClick={() => setAdd(true)} className="tap mt-4 inline-flex items-center gap-2 rounded-full bg-purple-600 px-4 py-2 text-[14px] font-medium text-white shadow-soft hover:bg-purple-700"><Plus size={16} /> เพิ่มหนังสือ/เอกสาร</button>
+        {canManageBooks(role)
+          ? <button type="button" onClick={() => setAdd("teacher")} className="tap mt-4 inline-flex items-center gap-2 rounded-full bg-purple-600 px-4 py-2 text-[14px] font-medium text-white shadow-soft hover:bg-purple-700"><Plus size={16} /> เพิ่มหนังสือ / เอกสาร</button>
+          : <p className="mt-3 text-[13px] text-ink-soft">🔐 เห็นเฉพาะเอกสารที่เผยแพร่ให้บทบาทของคุณ — เข้าสู่ระบบเป็นครู/ผู้ดูแลเพื่อเพิ่มหรือแก้ไข</p>}
       </section>
 
       <div className="card mt-4 space-y-2 p-3">
@@ -48,7 +51,10 @@ export function ShelfPage() {
         const others = items.filter((b) => !b.curriculumId);
         return (
           <section key={id} className="mt-6">
-            <h2 className="text-xl">{c.emoji} {c.label} <span className="text-[13px] font-normal text-ink-soft">({items.length}) · {c.hint}</span></h2>
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-xl">{c.emoji} {c.label} <span className="text-[13px] font-normal text-ink-soft">({items.length}) · {c.hint}</span></h2>
+              {canAddToCategory(c.id, role) && <button type="button" onClick={() => setAdd(c.id)} className="tap ml-auto inline-flex items-center gap-1 rounded-full border border-purple-200 bg-white px-3 py-1 text-[13px] text-purple-700 hover:bg-purple-50"><Plus size={13} /> {c.id === "official" ? "เพิ่มหลักสูตร / เอกสาร" : "เพิ่มหนังสือ"}</button>}
+            </div>
             {id === "official" && curricula.length > 0 && (
               <div className="mt-2">
                 <p className="text-[14px] font-medium text-purple-800">📕 หลักสูตรการศึกษาปฐมวัย <span className="font-normal text-ink-soft">— แยกตามปี/ฉบับ · สถานะกำหนดโดยผู้ดูแล ไม่ใช่ “ปีใหม่กว่า = ใช้งานอยู่”</span></p>
@@ -68,7 +74,7 @@ export function ShelfPage() {
       })}
 
       {open && <BookViewer book={open} onClose={() => setOpen(null)} />}
-      {add && <AddDialog onClose={() => setAdd(false)} onCreated={(b) => { setAdd(false); setOpen(b); }} />}
+      {add && <AddDialog preset={add} onClose={() => setAdd(null)} onCreated={(b) => { setAdd(null); setOpen(b); }} />}
     </div>
   );
 }
@@ -87,6 +93,7 @@ function ShelfCard({ book, onOpen }: { book: Book; onOpen: () => void }) {
       <div className="p-2.5 text-[12px]">
         <p className="line-clamp-2 text-[13px] font-medium leading-snug">{book.title}</p>
         {book.status && <span className={cn("mt-1 inline-block rounded-full px-2 py-0.5 text-[11px]", CUR_STATUS[book.status as CurriculumStatus].cls)}>{CUR_STATUS[book.status as CurriculumStatus].emoji} {CUR_STATUS[book.status as CurriculumStatus].label}</span>}
+        {book.publish && book.publish !== "published" && <span className={cn("ml-1 inline-block rounded-full px-2 py-0.5 text-[11px]", PUBLISH_STATES[book.publish].cls)}>{PUBLISH_STATES[book.publish].emoji} {PUBLISH_STATES[book.publish].label}</span>}
         {book.author && <p className="truncate text-ink-soft">✍️ {book.author}</p>}
         <p className="mt-1 truncate text-ink-soft">{book.file ? `📄 ${fmtSize(book.file.size)}` : book.url ? "🔗 ลิงก์ภายนอก" : "— ยังไม่มีไฟล์"}</p>
         {book.curriculumId && <Link href={`/curriculum/${book.curriculumId}`} className="text-purple-600 hover:underline">📚 จัดการในระบบหลักสูตร</Link>}
@@ -125,6 +132,14 @@ function BookViewer({ book, onClose }: { book: Book; onClose: () => void }) {
           {!book.file && book.url && <a href={book.url} target="_blank" rel="noreferrer" className="text-purple-700 underline">🔗 เปิดลิงก์หนังสือ</a>}
           {!book.file && !book.url && <UploadBox bookId={book.id} />}
         </div>
+        {canManageBooks() && !book.curriculumId && (
+          <div className="mt-3 flex flex-wrap items-center gap-2 rounded-xl bg-cream p-2 text-[13px]">
+            <span className="text-ink-soft">สถานะเผยแพร่</span>
+            <select value={book.publish ?? "draft"} onChange={(e) => updateBook(book.id, { publish: e.target.value as PublishState })} className="rounded-lg border border-line bg-white px-2 py-1">{(Object.keys(PUBLISH_STATES) as PublishState[]).map((k) => <option key={k} value={k}>{PUBLISH_STATES[k].emoji} {PUBLISH_STATES[k].label}</option>)}</select>
+            <span className="text-ink-soft">ใครเห็นได้</span>
+            <select value={book.visibility ?? "teacher"} onChange={(e) => updateBook(book.id, { visibility: e.target.value as Visibility })} className="rounded-lg border border-line bg-white px-2 py-1">{(Object.keys(VISIBILITIES) as Visibility[]).map((k) => <option key={k} value={k}>{VISIBILITIES[k].emoji} {VISIBILITIES[k].label}</option>)}</select>
+          </div>
+        )}
         <div className="mt-3 flex flex-wrap gap-2 text-[13px]">
           {url && <a href={url} download={book.file?.name} className="tap inline-flex items-center gap-1.5 rounded-full bg-purple-600 px-4 py-1.5 text-white"><Download size={14} /> ดาวน์โหลด</a>}
           {!book.curriculumId && <button type="button" onClick={async () => { if (confirm(`ลบ “${book.title}” ออกจากชั้นหนังสือ?`)) { await deleteBook(book.id); onClose(); } }} className="tap rounded-full px-3 py-1.5 text-red-500 hover:bg-red-50"><Trash2 size={13} className="inline" /> ลบ</button>}
@@ -145,33 +160,54 @@ function UploadBox({ bookId }: { bookId: string }) {
   );
 }
 
-function AddDialog({ onClose, onCreated }: { onClose: () => void; onCreated: (b: Book) => void }) {
-  const [f, setF] = useState({ title: "", author: "", category: "teacher" as ShelfCategory, description: "", tags: "", url: "", emoji: "📘" });
+function AddDialog({ preset, onClose, onCreated }: { preset: ShelfCategory; onClose: () => void; onCreated: (b: Book) => void }) {
+  const [f, setF] = useState({ title: "", author: "", category: preset, docType: (preset === "official" ? "curriculum" : "reference") as DocType, year: new Date().getFullYear() + 543, level: "ปฐมวัย", description: "", tags: "", url: "", emoji: preset === "official" ? "📕" : "📘", announcedAt: "", note: "", publish: "draft" as PublishState, visibility: "teacher" as Visibility });
   const [file, setFile] = useState<File | null>(null);
   const [cover, setCover] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
+  const isOfficial = f.category === "official";
   return (
     <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-ink/40 p-4" onClick={onClose}>
       <form onClick={(e) => e.stopPropagation()} onSubmit={async (e) => {
         e.preventDefault(); setBusy(true);
-        const b = createBook({ audience: "adult", category: f.category, title: f.title, author: f.author || undefined, description: f.description || undefined, tags: f.tags.split(",").map((t) => t.trim()).filter(Boolean), url: f.url || undefined, emoji: f.emoji });
+        const b = createBook({ audience: "adult", category: f.category, title: f.title, author: f.author || undefined, description: f.description || undefined, tags: f.tags.split(",").map((t) => t.trim()).filter(Boolean), url: f.url || undefined, emoji: f.emoji, docType: f.docType, year: isOfficial ? f.year : undefined, level: f.level || undefined, announcedAt: f.announcedAt || undefined, note: f.note || undefined, publish: f.publish, visibility: f.visibility });
         if (file) await attachBookFile(b.id, file);
         if (cover) await setBookCover(b.id, cover);
         setBusy(false); onCreated(b);
       }} className="card w-full max-w-lg p-5">
-        <h2 className="text-lg">📘 เพิ่มหนังสือ/เอกสารเข้าชั้นหนังสือ</h2>
-        <div className="mt-3 grid gap-2 text-[13px] sm:grid-cols-[70px_1fr]">
+        <h2 className="text-lg">{isOfficial ? "📕 เพิ่มหลักสูตร / เอกสาร" : "📘 เพิ่มหนังสือเข้าชั้นหนังสือ"}</h2>
+        <p className="text-[12px] text-ink-soft">เพิ่มได้เองโดยไม่ต้องแก้โค้ด · รองรับ PDF · Word · PowerPoint · รูปภาพ · ZIP และไฟล์อื่น</p>
+
+        <p className="mt-3 text-[13px] font-medium">1. ประเภทเอกสาร</p>
+        <div className="mt-1 flex flex-wrap gap-1.5">{DOC_TYPES.map((d) => <button key={d.id} type="button" onClick={() => setF({ ...f, docType: d.id, emoji: d.emoji })} className={cn("rounded-full px-3 py-1 text-[13px] ring-1", f.docType === d.id ? "bg-purple-600 text-white ring-purple-600" : "bg-white ring-line hover:bg-purple-50")}>{d.emoji} {d.label}</button>)}</div>
+
+        <p className="mt-3 text-[13px] font-medium">2. ข้อมูลเอกสาร</p>
+        <div className="mt-1 grid gap-2 text-[13px] sm:grid-cols-[70px_1fr]">
           <label>ไอคอน<input value={f.emoji} onChange={(e) => setF({ ...f, emoji: e.target.value })} className="mt-1 w-full rounded-lg border border-line px-2 py-2 text-center text-[20px]" /></label>
-          <label>ชื่อหนังสือ *<input required autoFocus value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })} className="mt-1 w-full rounded-lg border border-line px-3 py-2" /></label>
+          <label>ชื่อเอกสาร *<input required autoFocus value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })} placeholder={isOfficial ? "หลักสูตรการศึกษาปฐมวัย พ.ศ. 2569" : "ชื่อหนังสือ"} className="mt-1 w-full rounded-lg border border-line px-3 py-2" /></label>
+          {isOfficial && <label>ปี พ.ศ.<input type="number" min={2500} max={2700} value={f.year} onChange={(e) => setF({ ...f, year: +e.target.value })} className="mt-1 w-full rounded-lg border border-line px-2 py-2" /></label>}
+          <label className={isOfficial ? "" : "sm:col-span-2"}>ระดับการศึกษา<input value={f.level} onChange={(e) => setF({ ...f, level: e.target.value })} className="mt-1 w-full rounded-lg border border-line px-3 py-2" /></label>
+          <label className="sm:col-span-2">หมวดหมู่<select value={f.category} onChange={(e) => setF({ ...f, category: e.target.value as ShelfCategory })} className="mt-1 w-full rounded-lg border border-line bg-white px-3 py-2">{SHELF_CATEGORIES.filter((c) => canAddToCategory(c.id)).map((c) => <option key={c.id} value={c.id}>{c.emoji} {c.label}</option>)}</select></label>
           <label className="sm:col-span-2">ผู้แต่ง/หน่วยงาน<input value={f.author} onChange={(e) => setF({ ...f, author: e.target.value })} className="mt-1 w-full rounded-lg border border-line px-3 py-2" /></label>
-          <label className="sm:col-span-2">หมวด<select value={f.category} onChange={(e) => setF({ ...f, category: e.target.value as ShelfCategory })} className="mt-1 w-full rounded-lg border border-line bg-white px-3 py-2">{SHELF_CATEGORIES.map((c) => <option key={c.id} value={c.id}>{c.emoji} {c.label}</option>)}</select></label>
-          <label className="sm:col-span-2">คำอธิบาย<textarea value={f.description} onChange={(e) => setF({ ...f, description: e.target.value })} rows={2} className="mt-1 w-full rounded-lg border border-line px-3 py-2" /></label>
-          <label className="sm:col-span-2">แท็ก (คั่นด้วย ,)<input value={f.tags} onChange={(e) => setF({ ...f, tags: e.target.value })} placeholder="ปฐมวัย, พัฒนาการ" className="mt-1 w-full rounded-lg border border-line px-3 py-2" /></label>
+          <label className="sm:col-span-2">รายละเอียด<textarea value={f.description} onChange={(e) => setF({ ...f, description: e.target.value })} rows={2} className="mt-1 w-full rounded-lg border border-line px-3 py-2" /></label>
+          <label className="sm:col-span-2">วันที่ประกาศ/เริ่มใช้<input value={f.announcedAt} onChange={(e) => setF({ ...f, announcedAt: e.target.value })} placeholder="เช่น 2569-05-16" className="mt-1 w-full rounded-lg border border-line px-3 py-2" /></label>
+          <label className="sm:col-span-2">หมายเหตุ<input value={f.note} onChange={(e) => setF({ ...f, note: e.target.value })} className="mt-1 w-full rounded-lg border border-line px-3 py-2" /></label>
+          <label className="sm:col-span-2">แท็ก (คั่นด้วย ,)<input value={f.tags} onChange={(e) => setF({ ...f, tags: e.target.value })} placeholder="ปฐมวัย, หลักสูตร" className="mt-1 w-full rounded-lg border border-line px-3 py-2" /></label>
           <label className="sm:col-span-2">ลิงก์ภายนอก (ถ้ามี)<input value={f.url} onChange={(e) => setF({ ...f, url: e.target.value })} placeholder="https://…" className="mt-1 w-full rounded-lg border border-line px-3 py-2" /></label>
-          <label className="sm:col-span-2 cursor-pointer rounded-xl border-2 border-dashed border-purple-200 bg-cream p-3 text-center">📄 ไฟล์หนังสือ (PDF/Word/PPT/รูป){file && <span className="block text-purple-700">{file.name}</span>}<input type="file" className="hidden" onChange={(e) => setFile(e.target.files?.[0] ?? null)} /></label>
-          <label className="sm:col-span-2 cursor-pointer rounded-xl border border-line bg-white p-2 text-center">🖼️ รูปปก (ถ้ามี){cover && <span className="block text-purple-700">{cover.name}</span>}<input type="file" accept="image/*" className="hidden" onChange={(e) => setCover(e.target.files?.[0] ?? null)} /></label>
         </div>
-        <div className="mt-4 flex justify-end gap-2"><button type="button" onClick={onClose} className="rounded-full px-3 py-1.5 text-[13px] text-ink-soft">ยกเลิก</button><button type="submit" disabled={busy} className="rounded-full bg-purple-600 px-4 py-1.5 text-[13px] text-white disabled:opacity-50">{busy ? "กำลังบันทึก…" : "เพิ่มเข้าชั้นหนังสือ"}</button></div>
+
+        <p className="mt-3 text-[13px] font-medium">3. อัปโหลดไฟล์</p>
+        <label className="mt-1 block cursor-pointer rounded-xl border-2 border-dashed border-purple-200 bg-cream p-3 text-center text-[13px] hover:bg-purple-50">📄 เลือกไฟล์ (PDF · Word · PPT · รูป · ZIP){file && <span className="block text-purple-700">{file.name}</span>}<input type="file" className="hidden" onChange={(e) => setFile(e.target.files?.[0] ?? null)} /></label>
+        <label className="mt-1.5 block cursor-pointer rounded-xl border border-line bg-white p-2 text-center text-[13px]">🖼️ รูปปก (ถ้ามี){cover && <span className="block text-purple-700">{cover.name}</span>}<input type="file" accept="image/*" className="hidden" onChange={(e) => setCover(e.target.files?.[0] ?? null)} /></label>
+
+        <p className="mt-3 text-[13px] font-medium">4. การเผยแพร่</p>
+        <div className="mt-1 flex flex-wrap gap-2 text-[13px]">
+          <label className="flex items-center gap-1">สถานะ<select value={f.publish} onChange={(e) => setF({ ...f, publish: e.target.value as PublishState })} className="rounded-lg border border-line bg-white px-2 py-1">{(Object.keys(PUBLISH_STATES) as PublishState[]).map((k) => <option key={k} value={k}>{PUBLISH_STATES[k].emoji} {PUBLISH_STATES[k].label}</option>)}</select></label>
+          <label className="flex items-center gap-1">ใครเห็นได้<select value={f.visibility} onChange={(e) => setF({ ...f, visibility: e.target.value as Visibility })} className="rounded-lg border border-line bg-white px-2 py-1">{(Object.keys(VISIBILITIES) as Visibility[]).map((k) => <option key={k} value={k}>{VISIBILITIES[k].emoji} {VISIBILITIES[k].label}</option>)}</select></label>
+        </div>
+        {isOfficial && f.docType === "curriculum" && <p className="mt-2 rounded-xl bg-yellow-soft px-3 py-2 text-[12px]">💡 ถ้าต้องการจัดโครงสร้าง มาตรฐาน–ตัวบ่งชี้–สภาพที่พึงประสงค์ และให้ครูเลือกอ้างอิงตอนทำแผน ให้เพิ่มที่ <Link href="/curriculum" className="underline">ระบบจัดการหลักสูตร</Link> แทน — แล้วเล่มนั้นจะมาแสดงบนชั้นหนังสือให้อัตโนมัติ</p>}
+
+        <div className="mt-4 flex justify-end gap-2"><button type="button" onClick={onClose} className="rounded-full px-3 py-1.5 text-[13px] text-ink-soft">ยกเลิก</button><button type="submit" disabled={busy} className="rounded-full bg-purple-600 px-4 py-1.5 text-[13px] text-white disabled:opacity-50">{busy ? "กำลังบันทึก…" : "บันทึกเข้าชั้นหนังสือ"}</button></div>
       </form>
     </div>
   );

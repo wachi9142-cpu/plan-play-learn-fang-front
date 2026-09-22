@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { LibraryPage } from "@/components/library/LibraryPage";
+import { LibraryHub } from "@/components/library/LibraryHub";
 
-export const metadata: Metadata = { title: "Garden Library · คลังสื่อ" };
+export const metadata: Metadata = { title: "ห้องสมุด" };
 
 export default function Page() {
-  return <LibraryPage />;
+  return <LibraryHub />;
 }

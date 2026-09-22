@@ -12,6 +12,9 @@ import { ThaiClock } from "./ThaiClock";
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  /** มีโลโก้แนวนอนไหม (public/logo-wide.webp) — ถ้ามีจะใช้แทนโลโก้กลม + ข้อความ */
+  const [wideLogo, setWideLogo] = useState(false);
+  useEffect(() => { const img = new window.Image(); img.onload = () => setWideLogo(true); img.src = "/logo-wide.webp"; }, []);
 
   // ปิดเมนูอัตโนมัติเมื่อเปลี่ยนหน้า
   useEffect(() => setOpen(false), [pathname]);
@@ -31,12 +34,20 @@ export function Header() {
     <>
     <header className="sticky top-0 z-40 border-b border-line bg-cream/90 backdrop-blur">
       <div className="container-page flex h-16 items-center justify-between gap-3">
-        <Link href="/" className="flex min-w-0 items-center gap-2.5 tap" aria-label="กลับหน้าแรก">
-          <Image src="/logo-lpg.webp" alt="โลโก้ครูข้าวฟ่าง" width={44} height={44} priority className="size-11 shrink-0 rounded-full border-2 border-purple-200 object-cover shadow-soft" />
-          <span className="min-w-0 leading-tight lg:hidden 2xl:block">
-            <span className="block truncate font-display text-[17px] font-medium text-purple-800 sm:text-lg">💜 {SITE.brand}</span>
-            <span className="block truncate text-xs text-ink-soft">{SITE.brandSub} · {SITE.credit}</span>
-          </span>
+        {/* 🏷️ พื้นที่โลโก้ — เว้นที่ไว้สำหรับโลโก้แนวนอน (วางไฟล์ที่ public/logo-wide.webp แล้วจะแสดงแทนอัตโนมัติ) */}
+        <Link href="/" className="flex min-w-0 shrink-0 items-center gap-2.5 tap" style={{ minWidth: "var(--logo-slot, 0px)" }} aria-label="กลับหน้าแรก">
+          {wideLogo ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src="/logo-wide.webp" alt={`${SITE.brand} — ${SITE.brandSub}`} className="h-11 w-auto max-w-[240px] object-contain" />
+          ) : (
+            <>
+              <Image src="/logo-lpg.webp" alt="โลโก้ครูข้าวฟ่าง" width={44} height={44} priority className="size-11 shrink-0 rounded-full border-2 border-purple-200 object-cover shadow-soft" />
+              <span className="min-w-0 leading-tight lg:hidden 2xl:block">
+                <span className="block truncate font-display text-[17px] font-medium text-purple-800 sm:text-lg">💜 {SITE.brand}</span>
+                <span className="block truncate text-xs text-ink-soft">{SITE.brandSub} · {SITE.credit}</span>
+              </span>
+            </>
+          )}
         </Link>
 
         {/* Desktop: หน้าแรก · เกี่ยวกับ ▾ · เมนู ▾ · เข้าสู่ระบบ */}

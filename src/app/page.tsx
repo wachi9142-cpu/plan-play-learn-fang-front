@@ -75,6 +75,30 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ---------- ห้องสมุด: ชั้นหนังสือ / มุมหนังสือ ---------- */}
+      <section className="container-page pt-12 sm:pt-16">
+        <h2 className="mb-2 text-center text-2xl sm:text-3xl">📚 ห้องสมุดของสวนสีม่วง</h2>
+        <p className="mb-6 text-center text-[15px] text-ink-soft">สองพื้นที่ที่มีหน้าที่ต่างกัน — สำหรับผู้ใหญ่ และสำหรับเด็ก</p>
+        <div className="grid gap-4 md:grid-cols-2">
+          <Link href="/library/shelf" className="card card-hover animate-rise group flex items-center gap-4 p-5">
+            <span className="grid size-20 shrink-0 place-items-center rounded-3xl bg-gradient-to-br from-purple-100 to-sky-soft text-5xl transition-transform group-hover:scale-105">📚</span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-xl">📚 ชั้นหนังสือ</span>
+              <span className="mt-0.5 block text-[14px] text-ink-soft">สำหรับครูและผู้ปกครอง — หลักสูตร เอกสารทางการ คู่มือ และหนังสือความรู้</span>
+              <span className="mt-2 inline-flex items-center gap-1 text-[14px] font-medium text-purple-700">เปิดชั้นหนังสือ <ArrowRight size={15} /></span>
+            </span>
+          </Link>
+          <Link href="/library/kids" className="card card-hover animate-rise delay-1 group flex items-center gap-4 p-5">
+            <span className="grid size-20 shrink-0 place-items-center rounded-3xl bg-gradient-to-br from-pink-soft to-yellow-soft text-5xl transition-transform group-hover:scale-105">🧸</span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-xl">🧸 มุมหนังสือ</span>
+              <span className="mt-0.5 block text-[14px] text-ink-soft">นิทานและเรื่องราวสำหรับเด็ก — อ่าน ฟัง และทำกิจกรรมต่อยอด</span>
+              <span className="mt-2 inline-flex items-center gap-1 text-[14px] font-medium text-purple-700">เข้ามุมหนังสือ <ArrowRight size={15} /></span>
+            </span>
+          </Link>
+        </div>
+      </section>
+
       {/* ---------- ระดับชั้น (4 Card) ---------- */}
       <section className="container-page pt-12 sm:pt-16">
         <h2 className="mb-2 text-center text-2xl sm:text-3xl">🌱 ระดับการดูแลและการศึกษา</h2>

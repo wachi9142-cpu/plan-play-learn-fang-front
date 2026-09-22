@@ -2,6 +2,13 @@
 
 export type Audience = "adult" | "kid";
 
+/** ประเภทเอกสารบนชั้นหนังสือ */
+export type DocType = "curriculum" | "manual" | "official" | "notice" | "reference" | "other";
+/** สถานะเผยแพร่ (แยกจากสถานะหลักสูตร) */
+export type PublishState = "draft" | "review" | "published";
+/** ใครเห็นเอกสารนี้ได้ */
+export type Visibility = "admin" | "teacher" | "parent" | "student" | "public";
+
 /** หมวดชั้นหนังสือ (ครู/บุคลากร/ผู้ปกครอง) */
 export type ShelfCategory = "official" | "teacher" | "psychology" | "teaching" | "guide" | "parent" | "knowledge" | "kaowfang";
 /** หมวดมุมหนังสือ (เด็ก) */
@@ -39,4 +46,10 @@ export interface Book {
   year?: number;
   /** สถานะจากระบบหลักสูตร: active | pending | announced | archived */
   status?: string;
+  docType?: DocType;          // 📕 หลักสูตร · 📘 คู่มือ · 📄 เอกสารทางการ · 📑 ประกาศ · 📚 อ้างอิง · 🗂️ อื่น ๆ
+  level?: string;             // ระดับการศึกษา เช่น ปฐมวัย
+  announcedAt?: string;       // วันที่ประกาศ/เริ่มใช้
+  note?: string;
+  publish?: PublishState;     // 📝 แบบร่าง → 👀 รอตรวจสอบ → 🟢 เผยแพร่
+  visibility?: Visibility;    // ใครเห็นได้
 }

@@ -1,6 +1,7 @@
 "use client";
 
-import type { Book, CornerCategory, ShelfCategory } from "@/types/book";
+import type { Book, CornerCategory, DocType, PublishState, ShelfCategory, Visibility } from "@/types/book";
+import { getClassMe } from "./classroom-store";
 import { addAsset, removeAsset } from "./studio-assets";
 import { STATUS as CUR_STATUS, listCurricula, mainPdf } from "./curriculum-store";
 import { uid } from "./studio-store";
@@ -40,6 +41,46 @@ export const CORNER_CATEGORIES: { id: CornerCategory; emoji: string; label: stri
   { id: "world", emoji: "🌎", label: "โลกของเรา", tint: "bg-sky-soft" },
 ];
 
+export const DOC_TYPES: { id: DocType; emoji: string; label: string }[] = [
+  { id: "curriculum", emoji: "📕", label: "หลักสูตร" },
+  { id: "manual", emoji: "📘", label: "คู่มือ" },
+  { id: "official", emoji: "📄", label: "เอกสารทางการ" },
+  { id: "notice", emoji: "📑", label: "ประกาศ / แนวทาง" },
+  { id: "reference", emoji: "📚", label: "หนังสืออ้างอิง" },
+  { id: "other", emoji: "🗂️", label: "อื่น ๆ" },
+];
+export const PUBLISH_STATES: Record<PublishState, { emoji: string; label: string; cls: string }> = {
+  draft: { emoji: "📝", label: "แบบร่าง", cls: "bg-cream text-ink-soft" },
+  review: { emoji: "👀", label: "รอตรวจสอบ", cls: "bg-yellow-soft text-yellow-800" },
+  published: { emoji: "🟢", label: "เผยแพร่", cls: "bg-mint-soft text-green-800" },
+};
+export const VISIBILITIES: Record<Visibility, { emoji: string; label: string }> = {
+  admin: { emoji: "👑", label: "ผู้ดูแลเท่านั้น" },
+  teacher: { emoji: "👩‍🏫", label: "ครูและผู้ดูแล" },
+  parent: { emoji: "👨‍👩‍👧", label: "ครู + ผู้ปกครอง" },
+  student: { emoji: "👧", label: "ครู + ผู้ปกครอง + นักเรียน" },
+  public: { emoji: "🌐", label: "สาธารณะ (ทุกคน)" },
+};
+
+/** สิทธิ์ของผู้ใช้เครื่องนี้ — ยังไม่มีระบบบัญชีจริง ใช้บทบาทที่ระบุไว้ในห้องเรียนออนไลน์ */
+export type Role = "admin" | "teacher" | "parent" | "student" | "guest";
+export function currentRole(): Role {
+  const me = getClassMe();
+  if (!me) return "guest";
+  return me.role === "teacher" ? "teacher" : me.role === "parent" ? "parent" : "student";
+}
+export const canManageBooks = (role = currentRole()) => role === "admin" || role === "teacher";
+/** ครูเพิ่มได้ทุกหมวดยกเว้นเอกสารทางการ/หลักสูตร ซึ่งสงวนให้ผู้ดูแล (ปรับได้ภายหลังเมื่อมีระบบสิทธิ์จริง) */
+export const canAddToCategory = (cat: ShelfCategory, role = currentRole()) => role === "admin" || (role === "teacher" && cat !== "official");
+const RANK: Record<Visibility, number> = { admin: 4, teacher: 3, parent: 2, student: 1, public: 0 };
+const ROLE_RANK: Record<Role, number> = { admin: 4, teacher: 3, parent: 2, student: 1, guest: 0 };
+/** เห็นเล่มนี้ไหม: เผยแพร่แล้ว + สิทธิ์ถึง (ครู/ผู้ดูแลเห็นทุกเล่มรวมแบบร่าง) */
+export function canSeeBook(b: Book, role = currentRole()) {
+  if (role === "admin" || role === "teacher") return true;
+  if ((b.publish ?? "published") !== "published") return false;
+  return ROLE_RANK[role] >= RANK[b.visibility ?? "public"];
+}
+
 const page = (emoji: string, text: string) => ({ id: uid(), emoji, text });
 /** นิทานตั้งต้น 5 เรื่อง — ครูเพิ่ม/แก้/ลบได้เอง */
 function seedStories(): Book[] {
@@ -66,11 +107,11 @@ function seedStories(): Book[] {
 
 const db = (): Book[] => { const d = read(); if (d.length === 0 && !localStorage.getItem(`${KEY}-seeded`)) { const s = seedStories(); write(s); localStorage.setItem(`${KEY}-seeded`, "1"); return s; } return d; };
 
-export const listBooks = (audience?: "adult" | "kid"): Book[] => db().filter((b) => !audience || b.audience === audience).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+export const listBooks = (audience?: "adult" | "kid"): Book[] => db().filter((b) => (!audience || b.audience === audience) && canSeeBook(b)).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
 export const getBook = (id: string) => db().find((b) => b.id === id) ?? curriculumBooks().find((b) => b.id === id);
 export function createBook(input: Partial<Book> & Pick<Book, "audience" | "category" | "title">): Book {
   const t = now();
-  const b: Book = { id: uid(), emoji: input.audience === "kid" ? "📖" : "📘", tags: [], addedBy: "ผู้ดูแล", ...input, createdAt: t, updatedAt: t };
+  const b: Book = { id: uid(), emoji: input.audience === "kid" ? "📖" : "📘", tags: [], addedBy: getClassMe()?.name ?? "ผู้ดูแล", publish: input.audience === "kid" ? "published" : "draft", visibility: input.audience === "kid" ? "public" : "teacher", ...input, createdAt: t, updatedAt: t };
   const all = db(); all.unshift(b); write(all); return b;
 }
 export function updateBook(id: string, patch: Partial<Book>) { write(db().map((b) => (b.id === id ? { ...b, ...patch, updatedAt: now() } : b))); }
@@ -95,7 +136,7 @@ export const yearEmoji = (year: number) => YEAR_EMOJI[year % YEAR_EMOJI.length];
 export function curriculumBooks(): Book[] {
   return listCurricula().map((c) => {
     const f = mainPdf(c);
-    return { id: `cur-book-${c.id}`, audience: "adult" as const, category: "official" as ShelfCategory, title: c.title, emoji: yearEmoji(c.year), description: c.description, tags: ["หลักสูตร", `พ.ศ. ${c.year}`, CUR_STATUS[c.status].label], file: f ? { assetId: f.assetId, name: f.name, mime: f.mime, size: f.size } : undefined, addedBy: c.addedBy, createdAt: c.createdAt, updatedAt: c.updatedAt, curriculumId: c.id, year: c.year, status: c.status };
+    return { id: `cur-book-${c.id}`, audience: "adult" as const, category: "official" as ShelfCategory, title: c.title, emoji: yearEmoji(c.year), description: c.description, tags: ["หลักสูตร", `พ.ศ. ${c.year}`, CUR_STATUS[c.status].label], file: f ? { assetId: f.assetId, name: f.name, mime: f.mime, size: f.size } : undefined, addedBy: c.addedBy, createdAt: c.createdAt, updatedAt: c.updatedAt, curriculumId: c.id, year: c.year, status: c.status, docType: "curriculum" as DocType, level: "ปฐมวัย", announcedAt: c.announcedAt, note: c.note, publish: "published" as PublishState, visibility: "teacher" as Visibility };
   }).sort((a, b) => (b.year ?? 0) - (a.year ?? 0));
 }
 export const shelfBooks = (): Book[] => [...curriculumBooks(), ...listBooks("adult")];
