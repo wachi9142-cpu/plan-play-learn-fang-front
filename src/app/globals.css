@@ -972,6 +972,9 @@ html[data-theme="dark"] .fx-tree { filter: drop-shadow(0 0 7px rgb(110 200 130 /
   .fx-fly:nth-child(n + 8) { display: none; }
 }
 
+/* 🎯 Activity Mode — หน้าที่ต้องลงมือทำกิจกรรม ปิดเอฟเฟกต์ทุกชนิด */
+html[data-activity="on"] .fx-layer { display: none !important; }
+
 /* เคารพการตั้งค่า "ลดการเคลื่อนไหว" ของอุปกรณ์ — ไม่เล่นเอฟเฟกต์เลย */
 @media (prefers-reduced-motion: reduce) { .fx-layer { display: none; } }
 
