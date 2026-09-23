@@ -72,7 +72,6 @@ export function setTheme(mode: ThemeMode) {
 export function readEffect(): AmbientEffect {
   if (typeof window === "undefined") return "none";
   const v = localStorage.getItem(EFFECT_KEY);
-  if (v === "spring") return "sakura";   // ชื่อเดิมก่อนเปลี่ยนเป็น Sakura
   if (v && EFFECT_IDS.includes(v)) return v as AmbientEffect;
   // ผู้ใช้เดิมที่เคยเปิดโหมดฤดูหนาวไว้ ให้ได้หิมะต่อโดยไม่ต้องตั้งใหม่
   return localStorage.getItem(WINTER_KEY) === "on" ? "winter" : "none";

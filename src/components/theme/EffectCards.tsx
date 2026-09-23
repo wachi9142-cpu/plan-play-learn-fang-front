@@ -32,6 +32,7 @@ export function EffectCards() {
                   {on && <Check size={16} className="ml-auto shrink-0 text-purple-600" />}
                 </span>
                 <span className="mt-0.5 block text-[13px] leading-snug text-ink-soft">{e.hint}</span>
+                {e.time && <span className="mt-1 block text-[12px] text-purple-700">🕐 แนะนำช่วง {e.time} — เปิดเวลาอื่นก็ได้ ระบบปรับสีให้มองเห็นชัดเอง</span>}
               </span>
             </button>
           );

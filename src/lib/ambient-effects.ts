@@ -33,6 +33,8 @@ export interface EffectDef {
   order: number;
   /** ปิดไว้ = ไม่แสดงให้ผู้ใช้เลือก (แต่ยังอยู่ในระบบ) */
   enabled: boolean;
+  /** ช่วงเวลาที่แนะนำ เช่น "18:00–06:00" — เป็นคำแนะนำเท่านั้น ไม่ปิดเอฟเฟกต์อัตโนมัติ */
+  time?: string;
 }
 
 /** ค่าตั้งต้นจากโค้ด — ผู้ดูแลระบบแก้ทับได้ */
@@ -41,7 +43,7 @@ export const BUILT_IN_EFFECTS: EffectDef[] = [
   { id: "winter", emoji: "❄️", label: "Winter — โหมดหิมะ", hint: "หิมะขาว ฟ้าอ่อน และลาเวนเดอร์ตกเบา ๆ พร้อมเกล็ดคริสตัล", season: "winter", order: 10, enabled: true },
   { id: "sakura", emoji: "🌸", label: "Sakura — โหมดซากุระ", hint: "กลีบซากุระชมพูอ่อนปลิวตามลม เหมือนอยู่ในสวนฤดูใบไม้ผลิ", season: "spring", order: 20, enabled: true },
   { id: "autumn", emoji: "🍂", label: "Autumn — โหมดใบไม้ร่วง", hint: "ใบแปะก๊วยสีทองและใบเมเปิลส้มร่วงช้า ๆ ใต้แสงแดดอุ่น", season: "autumn", order: 30, enabled: true },
-  { id: "starlight", emoji: "🌠", label: "Starlight — โหมดดาวตก", hint: "ดาวกระพริบ ดาวตกหางแสงสั้น และประกายดอกไม้เล็ก ๆ", season: "night", order: 40, enabled: true },
+  { id: "starlight", emoji: "🌠", label: "Starlight — โหมดดาวตก", hint: "ดาวกระพริบ ดาวตกหางแสงสั้น และประกายดอกไม้เล็ก ๆ", season: "night", order: 40, enabled: true, time: "18:00–06:00" },
   { id: "rainy", emoji: "🌧️", label: "Rainy Garden — ฝนตกเบา ๆ", hint: "เม็ดฝนบาง ๆ ละอองฝน และหยดน้ำกระทบพื้น สดชื่นและสงบ", season: "rainy", order: 50, enabled: true },
   { id: "spring", emoji: "🌼", label: "Spring Garden — ดอกไม้ผลิบาน", hint: "ดอกไม้เล็ก ๆ ค่อย ๆ ผลิบานทีละดอก พร้อมใบไม้เขียวอ่อน", season: "spring", order: 60, enabled: true },
   { id: "butterfly", emoji: "🦋", label: "Butterfly Garden — ผีเสื้อบินผ่าน", hint: "ผีเสื้อสีพาสเทลบินผ่านหน้าจอเป็นครั้งคราว เส้นทางไม่ซ้ำกัน", season: "all", order: 70, enabled: true },
@@ -49,7 +51,7 @@ export const BUILT_IN_EFFECTS: EffectDef[] = [
   { id: "halloween", emoji: "🎃", label: "Halloween Garden — ฮาโลวีนน่ารัก", hint: "ฟักทองยิ้ม ใบไม้ส้ม โคมไฟอุ่น ๆ และพระจันทร์เสี้ยว (ไม่น่ากลัว)", season: "festival", order: 90, enabled: true },
   { id: "christmas", emoji: "🎄", label: "Christmas Garden — คริสต์มาส", hint: "หิมะตกเบา ๆ ไฟประดับกะพริบ ต้นสนเล็ก ๆ และดาวสีทอง", season: "festival", order: 100, enabled: true },
   { id: "newyear", emoji: "🎆", label: "New Year Garden — ฉลองปีใหม่", hint: "ดอกไม้ไฟดวงเล็กนาน ๆ ครั้ง และประกายแสงลอยขึ้นนุ่ม ๆ", season: "festival", order: 110, enabled: true },
-  { id: "purplenight", emoji: "💜", label: "Purple Night Garden — สวนกลางคืน", hint: "ม่านม่วงนวล พระจันทร์ ดาวกระพริบ และหิ่งห้อยบินผ่าน", season: "night", order: 120, enabled: true },
+  { id: "purplenight", emoji: "💜", label: "Purple Night Garden — สวนกลางคืน", hint: "ม่านม่วงนวล พระจันทร์ ดาวกระพริบ และหิ่งห้อยบินผ่าน", season: "night", order: 120, enabled: true, time: "18:00–06:00" },
 ];
 
 /* ---------- ค่าที่ผู้ดูแลระบบแก้ทับ (เก็บในเครื่อง) ---------- */
@@ -57,7 +59,7 @@ export const BUILT_IN_EFFECTS: EffectDef[] = [
 export const EFFECT_CONFIG_KEY = "lpg-effect-config-v1";
 export const EFFECT_CONFIG_EVENT = "lpg-effect-config";
 
-export type EffectOverride = Partial<Pick<EffectDef, "label" | "hint" | "season" | "order" | "enabled">>;
+export type EffectOverride = Partial<Pick<EffectDef, "label" | "hint" | "season" | "order" | "enabled" | "time">>;
 export type EffectConfig = Record<EffectId, EffectOverride>;
 
 export function readEffectConfig(): EffectConfig {
