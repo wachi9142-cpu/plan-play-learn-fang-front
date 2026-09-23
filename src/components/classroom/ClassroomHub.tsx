@@ -27,6 +27,8 @@ export function ClassroomHub() {
   return (
     <div className="container-page py-6 sm:py-10">
       <section className="rounded-3xl bg-gradient-to-br from-purple-100 via-sky-soft to-mint-soft px-4 py-8 text-center sm:px-6 sm:py-12">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/school/house.webp" alt="" className="mx-auto mb-2 block w-28 drop-shadow-sm sm:w-36" />
         <p className="inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-1.5 text-[13px] font-medium text-purple-700 shadow-soft">💻 ห้องเรียนออนไลน์ · Little Purple Garden Online Classroom</p>
         <h1 className="mt-4 text-3xl sm:text-5xl">ห้องเรียนจริงที่ย้ายมาอยู่บนออนไลน์</h1>
         <p className="mx-auto mt-2 max-w-2xl text-[15px] text-ink-soft sm:text-base">เรียนสด 🔴 · แชตประจำห้อง 💬 · ดาวให้กำลังใจ ⭐ · บันทึกการสอนและดูย้อนหลัง 📚 — สำหรับครู เด็ก และผู้ปกครอง</p>

@@ -18,7 +18,11 @@ export default function ContactPage() {
           <div className="flex items-center gap-4">
             <Image src="/logo-lpg.webp" alt="Little Purple Garden" width={80} height={80} className="size-20 rounded-full bg-white object-cover shadow-soft" />
             <div>
-              <h2 className="text-xl sm:text-2xl">🏫 {CONTACT.school}</h2>
+              <h2 className="flex items-center gap-2 text-xl sm:text-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/school/house.webp" alt="" className="block w-10 shrink-0 sm:w-12" />
+                {CONTACT.school}
+              </h2>
               <p className="text-[15px] text-ink-soft">{CONTACT.credit}</p>
             </div>
           </div>

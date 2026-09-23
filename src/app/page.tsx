@@ -51,7 +51,7 @@ export default function HomePage() {
 
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link href="/about" className="tap inline-flex w-full items-center justify-center gap-2 rounded-full bg-purple-600 px-7 py-3 text-base font-medium text-white shadow-soft transition hover:bg-purple-700 hover:shadow-lift sm:w-auto">
-                🏫 รู้จักโรงเรียน <ArrowRight size={18} />
+                <Image src="/school/house.webp" alt="" width={120} height={178} className="h-7! w-auto" /> รู้จักโรงเรียน <ArrowRight size={18} />
               </Link>
               <Link href="/menu" className="tap inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-purple-200 bg-white px-7 py-3 text-base font-medium text-purple-700 transition hover:border-purple-300 hover:bg-purple-50 sm:w-auto">
                 💜 เข้าสู่แผนเล่นเรียน
@@ -64,7 +64,9 @@ export default function HomePage() {
       {/* ---------- แนะนำโรงเรียนแบบสั้น ๆ ---------- */}
       <section className="container-page -mt-4 sm:-mt-8">
         <div className="animate-rise delay-1 card grid gap-5 p-6 sm:grid-cols-[auto_1fr_auto] sm:items-center sm:p-8">
-          <span className="text-5xl sm:text-6xl">🏫</span>
+          <span className="mx-auto block w-24 shrink-0 sm:mx-0 sm:w-32">
+            <Image src="/school/house.webp" alt="" width={360} height={533} className="h-auto w-full drop-shadow-sm" />
+          </span>
           <div className="min-w-0">
             <h2 className="text-2xl sm:text-3xl">ยินดีต้อนรับสู่ Little Purple Garden</h2>
             <p className="mt-2 text-[15px] leading-relaxed text-ink sm:text-base">{SITE.welcomeIntro}</p>
