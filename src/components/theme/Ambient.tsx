@@ -43,6 +43,8 @@ const PETALS = Array.from({ length: 18 }, (_, i) => ({
   opacity: +(0.6 + rnd(i, 13.887) * 0.35).toFixed(2),
   tone: (i % 3) as 0 | 1 | 2,
   far: i % 6 === 1,
+  /** ทุก ๆ 4 กลีบ จะมีดอกซากุระเต็มดอก 1 ดอกปลิวมาด้วย */
+  bloom: i % 4 === 1 ? (["a", "b", "c"] as const)[i % 3] : null,
 }));
 
 const LEAVES = Array.from({ length: 16 }, (_, i) => ({
@@ -56,6 +58,8 @@ const LEAVES = Array.from({ length: 16 }, (_, i) => ({
   opacity: +(0.65 + rnd(i, 15.223) * 0.3).toFixed(2),
   tone: (i % 3) as 0 | 1 | 2,
   far: i % 5 === 3,
+  /** ทุก ๆ 3 ใบ จะเป็นใบเมเปิลภาพจริง ที่เหลือเป็นใบแปะก๊วย/เมเปิลวาดเส้น */
+  photo: i % 3 === 2 ? (["a", "b", "c"] as const)[Math.floor(i / 3) % 3] : null,
 }));
 
 /** ⭐ ดาวกระพริบ — อยู่กับที่ ไม่ตก */
@@ -152,19 +156,24 @@ function Sakura() {
         <span key={i} className="fx-fall" style={{ left: `${p.left}%`, animationDuration: `${p.fall}s`, animationDelay: `${p.delay}s` }}>
           <span
             className={`fx-sway ${p.far ? "fx-far" : ""}`}
-            style={{ width: `${p.size}px`, height: `${p.size}px`, opacity: p.opacity, animationDuration: `${p.sway}s`, ["--drift" as string]: `${p.drift}px` }}
+            style={{ width: `${p.size + (p.bloom ? 10 : 0)}px`, height: `${p.size + (p.bloom ? 10 : 0)}px`, opacity: p.opacity, animationDuration: `${p.sway}s`, ["--drift" as string]: `${p.drift}px` }}
           >
-            <svg viewBox="0 0 24 24" className="fx-spin fx-petal block size-full" style={{ animationDuration: `${p.spin}s` }}>
-              <defs>
-                <linearGradient id={`pt-${i}`} x1="20%" y1="0%" x2="80%" y2="100%">
-                  <stop offset="0%" stopColor="#ffffff" />
-                  <stop offset="45%" stopColor={PETAL_COLORS[p.tone][0]} />
-                  <stop offset="100%" stopColor={PETAL_COLORS[p.tone][1]} />
-                </linearGradient>
-              </defs>
-              {/* กลีบซากุระ — ปลายกลีบเว้าเป็นรูปตัว V ตามดอกจริง */}
-              <path d="M12 1.6c4 4 7.2 8.8 7.2 13 0 3.1-1.6 5.6-4.2 6.9L12 17.2l-3 4.3c-2.6-1.3-4.2-3.8-4.2-6.9 0-4.2 3.2-9 7.2-13Z" fill={`url(#pt-${i})`} />
-            </svg>
+            {p.bloom ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={`/sakura/bloom-${p.bloom}.webp`} alt="" className="fx-spin fx-bloom-img block size-full" style={{ animationDuration: `${p.spin}s` }} />
+            ) : (
+              <svg viewBox="0 0 24 24" className="fx-spin fx-petal block size-full" style={{ animationDuration: `${p.spin}s` }}>
+                <defs>
+                  <linearGradient id={`pt-${i}`} x1="20%" y1="0%" x2="80%" y2="100%">
+                    <stop offset="0%" stopColor="#ffffff" />
+                    <stop offset="45%" stopColor={PETAL_COLORS[p.tone][0]} />
+                    <stop offset="100%" stopColor={PETAL_COLORS[p.tone][1]} />
+                  </linearGradient>
+                </defs>
+                {/* กลีบซากุระ — ปลายกลีบเว้าเป็นรูปตัว V ตามดอกจริง */}
+                <path d="M12 1.6c4 4 7.2 8.8 7.2 13 0 3.1-1.6 5.6-4.2 6.9L12 17.2l-3 4.3c-2.6-1.3-4.2-3.8-4.2-6.9 0-4.2 3.2-9 7.2-13Z" fill={`url(#pt-${i})`} />
+              </svg>
+            )}
           </span>
         </span>
       ))}
@@ -186,26 +195,24 @@ function Autumn() {
         <span key={i} className="fx-fall" style={{ left: `${l.left}%`, animationDuration: `${l.fall}s`, animationDelay: `${l.delay}s` }}>
           <span
             className={`fx-sway ${l.far ? "fx-far" : ""}`}
-            style={{ width: `${l.size}px`, height: `${l.size}px`, opacity: l.opacity, animationDuration: `${l.sway}s`, ["--drift" as string]: `${l.drift}px` }}
+            style={{ width: `${l.size + (l.photo ? 5 : 0)}px`, height: `${l.size + (l.photo ? 5 : 0)}px`, opacity: l.opacity, animationDuration: `${l.sway}s`, ["--drift" as string]: `${l.drift}px` }}
           >
-            <svg viewBox="0 0 24 24" className="fx-spin fx-leaf block size-full" style={{ animationDuration: `${l.spin}s` }}>
-              <defs>
-                <linearGradient id={`lf-${i}`} x1="10%" y1="0%" x2="90%" y2="100%">
-                  <stop offset="0%" stopColor={LEAF_COLORS[l.tone][0]} />
-                  <stop offset="100%" stopColor={LEAF_COLORS[l.tone][1]} />
-                </linearGradient>
-              </defs>
-              {l.tone === 2 ? (
-                /* 🍁 ใบเมเปิล */
-                <path d="M12 1.6l2.1 3.9 2.6-1-.9 2.9 3.5-.6-2.2 2.9 3.4 1.4-3 1.6 2 2.4-3.8.2.5 2.7-3.4-1.6-.8 5.9-.8-5.9-3.4 1.6.5-2.7-3.8-.2 2-2.4-3-1.6 3.4-1.4L3 6.8l3.5.6-.9-2.9 2.6 1L12 1.6Z" fill={`url(#lf-${i})`} />
-              ) : (
-                /* 🌿 ใบแปะก๊วย — พัดกว้าง เว้าตรงกลาง มีก้านเล็ก ๆ */
-                <>
-                  <path d="M12 14.6c-4.7 0-8.4-1.7-8.4-3.9C3.6 6.9 7.5 3 11 2.1l1 3.6 1-3.6c3.5.9 7.4 4.8 7.4 8.6 0 2.2-3.7 3.9-8.4 3.9Z" fill={`url(#lf-${i})`} />
-                  <path d="M12 14.4v7.2" stroke={LEAF_COLORS[l.tone][1]} strokeWidth="1.3" strokeLinecap="round" />
-                </>
-              )}
-            </svg>
+            {l.photo ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={`/autumn/leaf-${l.photo}.webp`} alt="" className="fx-spin fx-leaf-img block size-full" style={{ animationDuration: `${l.spin}s` }} />
+            ) : (
+              <svg viewBox="0 0 24 24" className="fx-spin fx-leaf block size-full" style={{ animationDuration: `${l.spin}s` }}>
+                <defs>
+                  <linearGradient id={`lf-${i}`} x1="10%" y1="0%" x2="90%" y2="100%">
+                    <stop offset="0%" stopColor={LEAF_COLORS[l.tone][0]} />
+                    <stop offset="100%" stopColor={LEAF_COLORS[l.tone][1]} />
+                  </linearGradient>
+                </defs>
+                {/* 🌿 ใบแปะก๊วย — พัดกว้าง เว้าตรงกลาง มีก้านเล็ก ๆ */}
+                <path d="M12 14.6c-4.7 0-8.4-1.7-8.4-3.9C3.6 6.9 7.5 3 11 2.1l1 3.6 1-3.6c3.5.9 7.4 4.8 7.4 8.6 0 2.2-3.7 3.9-8.4 3.9Z" fill={`url(#lf-${i})`} />
+                <path d="M12 14.4v7.2" stroke={LEAF_COLORS[l.tone][1]} strokeWidth="1.3" strokeLinecap="round" />
+              </svg>
+            )}
           </span>
         </span>
       ))}

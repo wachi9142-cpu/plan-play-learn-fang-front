@@ -1,3 +1,5 @@
+import { EFFECT_IDS, type EffectId } from "./ambient-effects";
+
 /** 💜 ระบบธีมการแสดงผล — ☀️ สว่าง · 🌙 มืด · ⚙️ ตามอุปกรณ์ (จำค่าที่เลือกไว้ใน localStorage) */
 
 export type ThemeMode = "light" | "dark" | "system";
@@ -13,19 +15,10 @@ export const EFFECT_EVENT = "lpg-effect";
 /** คีย์เดิมสมัยที่มีแต่โหมดฤดูหนาว — ใช้ย้ายค่าของผู้ใช้เก่าให้อัตโนมัติ */
 export const WINTER_KEY = "lpg-winter-v1";
 
-export type AmbientEffect = "none" | "winter" | "sakura" | "autumn" | "starlight";
+/** id ของเอฟเฟกต์ — รายการจริงอยู่ในทะเบียน src/lib/ambient-effects.ts */
+export type AmbientEffect = EffectId;
 
-export const EFFECTS: { id: AmbientEffect; emoji: string; label: string; hint: string }[] = [
-  { id: "none", emoji: "⭕", label: "ไม่มีเอฟเฟกต์", hint: "หน้าเว็บสะอาดตา ไม่มีอะไรเคลื่อนไหว" },
-  { id: "winter", emoji: "❄️", label: "Winter — โหมดหิมะ", hint: "หิมะขาว ฟ้าอ่อน และลาเวนเดอร์ตกเบา ๆ พร้อมเกล็ดคริสตัล" },
-  { id: "sakura", emoji: "🌸", label: "Sakura — โหมดซากุระ", hint: "กลีบซากุระชมพูอ่อนปลิวตามลม เหมือนอยู่ในสวนฤดูใบไม้ผลิ" },
-  { id: "autumn", emoji: "🍂", label: "Autumn — โหมดใบไม้ร่วง", hint: "ใบแปะก๊วยสีทองและใบเมเปิลส้มร่วงช้า ๆ ใต้แสงแดดอุ่น" },
-  { id: "starlight", emoji: "🌠", label: "Starlight — โหมดดาวตก", hint: "ดาวกระพริบ ดาวตกหางแสงสั้น และประกายดอกไม้เล็ก ๆ" },
-];
-
-export function effectInfo(id: AmbientEffect) {
-  return EFFECTS.find((e) => e.id === id) ?? EFFECTS[0];
-}
+export { SEASONS, activeEffects, findEffect, listEffects } from "./ambient-effects";
 
 export const THEME_MODES: { id: ThemeMode; emoji: string; label: string; hint: string }[] = [
   { id: "light", emoji: "☀️", label: "โหมดสว่าง", hint: "พื้นหลังครีม–ขาว ใช้สีม่วงของสวนเป็นสีหลัก เหมาะกับการใช้งานทั่วไป" },
@@ -74,13 +67,13 @@ export function setTheme(mode: ThemeMode) {
   window.dispatchEvent(new CustomEvent(THEME_EVENT, { detail: mode }));
 }
 
-const EFFECT_IDS: AmbientEffect[] = ["none", "winter", "sakura", "autumn", "starlight"];
+
 
 export function readEffect(): AmbientEffect {
   if (typeof window === "undefined") return "none";
   const v = localStorage.getItem(EFFECT_KEY);
   if (v === "spring") return "sakura";   // ชื่อเดิมก่อนเปลี่ยนเป็น Sakura
-  if (v && (EFFECT_IDS as string[]).includes(v)) return v as AmbientEffect;
+  if (v && EFFECT_IDS.includes(v)) return v as AmbientEffect;
   // ผู้ใช้เดิมที่เคยเปิดโหมดฤดูหนาวไว้ ให้ได้หิมะต่อโดยไม่ต้องตั้งใหม่
   return localStorage.getItem(WINTER_KEY) === "on" ? "winter" : "none";
 }

@@ -12,6 +12,8 @@ import { EVENT_CATEGORIES, SCHOOL_EVENTS } from "@/data/school-events";
 import { getGalleryByKind } from "@/data/gallery";
 import { CONTACT } from "@/data/contact";
 import { HeroBanner } from "@/components/partials/HeroBanner";
+import { PrepThisWeek, UpcomingEvents } from "@/components/events";
+import { PinnedNotice } from "@/components/partials/PinnedNotice";
 import { cn } from "@/lib/cn";
 
 const thaiDate = (iso: string) => `${Number(iso.slice(8, 10))} ${THAI_MONTHS_SHORT[Number(iso.slice(5, 7)) - 1]} ${Number(iso.slice(0, 4)) + 543 - 2500}`;
@@ -75,6 +77,75 @@ export default function HomePage() {
           <Link href="/about" className="tap inline-flex items-center justify-center gap-2 rounded-full bg-purple-600 px-6 py-3 text-base font-medium text-white shadow-soft transition hover:bg-purple-700">
             อ่านเพิ่มเติม <ArrowRight size={18} />
           </Link>
+        </div>
+      </section>
+
+      {/* ---------- 📢 ประกาศสำคัญ ---------- */}
+      <PinnedNotice />
+
+      {/* ---------- ⭐ 📅 กิจกรรมที่กำลังจะมาถึง (ผู้ปกครองต้องเตรียมของ) ---------- */}
+      <UpcomingEvents />
+
+      {/* ---------- 📢 ข่าวสารและประชาสัมพันธ์ ---------- */}
+      <section className="container-page pb-12 sm:pb-16">
+        <div className="mb-5 flex items-end justify-between gap-3">
+          <h2 className="text-2xl sm:text-3xl">📢 ประชาสัมพันธ์ล่าสุด</h2>
+          <Link href="/news" className="tap hidden items-center gap-1 text-[15px] font-medium text-purple-700 hover:underline sm:inline-flex">
+            ดูประชาสัมพันธ์ทั้งหมด <ArrowRight size={16} />
+          </Link>
+        </div>
+        <div className="grid gap-3 md:grid-cols-2">
+          {latestNews.map((n, i) => {
+            const c = NEWS_CATEGORIES[n.category];
+            return (
+              <Link key={n.id} href={`/news/${n.id}`} className="card card-hover animate-rise group flex gap-4 p-4 sm:p-5" style={{ animationDelay: `${i * 60}ms` }}>
+                <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-purple-100 text-2xl">{c.emoji}</span>
+                <span className="min-w-0 flex-1">
+                  <span className="flex flex-wrap items-center gap-1.5">
+                    <Tag tone={c.tone}>{c.label}</Tag>
+                    <span className="text-[13px] text-ink-soft">{n.dateLabel}</span>
+                    {n.pinned && <span className="text-[12px] font-medium text-[#a8456c]">📌 ปักหมุด</span>}
+                  </span>
+                  <span className="mt-1 block font-display text-[17px] leading-snug text-purple-800">{n.title}</span>
+                  <span className="mt-1 line-clamp-2 block text-[14px] text-ink-soft">{n.summary}</span>
+                </span>
+                <ArrowRight size={18} className="shrink-0 self-center text-purple-300 transition group-hover:translate-x-1 group-hover:text-purple-600" />
+              </Link>
+            );
+          })}
+        </div>
+        <Link href="/news" className="tap mt-4 inline-flex items-center gap-1 text-[15px] font-medium text-purple-700 hover:underline sm:hidden">
+          ดูประชาสัมพันธ์ทั้งหมด <ArrowRight size={16} />
+        </Link>
+      </section>
+
+      {/* ---------- 🎒 สัปดาห์นี้ต้องเตรียมอะไร? ---------- */}
+      <PrepThisWeek />
+
+      {/* ---------- 🗓️ ปฏิทินโรงเรียน ---------- */}
+      <section className="container-page pb-12 sm:pb-16">
+        <div className="card p-5 sm:p-6">
+          <div className="mb-4 flex items-end justify-between gap-3">
+            <h2 className="text-2xl sm:text-3xl">🗓️ ปฏิทินโรงเรียน</h2>
+            <Link href="/calendar" className="tap hidden items-center gap-1 text-[15px] font-medium text-purple-700 hover:underline sm:inline-flex">ดูปฏิทินทั้งหมด <ArrowRight size={16} /></Link>
+          </div>
+          <ul className="grid gap-2 md:grid-cols-3">
+            {upcoming.map((e) => {
+              const t = CALENDAR_TYPES[e.type];
+              return (
+                <li key={e.id}>
+                  <Link href="/calendar" className={cn("flex items-center gap-3 rounded-2xl px-4 py-3 transition hover:brightness-95", t.bg)}>
+                    <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-white/80 text-xl">📅</span>
+                    <span className="min-w-0">
+                      <span className={cn("block text-[13px] font-medium", t.color)}>{thaiDate(e.date)}{e.endDate ? ` – ${thaiDate(e.endDate)}` : ""} · {t.emoji} {t.label}</span>
+                      <span className="block truncate font-display text-[16px] text-purple-800">{e.title}</span>
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+          <Link href="/calendar" className="tap mt-3 inline-flex items-center gap-1 text-[15px] font-medium text-purple-700 hover:underline sm:hidden">ดูปฏิทินทั้งหมด <ArrowRight size={16} /></Link>
         </div>
       </section>
 
@@ -157,66 +228,6 @@ export default function HomePage() {
               </Link>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* ---------- 📢 ข่าวสารและประชาสัมพันธ์ ---------- */}
-      <section className="container-page pb-12 sm:pb-16">
-        <div className="mb-5 flex items-end justify-between gap-3">
-          <h2 className="text-2xl sm:text-3xl">📢 ข่าวสารและประชาสัมพันธ์</h2>
-          <Link href="/news" className="tap hidden items-center gap-1 text-[15px] font-medium text-purple-700 hover:underline sm:inline-flex">
-            ดูประชาสัมพันธ์ทั้งหมด <ArrowRight size={16} />
-          </Link>
-        </div>
-        <div className="grid gap-3 md:grid-cols-2">
-          {latestNews.map((n, i) => {
-            const c = NEWS_CATEGORIES[n.category];
-            return (
-              <Link key={n.id} href={`/news/${n.id}`} className="card card-hover animate-rise group flex gap-4 p-4 sm:p-5" style={{ animationDelay: `${i * 60}ms` }}>
-                <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-purple-100 text-2xl">{c.emoji}</span>
-                <span className="min-w-0 flex-1">
-                  <span className="flex flex-wrap items-center gap-1.5">
-                    <Tag tone={c.tone}>{c.label}</Tag>
-                    <span className="text-[13px] text-ink-soft">{n.dateLabel}</span>
-                    {n.pinned && <span className="text-[12px] font-medium text-[#a8456c]">📌 ปักหมุด</span>}
-                  </span>
-                  <span className="mt-1 block font-display text-[17px] leading-snug text-purple-800">{n.title}</span>
-                  <span className="mt-1 line-clamp-2 block text-[14px] text-ink-soft">{n.summary}</span>
-                </span>
-                <ArrowRight size={18} className="shrink-0 self-center text-purple-300 transition group-hover:translate-x-1 group-hover:text-purple-600" />
-              </Link>
-            );
-          })}
-        </div>
-        <Link href="/news" className="tap mt-4 inline-flex items-center gap-1 text-[15px] font-medium text-purple-700 hover:underline sm:hidden">
-          ดูประชาสัมพันธ์ทั้งหมด <ArrowRight size={16} />
-        </Link>
-      </section>
-
-      {/* ---------- 🗓️ กิจกรรมที่กำลังจะมาถึง ---------- */}
-      <section className="container-page pb-12 sm:pb-16">
-        <div className="card p-5 sm:p-6">
-          <div className="mb-4 flex items-end justify-between gap-3">
-            <h2 className="text-2xl sm:text-3xl">🗓️ กิจกรรมที่กำลังจะมาถึง</h2>
-            <Link href="/calendar" className="tap hidden items-center gap-1 text-[15px] font-medium text-purple-700 hover:underline sm:inline-flex">ดูปฏิทินทั้งหมด <ArrowRight size={16} /></Link>
-          </div>
-          <ul className="grid gap-2 md:grid-cols-3">
-            {upcoming.map((e) => {
-              const t = CALENDAR_TYPES[e.type];
-              return (
-                <li key={e.id}>
-                  <Link href="/calendar" className={cn("flex items-center gap-3 rounded-2xl px-4 py-3 transition hover:brightness-95", t.bg)}>
-                    <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-white/80 text-xl">📅</span>
-                    <span className="min-w-0">
-                      <span className={cn("block text-[13px] font-medium", t.color)}>{thaiDate(e.date)}{e.endDate ? ` – ${thaiDate(e.endDate)}` : ""} · {t.emoji} {t.label}</span>
-                      <span className="block truncate font-display text-[16px] text-purple-800">{e.title}</span>
-                    </span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-          <Link href="/calendar" className="tap mt-3 inline-flex items-center gap-1 text-[15px] font-medium text-purple-700 hover:underline sm:hidden">ดูปฏิทินทั้งหมด <ArrowRight size={16} /></Link>
         </div>
       </section>
 

@@ -34,7 +34,7 @@ export function Header() {
   return (
     <>
     <header className="sticky top-0 z-40 border-b border-line bg-cream/90 backdrop-blur">
-      <div className="container-page flex h-16 items-center justify-between gap-3">
+      <div className="mx-auto flex h-16 w-full max-w-[90rem] items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
         {/* 🏷️ พื้นที่โลโก้ — เว้นที่ไว้สำหรับโลโก้แนวนอน (วางไฟล์ที่ public/logo-wide.webp แล้วจะแสดงแทนอัตโนมัติ) */}
         <Link href="/" className="flex min-w-0 shrink-0 items-center gap-2.5 tap" style={{ minWidth: "var(--logo-slot, 0px)" }} aria-label="กลับหน้าแรก">
           {wideLogo ? (
@@ -51,25 +51,30 @@ export function Header() {
           )}
         </Link>
 
-        {/* Desktop: หน้าแรก · เกี่ยวกับ ▾ · เมนู ▾ · เข้าสู่ระบบ */}
-        <nav className="hidden items-center gap-1 lg:flex" aria-label="เมนูหลัก">
+        {/* Desktop: เมนูอยู่กลาง ยืดเต็มพื้นที่ว่างระหว่างโลโก้กับปุ่มด้านขวา */}
+        <nav className="hidden min-w-0 flex-1 items-center justify-center gap-0.5 lg:flex xl:gap-1" aria-label="เมนูหลัก">
           <Link href="/" className={cn("whitespace-nowrap rounded-full px-3 py-2 text-[14px] transition-colors xl:px-4 xl:text-[15px]", pathname === "/" ? "bg-purple-100 font-medium text-purple-800" : "text-ink hover:bg-purple-50 hover:text-purple-700")}>
             🏠 หน้าแรก
           </Link>
+          {/* 📅 ปฏิทิน · 🎈 กิจกรรม · 📢 ประชาสัมพันธ์ ไม่อยู่ตรงนี้ เพราะซ้ำกับแถบลอยด้านขวา */}
           {PRIMARY_NAV.map((item) => (
             <Dropdown key={item.href} item={item} active={isActive(item)} />
           ))}
-          {TOP_LINKS.map((item) => (
+          {TOP_LINKS.slice(3).map((item) => (
             <Link key={item.href} href={item.href} className={cn("whitespace-nowrap rounded-full px-3 py-2 text-[14px] transition-colors xl:px-4 xl:text-[15px]", isActive(item) ? "bg-purple-100 font-medium text-purple-800" : "text-ink hover:bg-purple-50 hover:text-purple-700")}>
-              <span className="hidden xl:inline">{item.emoji} </span>{item.label}
+              {item.emoji} {item.label}
             </Link>
           ))}
-          <ThaiClock className="ml-1" />
-          <ThemeToggle className="ml-1" />
-          <Link href="/login" className={cn("ml-1 inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-4 py-2 text-[15px] font-medium shadow-soft transition", pathname === "/login" ? "bg-purple-700 text-white" : "bg-purple-600 text-white hover:bg-purple-700")}>
-            <LogIn size={16} /> เข้าสู่ระบบ
-          </Link>
         </nav>
+
+        {/* ชุดปุ่มด้านขวา — ถ่วงน้ำหนักกับโลโก้ด้านซ้ายให้แถบบนดูสมดุล */}
+        <div className="hidden shrink-0 items-center gap-1.5 lg:flex">
+          <ThaiClock className="hidden xl:flex" />
+          <ThemeToggle />
+          <Link href="/login" className={cn("inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-4 py-2 text-[15px] font-medium shadow-soft transition", pathname === "/login" ? "bg-purple-700 text-white" : "bg-purple-600 text-white hover:bg-purple-700")}>
+            <LogIn size={16} /> <span className="hidden xl:inline">เข้าสู่ระบบ</span><span className="xl:hidden">เข้าระบบ</span>
+          </Link>
+        </div>
 
         <div className="flex items-center gap-2 lg:hidden">
           <ThaiClock />
@@ -99,10 +104,19 @@ export function Header() {
       >
         <nav className="container-page grid gap-2 py-3 pb-6" aria-label="เมนูมือถือ">
           <MobileLink href="/" emoji="🏠" label="หน้าแรก" active={pathname === "/"} tint="bg-purple-100" />
+          {/* 📅 ปฏิทิน · 🎈 กิจกรรม · 📢 ประชาสัมพันธ์ — ผู้ปกครองใช้บ่อย จึงอยู่บนสุด */}
+          <div className="grid grid-cols-3 gap-2">
+            {TOP_LINKS.slice(0, 3).map((item) => (
+              <Link key={item.href} href={item.href} className={cn("tap flex flex-col items-center justify-center gap-1 rounded-2xl border px-2 py-3 text-center text-[13px] leading-tight transition-colors", isActive(item) ? "border-purple-200 bg-purple-100 font-medium text-purple-800" : cn("border-line text-ink active:bg-purple-50", item.tint))}>
+                <span className="text-2xl">{item.emoji}</span>
+                {item.label}
+              </Link>
+            ))}
+          </div>
           {PRIMARY_NAV.map((item) => (
             <MobileGroup key={item.href} item={item} pathname={pathname} active={isActive(item)} />
           ))}
-          {TOP_LINKS.map((item) => (
+          {TOP_LINKS.slice(3).map((item) => (
             <MobileLink key={item.href} href={item.href} emoji={item.emoji} label={item.label} active={isActive(item)} tint={item.tint} />
           ))}
           <MobileLink href="/settings" emoji="⚙️" label="ตั้งค่า" active={pathname === "/settings"} tint="bg-purple-100" />
@@ -116,7 +130,7 @@ export function Header() {
 }
 
 /* ---------- Desktop dropdown ---------- */
-function Dropdown({ item, active }: { item: NavItem; active: boolean }) {
+function Dropdown({ item, active, showAll = true }: { item: NavItem; active: boolean; showAll?: boolean }) {
   const [show, setShow] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -152,10 +166,14 @@ function Dropdown({ item, active }: { item: NavItem; active: boolean }) {
         )}
       >
         <div className="card overflow-hidden p-1.5">
-          <Link href={item.href} role="menuitem" onClick={() => setShow(false)} className="flex items-center gap-2 rounded-xl px-3 py-2 text-[15px] font-medium text-purple-800 hover:bg-purple-50">
-            {item.emoji} ดูทั้งหมด
-          </Link>
-          <div className="my-1 h-px bg-line" />
+          {showAll && (
+            <>
+              <Link href={item.href} role="menuitem" onClick={() => setShow(false)} className="flex items-center gap-2 rounded-xl px-3 py-2 text-[15px] font-medium text-purple-800 hover:bg-purple-50">
+                {item.emoji} ดูทั้งหมด
+              </Link>
+              <div className="my-1 h-px bg-line" />
+            </>
+          )}
           {item.children!.map((c) => (
             <Link key={c.href} href={c.href} role="menuitem" onClick={() => setShow(false)} className="flex items-center gap-2 rounded-xl px-3 py-2 text-[15px] text-ink hover:bg-purple-50 hover:text-purple-800">
               <span className="w-6 shrink-0 text-center">{c.emoji}</span>

@@ -1,17 +1,16 @@
 "use client";
 
 import { Check } from "lucide-react";
-import { EFFECTS } from "@/lib/theme";
 import { cn } from "@/lib/cn";
 import { useAmbient } from "./useAmbient";
 
 /** ✨ การ์ดเลือกเอฟเฟกต์บรรยากาศในหน้าตั้งค่า ⚙️ — เปิดได้ทีละ 1 อย่าง */
 export function EffectCards() {
-  const { effect, ready, reduced, choose } = useAmbient();
+  const { effect, effects, ready, reduced, choose } = useAmbient();
   return (
     <div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {EFFECTS.map((e) => {
+        {effects.map((e) => {
           const on = ready && effect === e.id && !(reduced && e.id !== "none");
           const locked = reduced && e.id !== "none";
           return (

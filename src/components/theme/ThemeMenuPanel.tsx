@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Check } from "lucide-react";
-import { EFFECTS, THEME_MODES } from "@/lib/theme";
+import { THEME_MODES } from "@/lib/theme";
 import { cn } from "@/lib/cn";
 import { useTheme } from "./useTheme";
 import { useAmbient } from "./useAmbient";
@@ -36,7 +36,8 @@ export function ThemeMenuPanel({ onPicked }: { onPicked?: () => void }) {
       </p>
       <div className="my-1 h-px bg-line" />
       <p className="px-3 pb-1 pt-1 text-[12px] text-ink-soft">✨ เอฟเฟกต์บรรยากาศ</p>
-      {EFFECTS.map((e) => {
+      <div className="no-scrollbar max-h-64 overflow-y-auto">
+      {fx.effects.map((e) => {
         const on = fx.ready && fx.effect === e.id && !fx.reduced;
         return (
           <button
@@ -54,6 +55,7 @@ export function ThemeMenuPanel({ onPicked }: { onPicked?: () => void }) {
           </button>
         );
       })}
+      </div>
       {fx.reduced && <p className="px-3 pb-1 text-[11px] leading-snug text-ink-soft">อุปกรณ์นี้ตั้งค่า “ลดการเคลื่อนไหว” ไว้ จึงไม่เล่นเอฟเฟกต์</p>}
       <div className="my-1 h-px bg-line" />
       <Link href="/settings" onClick={onPicked} className="flex items-center gap-2 rounded-xl px-3 py-2 text-[14px] text-purple-700 hover:bg-purple-50">

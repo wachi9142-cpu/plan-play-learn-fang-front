@@ -12,7 +12,7 @@ export default function GamesPage() {
   const games = eduGames();
   return (
     <div className="container-page py-8 sm:py-12">
-      <PageHeader emoji="🧩" title="เกมการศึกษา" description="เกมฝึกทักษะ เรียนรู้ผ่านการเล่น และพัฒนาการคิด — มีเป้าหมายทักษะชัดเจน เชื่อมกับหลักสูตร แผนการจัดประสบการณ์ และแฟ้มผลงาน · ทุกเกมเลือกระดับ 🟢 ง่าย · 🟡 ปานกลาง · 🔴 ยาก ได้ก่อนเล่น">
+      <PageHeader emoji="🧩" image="/games/edu.webp" title="เกมการศึกษา" description="เกมฝึกทักษะ เรียนรู้ผ่านการเล่น และพัฒนาการคิด — มีเป้าหมายทักษะชัดเจน เชื่อมกับหลักสูตร แผนการจัดประสบการณ์ และแฟ้มผลงาน · ทุกเกมเลือกระดับ 🟢 ง่าย · 🟡 ปานกลาง · 🔴 ยาก ได้ก่อนเล่น">
         <div className="flex flex-wrap items-center gap-2">
           <Tag tone="purple">{games.length} เกม</Tag>
           <Tag tone="pink">อนุบาล 1–3</Tag>

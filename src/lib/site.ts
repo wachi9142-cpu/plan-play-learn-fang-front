@@ -79,6 +79,7 @@ export const NAV_ITEMS: NavItem[] = [
     label: "เกมการศึกษา",
     description: "เกมฝึกทักษะ เรียนรู้ผ่านการเล่น และพัฒนาการคิด",
     tint: "bg-mint-soft",
+    image: "/games/edu.webp",
   },
   {
     href: "/worksheets",
@@ -136,11 +137,14 @@ export const ABOUT_ITEMS: NavLink[] = [
 
 /** เมนูบนแถบ (ไม่มีเมนูย่อย) — ปฏิทินโรงเรียน · กิจกรรมโรงเรียน · ติดต่อเรา */
 export const TOP_LINKS: NavItem[] = [
-  { href: "/calendar", emoji: "📅", label: "ปฏิทินโรงเรียน", description: "เปิด–ปิดเทอม วันหยุด วันสำคัญ และกิจกรรมประจำเดือน", tint: "bg-sky-soft" },
-  { href: "/school-events", emoji: "🎉", label: "กิจกรรมโรงเรียน", description: "กิจกรรมที่เกิดขึ้นในโรงเรียน พร้อมรูปและรายละเอียด", tint: "bg-yellow-soft" },
-  { href: "/news", emoji: "📣", label: "ประชาสัมพันธ์", description: "ประกาศ ข่าวสาร และเรื่องแจ้งถึงผู้ปกครอง", tint: "bg-pink-soft" },
+  { href: "/calendar", emoji: "📅", label: "ปฏิทิน", description: "เปิด–ปิดเทอม วันหยุด วันสำคัญ และกิจกรรมประจำเดือน", tint: "bg-sky-soft" },
+  { href: "/school-events", emoji: "🎈", label: "กิจกรรม", description: "กิจกรรมโรงเรียน วันที่ เวลา และสิ่งที่ต้องเตรียมให้ลูก", tint: "bg-yellow-soft" },
+  { href: "/news", emoji: "📢", label: "ประชาสัมพันธ์", description: "ประกาศ ข่าวสาร และเรื่องแจ้งถึงผู้ปกครอง", tint: "bg-pink-soft" },
   { href: "/contact", emoji: "📞", label: "ติดต่อเรา", description: "ที่อยู่ แผนที่ เวลาเปิด–ปิด และช่องทางติดต่อ", tint: "bg-mint-soft" },
 ];
+
+/** 3 เมนูที่ผู้ปกครองใช้บ่อยที่สุด — แสดงเด่นเป็นพิเศษบนมือถือ */
+export const PARENT_LINKS: NavItem[] = TOP_LINKS.slice(0, 3);
 
 /**
  * แถบ Navigation ด้านบน (ตามบรีฟ): หน้าแรก · เกี่ยวกับ ▾ · เมนู ▾ · ปฏิทินโรงเรียน · กิจกรรมโรงเรียน · ติดต่อเรา · เข้าสู่ระบบ
@@ -160,14 +164,11 @@ export const PRIMARY_NAV: NavItem[] = [
     label: "การเรียนรู้",
     description: "กำหนดการสอน แผน โครงการ กิจกรรมหลัก เกม ใบงาน สื่อ และ Coding",
     tint: "bg-purple-100",
-    children: MENU_ITEMS.map(({ href, emoji, label }) => ({ href, emoji, label })),
-  },
-  {
-    href: "/library",
-    emoji: "📚",
-    label: "ห้องสมุด",
-    description: "ชั้นหนังสือสำหรับครูและผู้ใหญ่ · มุมหนังสือสำหรับเด็ก",
-    tint: "bg-pink-soft",
-    children: LIBRARY_NAV,
+    // 📚 ห้องสมุด รวมอยู่ในเมนู "การเรียนรู้" ไม่แยกเป็นเมนูบนอีกเมนูหนึ่ง
+    children: [
+      ...MENU_ITEMS.map(({ href, emoji, label }) => ({ href, emoji, label })),
+      { href: "/library", emoji: "📚", label: "ห้องสมุด (ทั้งหมด)" },
+      ...LIBRARY_NAV,
+    ],
   },
 ];
