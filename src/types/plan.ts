@@ -68,6 +68,16 @@ export interface Grade {
   description: string;  // ลักษณะการจัดประสบการณ์ของระดับนี้
   focus: string[];      // จุดเน้นพัฒนาการ
   tint: string;         // tailwind bg class
+  cover?: string;       // 🖼️ ภาพปกระดับชั้น (public/grades/<id>.webp)
+  /** 🌱 เรื่องเล่าการเติบโตในสวน: เมล็ด → ต้นอ่อน → ดอกตูม → ดอกไม้ → ต้นไม้ใหญ่ */
+  stage: {
+    emoji: string;      // 🌱 🌿 🌷 🌸 🌳
+    name: string;       // "เมล็ดน้อย"
+    short: string;      // "เริ่มต้นการเติบโต"
+    scene: string;      // ภาพที่เล่า
+    meaning: string[];  // ความหมายของช่วงวัยนี้
+    gradient: string;   // tailwind gradient สำหรับพื้นหลังการ์ด
+  };
 }
 
 /** แผนการจัดประสบการณ์ 1 เรื่อง — หัวใจของระบบ */

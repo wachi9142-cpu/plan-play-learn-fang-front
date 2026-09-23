@@ -38,7 +38,7 @@ export function Header() {
         <Link href="/" className="flex min-w-0 shrink-0 items-center gap-2.5 tap" style={{ minWidth: "var(--logo-slot, 0px)" }} aria-label="กลับหน้าแรก">
           {wideLogo ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src="/logo-wide.webp" alt={`${SITE.brand} — ${SITE.brandSub}`} className="h-11 w-auto max-w-[240px] object-contain" />
+            <img src="/logo-wide.webp" alt={`${SITE.brand} — ${SITE.brandSub} · ${SITE.motto}`} className="h-12! w-auto max-w-[180px]! object-contain sm:h-14! sm:max-w-[250px]! lg:max-w-[220px]! xl:max-w-[290px]!" />
           ) : (
             <>
               <Image src="/logo-lpg.webp" alt="โลโก้ครูข้าวฟ่าง" width={44} height={44} priority className="size-11 shrink-0 rounded-full border-2 border-purple-200 object-cover shadow-soft" />

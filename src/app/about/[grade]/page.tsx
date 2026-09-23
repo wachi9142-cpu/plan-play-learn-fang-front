@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { GRADES, getGrade, getPlansByGrade } from "@/data/plans";
@@ -54,9 +55,44 @@ export default async function GradePage({ params }: { params: Promise<Params> })
       <PageHeader emoji={g.emoji} title={g.name} description={g.description}>
         <div className="flex flex-wrap gap-2">
           <Tag tone="pink">อายุ {g.ages}</Tag>
+          <Tag tone="mint">{g.stage.emoji} {g.stage.name}</Tag>
           <Tag tone="purple">{total > 0 ? `${total} รายการ` : "กำลังเตรียมเนื้อหา"}</Tag>
         </div>
       </PageHeader>
+
+      {/* ---------- 🌱 เรื่องเล่าการเติบโตในสวน ---------- */}
+      <section className={cn("animate-rise mb-4 overflow-hidden rounded-3xl bg-gradient-to-br p-5 sm:p-8", g.stage.gradient)}>
+        <div className="flex flex-col items-center gap-5 text-center sm:flex-row sm:items-center sm:text-left">
+          <span className="grid size-36 shrink-0 place-items-center overflow-hidden rounded-3xl bg-white/70 text-6xl shadow-lift sm:size-44 sm:text-7xl" aria-hidden>
+            {g.cover ? <Image src={g.cover} alt="" width={512} height={512} priority className="size-full object-cover" /> : g.stage.emoji}
+          </span>
+          <div className="min-w-0">
+            <p className="text-[13px] font-medium text-purple-600">🌱 เรื่องเล่าการเติบโตในสวนสีม่วง</p>
+            <h2 className="mt-0.5 font-display text-2xl text-purple-800 sm:text-3xl">“{g.stage.name}” — {g.stage.short}</h2>
+            <p className="mt-2 text-[15px] text-ink-soft">{g.stage.scene}</p>
+            <ul className="mt-3 flex flex-wrap justify-center gap-2 sm:justify-start">
+              {g.stage.meaning.map((m) => <li key={m} className="rounded-full bg-white/80 px-3 py-1 text-[14px] text-ink">💜 {m}</li>)}
+            </ul>
+          </div>
+        </div>
+
+        {/* เส้นทางการเติบโตทั้ง 5 ระดับ */}
+        <ol className="mt-6 flex flex-wrap items-stretch justify-center gap-2">
+          {GRADES.map((x, i) => (
+            <li key={x.id} className="flex items-center gap-2">
+              <Link href={`/about/${x.id}`} aria-current={x.id === g.id ? "page" : undefined}
+                className={cn("tap flex min-w-[104px] flex-col items-center rounded-2xl px-3 py-2 text-center transition", x.id === g.id ? "bg-white shadow-soft ring-2 ring-purple-400" : "bg-white/60 hover:bg-white")}>
+                <span className="grid size-12 place-items-center overflow-hidden rounded-xl bg-white/70 text-2xl" aria-hidden>
+                  {x.cover ? <Image src={x.cover} alt="" width={128} height={128} className="size-full object-cover" /> : x.stage.emoji}
+                </span>
+                <span className="mt-0.5 font-display text-[14px] text-purple-800">{x.stage.name}</span>
+                <span className="text-[11px] text-ink-soft">{x.name}</span>
+              </Link>
+              {i < GRADES.length - 1 && <span className="text-purple-300" aria-hidden>→</span>}
+            </li>
+          ))}
+        </ol>
+      </section>
 
       <div className="grid gap-4 md:grid-cols-2">
         <section className="card animate-rise delay-1 p-5 sm:p-6">

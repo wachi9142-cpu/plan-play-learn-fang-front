@@ -107,9 +107,12 @@ export default function HomePage() {
           {GRADES.map((g, i) => (
             <Link key={g.id} href={`/about/${g.id}`} className="card card-hover animate-rise group flex flex-col items-center p-6 text-center" style={{ animationDelay: `${i * 80}ms` }}>
               <span className="text-[12px] font-medium text-purple-500">{g.group === "nursery" ? "👶 Nursery" : "🎒 Kindergarten"}</span>
-              <span className={cn("mt-2 grid size-16 place-items-center rounded-2xl text-4xl transition-transform group-hover:-rotate-6", g.tint)}>{g.group === "nursery" ? "🍼" : "🌷"}</span>
+              <span className={cn("mt-2 grid size-28 place-items-center overflow-hidden rounded-2xl text-4xl shadow-soft transition-transform group-hover:scale-105 sm:size-32", g.tint)} aria-hidden>
+                {g.cover ? <Image src={g.cover} alt="" width={256} height={256} className="size-full object-cover" /> : g.stage.emoji}
+              </span>
               <span className="mt-3 font-display text-xl text-purple-800">{g.name}</span>
-              <span className="mt-1 text-[15px] text-ink-soft">{g.tagline}</span>
+              <span className="mt-0.5 text-[13px] font-medium text-purple-600">{g.stage.emoji} {g.stage.name}</span>
+              <span className="mt-1 text-[15px] text-ink-soft">{g.stage.short}</span>
               <span className="mt-3 inline-flex items-center gap-1 text-[14px] font-medium text-purple-600">ดูข้อมูล <ArrowRight size={14} className="transition group-hover:translate-x-1" /></span>
             </Link>
           ))}
