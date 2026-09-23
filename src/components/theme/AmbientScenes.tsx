@@ -268,7 +268,7 @@ const DROPS = Array.from({ length: 34 }, (_, i) => ({
   len: +(10 + rnd(i, 58.117) * 16).toFixed(2),
   fall: +(1.1 + rnd(i, 37.229) * 1.5).toFixed(2),
   delay: +(-rnd(i, 91.443) * 3).toFixed(2),
-  opacity: +(0.3 + rnd(i, 26.881) * 0.4).toFixed(2),
+  opacity: +(0.55 + rnd(i, 26.881) * 0.4).toFixed(2),
   far: i % 4 === 1,
 }));
 
@@ -328,14 +328,20 @@ function Spring() {
 
 /* ================= 🦋 ผีเสื้อ ================= */
 
-const BUTTERFLIES = [
-  { top: 22, size: 26, dur: 13, gap: 26, delay: 2, dir: 1, tone: 0 },
-  { top: 54, size: 20, dur: 17, gap: 34, delay: 11, dir: -1, tone: 1 },
-  { top: 72, size: 30, dur: 15, gap: 30, delay: 19, dir: 1, tone: 2 },
-  { top: 38, size: 22, dur: 19, gap: 38, delay: 27, dir: -1, tone: 3 },
+/** ผีเสื้อ 8 ตัว 8 สี — เส้นทาง ความสูง ความเร็ว และจังหวะออกมาต่างกันทุกตัว */
+const BUTTERFLIES: { top: number; size: number; dur: number; gap: number; delay: number; dir: 1 | -1; tone: number; photo?: "a" | "b" }[] = [
+  { top: 18, size: 26, dur: 13, gap: 24, delay: 2, dir: 1, tone: 0 },
+  { top: 52, size: 20, dur: 17, gap: 31, delay: 7, dir: -1, tone: 1 },
+  { top: 70, size: 30, dur: 15, gap: 27, delay: 12, dir: 1, tone: 2, photo: "a" },
+  { top: 34, size: 22, dur: 19, gap: 35, delay: 17, dir: -1, tone: 3 },
+  { top: 62, size: 24, dur: 14, gap: 29, delay: 22, dir: 1, tone: 4 },
+  { top: 48, size: 34, dur: 16, gap: 30, delay: 25, dir: -1, tone: 3, photo: "b" },
+  { top: 26, size: 18, dur: 21, gap: 37, delay: 28, dir: -1, tone: 5 },
+  { top: 80, size: 28, dur: 16, gap: 26, delay: 33, dir: 1, tone: 6 },
+  { top: 44, size: 21, dur: 18, gap: 33, delay: 39, dir: -1, tone: 7 },
 ];
 
-const WING_COLORS = ["--wing-0", "--wing-1", "--wing-2", "--wing-3"];
+const WING_COLORS = ["--wing-0", "--wing-1", "--wing-2", "--wing-3", "--wing-4", "--wing-5", "--wing-6", "--wing-7"];
 
 function Butterfly() {
   return (
@@ -347,7 +353,12 @@ function Butterfly() {
           style={{ top: `${b.top}%`, width: `${b.size}px`, height: `${b.size}px`, animationDuration: `${b.gap}s`, animationDelay: `${b.delay}s` }}
         >
           <span className="fx-bob block size-full" style={{ animationDuration: `${(b.dur / 6).toFixed(2)}s` }}>
-            <Wings color={`var(${WING_COLORS[b.tone]})`} id={i} />
+            {b.photo ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={`/butterfly/bf-${b.photo}.webp`} alt="" className="fx-bf-img block size-full" />
+            ) : (
+              <Wings color={`var(${WING_COLORS[b.tone]})`} id={i} />
+            )}
           </span>
         </span>
       ))}
@@ -395,6 +406,15 @@ const PUMPKINS = Array.from({ length: 7 }, (_, i) => ({
   spin: +(7 + rnd(i, 51.229) * 6).toFixed(2),
 }));
 
+/** 👻 ผีน้อยน่ารัก — ลอยขึ้นช้า ๆ ส่ายซ้ายขวา แล้วค่อย ๆ จางหาย */
+const GHOSTS = [
+  { left: 14, size: 44, dur: 17, delay: 1, sway: 5, drift: 20 },
+  { left: 72, size: 34, dur: 21, delay: 7, sway: 6.5, drift: 26 },
+  { left: 42, size: 52, dur: 19, delay: 13, sway: 5.5, drift: 16 },
+  { left: 88, size: 30, dur: 23, delay: 19, sway: 7, drift: 30 },
+  { left: 28, size: 38, dur: 20, delay: 25, sway: 6, drift: 22 },
+];
+
 const LANTERNS = [
   { left: 8, top: 16, size: 16, dur: 3.6, delay: 0 },
   { left: 88, top: 40, size: 13, dur: 4.4, delay: 1.3 },
@@ -405,7 +425,14 @@ function Halloween() {
   return (
     <>
       <Moon className="fx-moon fx-moon-warm" />
-      <Leaves count={9} />
+      {GHOSTS.map((g, i) => (
+        <span key={i} className={`fx-float ${i >= 3 ? "fx-sm-hide" : ""}`} style={{ left: `${g.left}%`, width: `${g.size}px`, height: `${g.size}px`, animationDuration: `${g.dur}s`, animationDelay: `${g.delay}s` }}>
+          <span className="fx-sway block size-full" style={{ animationDuration: `${g.sway}s`, ["--drift" as string]: `${g.drift}px` }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/halloween/ghost.webp" alt="" className="fx-ghost block size-full" />
+          </span>
+        </span>
+      ))}
       {PUMPKINS.map((p, i) => (
         <span key={i} className="fx-fall" style={{ left: `${p.left}%`, animationDuration: `${p.fall}s`, animationDelay: `${p.delay}s` }}>
           <span className="fx-sway" style={{ width: `${p.size}px`, height: `${p.size}px`, animationDuration: `${p.sway}s`, ["--drift" as string]: `${p.drift}px` }}>
@@ -453,11 +480,17 @@ function Christmas() {
 
 /* ================= 🎆 ปีใหม่ ================= */
 
+/** 🎆 พลุ — ยิงขึ้นจากด้านล่าง แล้วแตกเป็นดอกที่ด้านบนของจอ (ไม่ถี่ ไม่กะพริบแรง) */
 const FIREWORKS = [
-  { left: 24, top: 16, size: 90, gap: 14, delay: 2, tone: 0 },
-  { left: 68, top: 10, size: 110, gap: 19, delay: 8, tone: 1 },
-  { left: 46, top: 24, size: 80, gap: 23, delay: 14.5, tone: 3 },
+  { left: 22, height: 62, spread: 74, cycle: 13, delay: 1.5, tone: 0 },
+  { left: 70, height: 72, spread: 88, cycle: 17, delay: 6, tone: 1 },
+  { left: 46, height: 56, spread: 66, cycle: 15, delay: 10.5, tone: 4 },
+  { left: 86, height: 66, spread: 72, cycle: 19, delay: 15, tone: 3 },
+  { left: 12, height: 76, spread: 80, cycle: 21, delay: 20, tone: 2 },
 ];
+
+/** จำนวนเส้นประกายในดอกพลุ 1 ดอก */
+const RAYS = 16;
 
 const RISERS = Array.from({ length: 10 }, (_, i) => ({
   left: +(rnd(i, 27.881) * 94 + 3).toFixed(2),
@@ -470,17 +503,35 @@ const RISERS = Array.from({ length: 10 }, (_, i) => ({
 function NewYear() {
   return (
     <>
-      {FIREWORKS.map((f, i) => (
-        <span
-          key={i}
-          className="fx-firework"
-          style={{ left: `${f.left}%`, top: `${f.top}%`, ["--spread" as string]: `${f.size}px`, ["--hue" as string]: `var(${STAR_VARS[f.tone]})`, animationDuration: `${f.gap}s`, animationDelay: `${f.delay}s` }}
-        >
-          {Array.from({ length: 12 }, (_, k) => (
-            <span key={k} className="fx-spark" style={{ transform: `rotate(${k * 30}deg)` }} />
-          ))}
-        </span>
-      ))}
+      {FIREWORKS.map((f, i) => {
+        const timing = { animationDuration: `${f.cycle}s`, animationDelay: `${f.delay}s` };
+        return (
+          <span
+            key={i}
+            className="fx-fw"
+            style={{ left: `${f.left}%`, ["--h" as string]: `${f.height}vh`, ["--spread" as string]: `${f.spread}px`, ["--hue" as string]: `var(${STAR_VARS[f.tone]})` }}
+          >
+            {/* ลูกพลุวิ่งขึ้น */}
+            <span className="fx-fw-rocket" style={timing} />
+            {/* ดอกพลุที่แตกออก */}
+            <span className="fx-fw-burst" style={timing}>
+              {/* วงนอก: ประกายใหญ่ */}
+              {Array.from({ length: RAYS }, (_, k) => (
+                <span key={`o${k}`} className="fx-fw-ray" style={{ transform: `rotate(${(k * 360) / RAYS}deg)` }}>
+                  <span className="fx-fw-dot" style={timing} />
+                </span>
+              ))}
+              {/* วงใน: ประกายเล็กกว่า สลับมุม ให้ดอกพลุดูฟู */}
+              {Array.from({ length: RAYS / 2 }, (_, k) => (
+                <span key={`i${k}`} className="fx-fw-ray" style={{ transform: `rotate(${(k * 720) / RAYS + 360 / RAYS / 2}deg)` }}>
+                  <span className="fx-fw-dot fx-fw-dot-sm" style={timing} />
+                </span>
+              ))}
+            </span>
+          </span>
+        );
+      })}
+
       {RISERS.map((r, i) => (
         <span
           key={i}

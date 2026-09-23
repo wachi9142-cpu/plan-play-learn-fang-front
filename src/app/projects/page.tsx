@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "โครงการ" };
 export default function ProjectsPage() {
   return (
     <div className="container-page py-8 sm:py-12">
-      <PageHeader emoji="📚" title="โครงการ" description="โครงการเรียนรู้แบบ Project Approach ที่เด็ก ๆ ได้สำรวจ ทดลอง และลงมือทำจริง" />
+      <PageHeader emoji="📚" image="/menu/projects.webp" title="โครงการ" description="โครงการเรียนรู้แบบ Project Approach ที่เด็ก ๆ ได้สำรวจ ทดลอง และลงมือทำจริง" />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {PROJECTS.map((p, i) => (

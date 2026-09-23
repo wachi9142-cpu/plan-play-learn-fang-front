@@ -12,6 +12,7 @@ export default function SchedulesPage() {
     <div className="container-page py-8 sm:py-12">
       <PageHeader
         emoji="📅"
+        image="/menu/schedules.webp"
         title="กำหนดการสอน"
         description="เลือกชุดกำหนดการสอน แล้วกดที่ชื่อเรื่องในตารางเพื่อไปยังแผนการจัดประสบการณ์ที่ตรงกัน"
       />

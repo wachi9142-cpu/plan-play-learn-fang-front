@@ -16,6 +16,7 @@ export default function PlansPage() {
     <div className="container-page py-8 sm:py-12">
       <PageHeader
         emoji="📖"
+        image="/menu/plans.webp"
         title={`แผนการจัดประสบการณ์ ${grade.name}`}
         description="รวมแผนทุกเรื่อง ค้นหาได้จากชื่อเรื่อง หน่วย หรือคำสำคัญ กดเพื่อเปิดรายละเอียดแผน"
       >

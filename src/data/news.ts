@@ -13,11 +13,11 @@ export interface NewsItem {
   link?: { href: string; label: string };
 }
 
-export const NEWS_CATEGORIES: Record<NewsCategory, { emoji: string; label: string; tone: "purple" | "pink" | "yellow" | "mint" | "sky" }> = {
+export const NEWS_CATEGORIES: Record<NewsCategory, { emoji: string; label: string; tone: "purple" | "pink" | "yellow" | "mint" | "sky"; image?: string }> = {
   announce: { emoji: "📣", label: "ประกาศ", tone: "purple" },
   event: { emoji: "🎉", label: "กิจกรรม", tone: "pink" },
   holiday: { emoji: "🌴", label: "วันหยุด", tone: "mint" },
-  parents: { emoji: "👨‍👩‍👧", label: "ถึงผู้ปกครอง", tone: "sky" },
+  parents: { emoji: "👨‍👩‍👧", label: "ถึงผู้ปกครอง", tone: "sky", image: "/news/parents.webp" },
   general: { emoji: "💜", label: "ทั่วไป", tone: "yellow" },
 };
 

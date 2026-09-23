@@ -48,7 +48,7 @@ export const BUILT_IN_EFFECTS: EffectDef[] = [
   { id: "spring", emoji: "🌼", label: "Spring Garden — ดอกไม้ผลิบาน", hint: "ดอกไม้เล็ก ๆ ค่อย ๆ ผลิบานทีละดอก พร้อมใบไม้เขียวอ่อน", season: "spring", order: 60, enabled: true },
   { id: "butterfly", emoji: "🦋", label: "Butterfly Garden — ผีเสื้อบินผ่าน", hint: "ผีเสื้อสีพาสเทลบินผ่านหน้าจอเป็นครั้งคราว เส้นทางไม่ซ้ำกัน", season: "all", order: 70, enabled: true },
   { id: "magic", emoji: "✨", label: "Magic Garden — ประกายวิบวับ", hint: "จุดแสงเล็ก ๆ ปรากฏและจางหาย เหมือนสวนมีเวทมนตร์", season: "all", order: 80, enabled: true },
-  { id: "halloween", emoji: "🎃", label: "Halloween Garden — ฮาโลวีนน่ารัก", hint: "ฟักทองยิ้ม ใบไม้ส้ม โคมไฟอุ่น ๆ และพระจันทร์เสี้ยว (ไม่น่ากลัว)", season: "festival", order: 90, enabled: true },
+  { id: "halloween", emoji: "🎃", label: "Halloween Garden — ฮาโลวีนน่ารัก", hint: "ผีน้อยน่ารักลอยผ่าน ฟักทองยิ้ม โคมไฟอุ่น ๆ และพระจันทร์เสี้ยว (ไม่น่ากลัว)", season: "festival", order: 90, enabled: true },
   { id: "christmas", emoji: "🎄", label: "Christmas Garden — คริสต์มาส", hint: "หิมะตกเบา ๆ ไฟประดับกะพริบ ต้นสนเล็ก ๆ และดาวสีทอง", season: "festival", order: 100, enabled: true },
   { id: "newyear", emoji: "🎆", label: "New Year Garden — ฉลองปีใหม่", hint: "ดอกไม้ไฟดวงเล็กนาน ๆ ครั้ง และประกายแสงลอยขึ้นนุ่ม ๆ", season: "festival", order: 110, enabled: true },
   { id: "purplenight", emoji: "💜", label: "Purple Night Garden — สวนกลางคืน", hint: "ม่านม่วงนวล พระจันทร์ ดาวกระพริบ และหิ่งห้อยบินผ่าน", season: "night", order: 120, enabled: true, time: "18:00–06:00" },

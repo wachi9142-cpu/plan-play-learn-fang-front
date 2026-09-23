@@ -328,14 +328,19 @@ img, svg { max-width: 100%; height: auto; }
   --leaf-green: #8fd08f;
   --leaf-vein: #5f9c3f;
 
-  --wing-0: #a87fe0;
-  --wing-1: #f2a1bd;
-  --wing-2: #f0c44a;
-  --wing-3: #7fb4e0;
+  --wing-0: #9b6fdb;   /* ม่วง */
+  --wing-1: #ef8fb2;   /* ชมพู */
+  --wing-2: #eebc3c;   /* เหลืองทอง */
+  --wing-3: #6aa8dd;   /* ฟ้า */
+  --wing-4: #5fc0a0;   /* เขียวมิ้นต์ */
+  --wing-5: #f0906a;   /* ส้มพีช */
+  --wing-6: #c98fe0;   /* ม่วงกล้วยไม้ */
+  --wing-7: #6fc4d8;   /* ฟ้าเทอร์ควอยซ์ */
   --wing-body: #6d3aa8;
 
-  --rain: #8fb8e8;
-  --rain-mist: rgb(199 224 248 / 0.4);
+  --rain: #3f74c4;
+  --rain-soft: #7aa6e0;
+  --rain-mist: rgb(176 208 244 / 0.5);
 
   --xmas-0: #e8534b;
   --xmas-1: #4fae62;
@@ -366,9 +371,14 @@ html[data-theme="dark"] {
   --wing-1: #f7b9d0;
   --wing-2: #f7d98a;
   --wing-3: #9ecbf2;
+  --wing-4: #8fe0c4;
+  --wing-5: #f7b49a;
+  --wing-6: #e0b5f2;
+  --wing-7: #9fdcea;
   --wing-body: #e2d3fb;
 
   --rain: #b9d4f5;
+  --rain-soft: #8fb8e8;
   --rain-mist: rgb(60 48 92 / 0.4);
 
   --xmas-0: #ff7a72;
@@ -595,14 +605,18 @@ html[data-theme="dark"] .fx-purplenight::after { background: linear-gradient(to 
 .fx-drop {
   position: absolute;
   top: -12vh;
-  width: 1.6px;
+  width: 2px;
   border-radius: 999px;
-  background: linear-gradient(to bottom, rgb(255 255 255 / 0), var(--rain));
+  /* ส่วนหัวจาง ส่วนท้ายเข้ม ให้เห็นชัดทั้งพื้นสว่างและพื้นมืด */
+  background: linear-gradient(to bottom, rgb(255 255 255 / 0), var(--rain-soft) 40%, var(--rain));
+  filter: drop-shadow(0 0 1.2px rgb(63 116 196 / 0.4));
   animation-name: fx-rain;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
   will-change: transform;
 }
+html[data-theme="dark"] .fx-drop { filter: drop-shadow(0 0 2px rgb(185 212 245 / 0.5)); }
+
 @keyframes fx-rain {
   from { transform: translate3d(0, 0, 0); }
   to   { transform: translate3d(-4vw, 118vh, 0); }
@@ -611,7 +625,7 @@ html[data-theme="dark"] .fx-purplenight::after { background: linear-gradient(to 
   position: absolute;
   width: 26px;
   height: 9px;
-  border: 1.4px solid var(--rain);
+  border: 1.6px solid var(--rain);
   border-radius: 50%;
   opacity: 0;
   animation-name: fx-ripple;
@@ -668,6 +682,16 @@ html[data-theme="dark"] .fx-grow { filter: drop-shadow(0 0 5px rgb(199 169 245 /
   filter: drop-shadow(0 2px 3px rgb(109 58 168 / 0.25));
 }
 html[data-theme="dark"] .fx-bob { filter: drop-shadow(0 0 5px rgb(196 165 247 / 0.5)); }
+/* ผีเสื้อภาพจริง — ขยับปีกด้วยการบีบแนวนอนเล็กน้อย ให้เหมือนกระพือ */
+.fx-bf-img {
+  object-fit: contain;
+  animation: fx-bf-flap 0.5s ease-in-out infinite alternate;
+}
+@keyframes fx-bf-flap {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0.62); }
+}
+html[data-theme="dark"] .fx-bf-img { filter: brightness(1.12); }
 .fx-wing {
   transform-origin: 16px 12px;
   animation: fx-flap 0.42s ease-in-out infinite alternate;
@@ -724,6 +748,28 @@ html[data-theme="dark"] .fx-bob { filter: drop-shadow(0 0 5px rgb(196 165 247 / 
 }
 html[data-theme="dark"] .fx-halloween::before { background: radial-gradient(95% 65% at 82% 4%, rgb(232 112 31 / 0.3), transparent 62%); }
 .fx-pumpkin { filter: drop-shadow(0 2px 4px rgb(140 60 8 / 0.35)); }
+/* 👻 ผีน้อย: ลอยขึ้นจากด้านล่าง จางเข้า–จางออก */
+.fx-float {
+  position: absolute;
+  bottom: -14vh;
+  display: block;
+  opacity: 0;
+  animation-name: fx-float;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+@keyframes fx-float {
+  0%        { opacity: 0; transform: translate3d(0, 0, 0) scale(0.85); }
+  12%       { opacity: 0.9; }
+  78%       { opacity: 0.9; }
+  100%      { opacity: 0; transform: translate3d(0, -118vh, 0) scale(1.05); }
+}
+.fx-ghost {
+  object-fit: contain;
+  filter: drop-shadow(0 3px 6px rgb(109 58 168 / 0.3));
+}
+html[data-theme="dark"] .fx-ghost { filter: brightness(1.06) drop-shadow(0 0 8px rgb(232 224 248 / 0.55)); }
 html[data-theme="dark"] .fx-pumpkin { filter: drop-shadow(0 0 7px rgb(255 158 74 / 0.6)); }
 .fx-lantern {
   position: absolute;
@@ -774,39 +820,125 @@ html[data-theme="dark"] .fx-wire { border-bottom-color: rgb(200 170 130 / 0.3); 
 .fx-tree-r { right: 3vw; width: 34px; height: 46px; }
 html[data-theme="dark"] .fx-tree { filter: drop-shadow(0 0 7px rgb(110 200 130 / 0.4)); }
 
-/* ---------- 🎆 ปีใหม่ ---------- */
-.fx-firework {
+/* ---------- 🎆 ปีใหม่ — จุดพลุ ---------- */
+.fx-fw {
   position: absolute;
+  bottom: 0;
   display: block;
   width: 0;
   height: 0;
-  animation-name: fx-boom;
-  animation-timing-function: linear;
+}
+/* ลูกพลุวิ่งขึ้นก่อนแตก */
+.fx-fw-rocket {
+  position: absolute;
+  bottom: 0;
+  left: -1.5px;
+  width: 3px;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(to top, rgb(255 255 255 / 0), var(--hue));
+  box-shadow: 0 0 8px var(--hue);
+  opacity: 0;
+  animation-name: fx-fw-rocket;
+  animation-timing-function: ease-out;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+@keyframes fx-fw-rocket {
+  0%   { opacity: 0; transform: translate3d(0, 0, 0) scaleY(1); }
+  3%   { opacity: 1; }
+  16%  { opacity: 1; transform: translate3d(0, calc(var(--h) * -1), 0) scaleY(1.6); }
+  18%  { opacity: 0; transform: translate3d(0, calc(var(--h) * -1), 0) scaleY(0.4); }
+  100% { opacity: 0; transform: translate3d(0, calc(var(--h) * -1), 0) scaleY(0.4); }
+}
+
+/* ดอกพลุที่จุดแตก */
+.fx-fw-burst {
+  position: absolute;
+  bottom: var(--h);
+  left: 0;
+  display: block;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  animation-name: fx-fw-flash;
+  animation-timing-function: ease-out;
   animation-iteration-count: infinite;
 }
-.fx-spark {
+@keyframes fx-fw-flash {
+  0%, 17% { opacity: 0; }
+  19%     { opacity: 1; }
+  34%     { opacity: 1; }
+  40%     { opacity: 0; }
+  100%    { opacity: 0; }
+}
+.fx-fw-burst::before {
+  content: "";
+  position: absolute;
+  top: -9px;
+  left: -9px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0%, var(--hue) 45%, rgb(255 255 255 / 0) 75%);
+  animation: fx-fw-core 1s ease-out;
+  animation-duration: inherit;
+  animation-iteration-count: infinite;
+}
+@keyframes fx-fw-core {
+  0%, 17% { opacity: 0; transform: scale(0.2); }
+  19%     { opacity: 1; transform: scale(1.3); }
+  26%     { opacity: 0.4; transform: scale(0.7); }
+  32%     { opacity: 0; transform: scale(0.4); }
+  100%    { opacity: 0; transform: scale(0.4); }
+}
+.fx-fw-ray {
   position: absolute;
   top: 0;
   left: 0;
-  width: 2.2px;
-  height: 2.2px;
+  display: block;
+  width: 0;
+  height: 0;
+  transform-origin: 0 0;
+}
+.fx-fw-dot {
+  position: absolute;
+  top: 0;
+  left: -1.4px;
+  display: block;
+  width: 3.2px;
+  height: 3.2px;
   border-radius: 999px;
   background: var(--hue);
-  box-shadow: 0 0 6px var(--hue);
+  box-shadow: 0 0 10px var(--hue), 0 0 3px #fff;
+  opacity: 0;
+  animation-name: fx-fw-dot;
+  animation-timing-function: cubic-bezier(0.15, 0.7, 0.4, 1);
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
 }
-/* ดอกไม้ไฟ: บานออกแล้วจางหาย นาน ๆ ครั้ง ไม่กะพริบแรง */
-@keyframes fx-boom {
-  0%, 84% { opacity: 0; }
-  86%     { opacity: 1; }
-  100%    { opacity: 0; }
+.fx-fw-dot-sm {
+  width: 2.4px;
+  height: 2.4px;
+  left: -1.2px;
+  animation-name: fx-fw-dot-sm;
 }
-.fx-firework .fx-spark { animation: fx-spark-out var(--dur, 1.6s) ease-out infinite; animation-duration: inherit; }
-@keyframes fx-spark-out {
-  0%, 84% { transform: translateY(0) scale(0.4); opacity: 0; }
-  87%     { opacity: 1; }
-  96%     { transform: translateY(calc(var(--spread) * -1)) scale(1); opacity: 0.85; }
-  100%    { transform: translateY(calc(var(--spread) * -1.12)) scale(0.7); opacity: 0; }
+@keyframes fx-fw-dot-sm {
+  0%, 17% { opacity: 0; transform: translateY(0) scale(0.4); }
+  20%     { opacity: 1; transform: translateY(-4px) scale(1); }
+  32%     { opacity: 0.85; transform: translateY(calc(var(--spread) * -0.6)) scale(0.85); }
+  40%     { opacity: 0; transform: translateY(calc(var(--spread) * -0.72)) scale(0.45); }
+  100%    { opacity: 0; transform: translateY(calc(var(--spread) * -0.72)) scale(0.45); }
 }
+@keyframes fx-fw-dot {
+  0%, 17% { opacity: 0; transform: translateY(0) scale(0.4); }
+  20%     { opacity: 1; transform: translateY(-6px) scale(1); }
+  34%     { opacity: 0.9; transform: translateY(calc(var(--spread) * -1)) scale(0.9); }
+  42%     { opacity: 0; transform: translateY(calc(var(--spread) * -1.16)) scale(0.5); }
+  100%    { opacity: 0; transform: translateY(calc(var(--spread) * -1.16)) scale(0.5); }
+}
+
+/* ประกายเล็ก ๆ ลอยขึ้นระหว่างรอพลุดอกถัดไป */
 .fx-rise-dot {
   position: absolute;
   bottom: -4vh;
@@ -829,12 +961,15 @@ html[data-theme="dark"] .fx-tree { filter: drop-shadow(0 0 7px rgb(110 200 130 /
   .fx-star:nth-child(n + 11) { display: none; }
   .fx-drop:nth-child(n + 17) { display: none; }
   .fx-grow:nth-child(n + 9) { display: none; }
+  .fx-fly:nth-child(n + 6) { display: none; }
+  .fx-sm-hide { display: none; }
   .fx-light:nth-child(2n) { display: none; }
 }
 @media (min-width: 641px) and (max-width: 1023px) {
   .fx-fall:nth-child(n + 19) { display: none; }
   .fx-star:nth-child(n + 15) { display: none; }
   .fx-drop:nth-child(n + 25) { display: none; }
+  .fx-fly:nth-child(n + 8) { display: none; }
 }
 
 /* เคารพการตั้งค่า "ลดการเคลื่อนไหว" ของอุปกรณ์ — ไม่เล่นเอฟเฟกต์เลย */
