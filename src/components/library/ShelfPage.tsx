@@ -30,12 +30,20 @@ export function ShelfPage() {
     <div className="container-page py-5 sm:py-8">
       <div className="flex flex-wrap items-center gap-2"><BackButton fallback="/library" /><Link href="/library" className="text-[13px] text-purple-700 hover:underline">📚 ห้องสมุด</Link></div>
 
-      <section className="mt-2 rounded-3xl bg-gradient-to-br from-purple-100 via-cream to-sky-soft px-4 py-8 sm:px-6">
+      <section className="mt-2 overflow-hidden rounded-3xl bg-gradient-to-br from-purple-100 via-cream to-sky-soft">
+        <div className="flex flex-col items-center gap-5 px-4 py-6 sm:flex-row sm:px-6 sm:py-8">
+          <span className="grid size-32 shrink-0 place-items-center overflow-hidden rounded-3xl shadow-lift sm:size-40">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/library/shelf.webp" alt="" className="size-full object-cover object-[center_62%]" />
+          </span>
+          <div className="min-w-0 text-center sm:text-left">
         <h1 className="text-3xl sm:text-4xl">📚 ชั้นหนังสือ</h1>
         <p className="mt-1 text-[15px] text-ink-soft">พื้นที่แห่งความรู้สำหรับครูและผู้ใหญ่ — ครู บุคลากร และผู้ปกครอง</p>
         {canManageBooks(role)
           ? <button type="button" onClick={() => setAdd("teacher")} className="tap mt-4 inline-flex items-center gap-2 rounded-full bg-purple-600 px-4 py-2 text-[14px] font-medium text-white shadow-soft hover:bg-purple-700"><Plus size={16} /> เพิ่มหนังสือ / เอกสาร</button>
           : <p className="mt-3 text-[13px] text-ink-soft">🔐 เห็นเฉพาะเอกสารที่เผยแพร่ให้บทบาทของคุณ — เข้าสู่ระบบเป็นครู/ผู้ดูแลเพื่อเพิ่มหรือแก้ไข</p>}
+          </div>
+        </div>
       </section>
 
       <div className="card mt-4 space-y-2 p-3">

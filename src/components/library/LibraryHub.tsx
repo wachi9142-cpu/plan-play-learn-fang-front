@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
 /** 📚 ห้องสมุด — ทางเข้า 2 พื้นที่: ชั้นหนังสือ (ผู้ใหญ่) · มุมหนังสือ (เด็ก) */
@@ -13,7 +14,9 @@ export function LibraryHub() {
 
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         <Link href="/library/shelf" className="card card-hover group flex flex-col overflow-hidden">
-          <div className="grid h-40 place-items-center bg-gradient-to-br from-purple-100 to-sky-soft text-7xl transition-transform group-hover:scale-105 sm:h-48">📚</div>
+          <div className="relative h-48 overflow-hidden bg-gradient-to-br from-purple-100 to-sky-soft sm:h-56">
+            <Image src="/library/shelf.webp" alt="" fill priority sizes="(max-width: 768px) 100vw, 50vw" className="object-cover object-[center_58%] transition-transform duration-300 group-hover:scale-105" />
+          </div>
           <div className="flex flex-1 flex-col p-5">
             <h2 className="text-2xl">📚 ชั้นหนังสือ</h2>
             <p className="mt-1 text-[15px] text-ink-soft">พื้นที่แห่งความรู้สำหรับครูและผู้ใหญ่</p>

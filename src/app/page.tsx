@@ -81,7 +81,9 @@ export default function HomePage() {
         <p className="mb-6 text-center text-[15px] text-ink-soft">สองพื้นที่ที่มีหน้าที่ต่างกัน — สำหรับผู้ใหญ่ และสำหรับเด็ก</p>
         <div className="grid gap-4 md:grid-cols-2">
           <Link href="/library/shelf" className="card card-hover animate-rise group flex items-center gap-4 p-5">
-            <span className="grid size-20 shrink-0 place-items-center rounded-3xl bg-gradient-to-br from-purple-100 to-sky-soft text-5xl transition-transform group-hover:scale-105">📚</span>
+            <span className="grid size-24 shrink-0 place-items-center overflow-hidden rounded-3xl bg-gradient-to-br from-purple-100 to-sky-soft shadow-soft transition-transform group-hover:scale-105">
+              <Image src="/library/shelf.webp" alt="" width={256} height={256} className="size-full object-cover object-[center_62%]" />
+            </span>
             <span className="min-w-0 flex-1">
               <span className="block text-xl">📚 ชั้นหนังสือ</span>
               <span className="mt-0.5 block text-[14px] text-ink-soft">สำหรับครูและผู้ปกครอง — หลักสูตร เอกสารทางการ คู่มือ และหนังสือความรู้</span>
