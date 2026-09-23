@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Snowflake } from "./Snowflake";
 import { useWinter } from "./useWinter";
 
 /**
@@ -23,6 +24,8 @@ const FLAKES = Array.from({ length: 26 }, (_, i) => {
     sway: +(3 + r(61.077) * 4).toFixed(2),     // จังหวะการส่าย (วินาที)
     opacity: +(0.35 + r(11.337) * 0.45).toFixed(2),
     lavender: i % 4 === 0,                     // บางเกล็ดออกโทนม่วงอ่อนให้เข้ากับสวน
+    crystal: i % 3 === 0,                      // 1 ใน 3 เป็นเกล็ดหิมะ 6 แฉก ที่เหลือเป็นเม็ดหิมะนุ่ม ๆ
+    spin: +(9 + r(55.281) * 12).toFixed(2),    // เกล็ดคริสตัลค่อย ๆ หมุนระหว่างตก
   };
 });
 
@@ -60,16 +63,23 @@ export function Snowfall() {
           <span
             className="snow-sway"
             style={{
-              width: `${f.size}px`,
-              height: `${f.size}px`,
-              opacity: f.opacity,
+              width: `${f.crystal ? f.size + 6 : f.size}px`,
+              height: `${f.crystal ? f.size + 6 : f.size}px`,
+              opacity: f.crystal ? Math.min(0.95, f.opacity + 0.2) : f.opacity,
               animationDuration: `${f.sway}s`,
               ["--drift" as string]: `${f.drift}px`,
-              background: f.lavender
-                ? "radial-gradient(circle at 34% 30%, #ffffff 0%, #ece0f8 58%, rgba(217,195,241,0) 100%)"
-                : "radial-gradient(circle at 34% 30%, #ffffff 0%, #ffffff 52%, rgba(255,255,255,0) 100%)",
+              ...(f.crystal
+                ? {}
+                : {
+                    borderRadius: "50%",
+                    background: f.lavender
+                      ? "radial-gradient(circle at 34% 30%, #ffffff 0%, #ece0f8 58%, rgba(217,195,241,0) 100%)"
+                      : "radial-gradient(circle at 34% 30%, #ffffff 0%, #ffffff 52%, rgba(255,255,255,0) 100%)",
+                  }),
             }}
-          />
+          >
+            {f.crystal && <Snowflake id={String(i)} className="snow-spin block size-full" style={{ animationDuration: `${f.spin}s` }} />}
+          </span>
         </span>
       ))}
     </div>

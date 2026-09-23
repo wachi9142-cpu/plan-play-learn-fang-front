@@ -73,7 +73,7 @@ export function Header() {
 
         <div className="flex items-center gap-2 lg:hidden">
           <ThaiClock />
-          <ThemeToggle />
+          <ThemeToggle className="hidden sm:block" />
           <button
           type="button"
           onClick={() => setOpen((v) => !v)}
