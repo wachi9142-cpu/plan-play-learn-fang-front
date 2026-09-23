@@ -41,10 +41,15 @@ export default async function ProjectDetailPage({ params }: { params: Promise<Pa
       </PageHeader>
 
       {project.image && (
-        <div className="animate-rise delay-1 mb-6 overflow-hidden rounded-3xl border border-line shadow-soft">
+        <figure className="animate-rise delay-1 mx-auto mb-6 max-w-3xl overflow-hidden rounded-3xl border border-line shadow-soft">
+          {/* ใช้สัดส่วนจริงของภาพ จึงเห็นเต็มภาพ ไม่โดนตัดหัวหรือขอบ */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={project.image} alt={`ภาพบรรยากาศโครงการ${project.title}`} className="block h-56! w-full object-cover object-center sm:h-72! lg:h-80!" />
-        </div>
+          <img
+            src={project.image}
+            alt={`ภาพบรรยากาศโครงการ${project.title}`}
+            className="block aspect-[1168/784] h-auto w-full object-cover"
+          />
+        </figure>
       )}
 
       <p className="animate-rise delay-1 mb-8 text-base sm:text-lg">{project.description}</p>
