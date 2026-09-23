@@ -105,10 +105,10 @@ export const NAV_ITEMS: NavItem[] = [
 ];
 
 /** จำนวนเมนูหลัก (แสดงเป็น Card ใหญ่บนหน้าแรก) */
-export const MAIN_MENU_COUNT = 6;
+export const MAIN_MENU_COUNT = 7;
 
 /** ลำดับ "เมนู" ตามบรีฟ: กำหนดการสอน → แผนฯ → โครงการ → 6 กิจกรรมหลัก → เกม → ใบงาน → สื่อการเรียนการสอน */
-const MENU_ORDER = ["/schedules", "/plans", "/projects", "/core-activities", "/play", "/games", "/worksheets", "/media", "/curriculum", "/online-classroom", "/portfolio", "/development", "/studio", "/canvas"];
+const MENU_ORDER = ["/schedules", "/plans", "/projects", "/core-activities", "/games", "/worksheets", "/media", "/curriculum", "/online-classroom", "/portfolio", "/development", "/studio", "/canvas"];
 export const MENU_ITEMS: NavItem[] = MENU_ORDER.map((h) => NAV_ITEMS.find((n) => n.href === h)!);
 export const LIBRARY_ITEMS: NavItem[] = NAV_ITEMS.slice(MAIN_MENU_COUNT).filter((n) => !MENU_ORDER.includes(n.href));
 

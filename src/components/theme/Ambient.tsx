@@ -104,7 +104,7 @@ export function Ambient() {
     <div className={`fx-layer no-print fx-${shown}`} data-visible={visible ? "on" : "off"} aria-hidden>
       {shown === "winter" && <Winter />}
       {shown === "starlight" && <Starlight />}
-      {shown === "spring" && <Spring />}
+      {shown === "sakura" && <Sakura />}
       {shown === "autumn" && <Autumn />}
     </div>
   );
@@ -138,14 +138,14 @@ function Winter() {
   );
 }
 
-/* ---------- 🌸 กลีบดอกไม้ ---------- */
+/* ---------- 🌸 กลีบซากุระ ---------- */
 const PETAL_COLORS = [
-  ["#ffd9e6", "#f2a1bd"], // ชมพูอ่อน
-  ["#ece0f8", "#bf9ce4"], // ลาเวนเดอร์
-  ["#fff3d6", "#f7d35a"], // ทองอ่อน
+  ["#ffffff", "#ffc2d6"], // ชมพูอ่อน
+  ["#fff0f5", "#f2a1bd"], // ชมพูเข้มขึ้นนิด
+  ["#f6f0fc", "#d9c3f1"], // ลาเวนเดอร์
 ];
 
-function Spring() {
+function Sakura() {
   return (
     <>
       {PETALS.map((p, i) => (
@@ -162,8 +162,8 @@ function Spring() {
                   <stop offset="100%" stopColor={PETAL_COLORS[p.tone][1]} />
                 </linearGradient>
               </defs>
-              {/* กลีบดอกไม้ทรงหยดน้ำ ปลายมน */}
-              <path d="M12 1.5c5 4 8 8.2 8 12.1 0 5-3.6 8.9-8 8.9s-8-3.9-8-8.9c0-3.9 3-8.1 8-12.1Z" fill={`url(#pt-${i})`} />
+              {/* กลีบซากุระ — ปลายกลีบเว้าเป็นรูปตัว V ตามดอกจริง */}
+              <path d="M12 1.6c4 4 7.2 8.8 7.2 13 0 3.1-1.6 5.6-4.2 6.9L12 17.2l-3 4.3c-2.6-1.3-4.2-3.8-4.2-6.9 0-4.2 3.2-9 7.2-13Z" fill={`url(#pt-${i})`} />
             </svg>
           </span>
         </span>
@@ -172,11 +172,11 @@ function Spring() {
   );
 }
 
-/* ---------- 🍂 ใบไม้ร่วง ---------- */
+/* ---------- 🍂 ใบไม้ร่วง — ใบแปะก๊วยสีทองเป็นหลัก แซมใบเมเปิลส้ม/แดง ---------- */
 const LEAF_COLORS = [
-  ["#ffd89b", "#e08a2e"],
-  ["#ffc9a3", "#d96a3a"],
-  ["#f6e3a1", "#c9a227"],
+  ["#fff0b8", "#e8b52e"], // แปะก๊วยเหลืองทอง
+  ["#ffe08a", "#d99a1f"], // แปะก๊วยทองเข้ม
+  ["#ffc59b", "#d9542e"], // เมเปิลส้ม–แดง
 ];
 
 function Autumn() {
@@ -195,8 +195,16 @@ function Autumn() {
                   <stop offset="100%" stopColor={LEAF_COLORS[l.tone][1]} />
                 </linearGradient>
               </defs>
-              <path d="M21 3C11.6 3 4 8.4 4 15.2c0 2 .7 3.9 1.9 5.4l1.5-1.5C6.5 18 6 16.7 6 15.2 6 9.7 12.6 5.2 21 5V3Z" fill={`url(#lf-${i})`} />
-              <path d="M20 4C12 5.6 7 10.2 7 15.2c0 1.2.3 2.3.8 3.3C10 13.8 14.6 9.2 20 6.6V4Z" fill={`url(#lf-${i})`} opacity="0.75" />
+              {l.tone === 2 ? (
+                /* 🍁 ใบเมเปิล */
+                <path d="M12 1.6l2.1 3.9 2.6-1-.9 2.9 3.5-.6-2.2 2.9 3.4 1.4-3 1.6 2 2.4-3.8.2.5 2.7-3.4-1.6-.8 5.9-.8-5.9-3.4 1.6.5-2.7-3.8-.2 2-2.4-3-1.6 3.4-1.4L3 6.8l3.5.6-.9-2.9 2.6 1L12 1.6Z" fill={`url(#lf-${i})`} />
+              ) : (
+                /* 🌿 ใบแปะก๊วย — พัดกว้าง เว้าตรงกลาง มีก้านเล็ก ๆ */
+                <>
+                  <path d="M12 14.6c-4.7 0-8.4-1.7-8.4-3.9C3.6 6.9 7.5 3 11 2.1l1 3.6 1-3.6c3.5.9 7.4 4.8 7.4 8.6 0 2.2-3.7 3.9-8.4 3.9Z" fill={`url(#lf-${i})`} />
+                  <path d="M12 14.4v7.2" stroke={LEAF_COLORS[l.tone][1]} strokeWidth="1.3" strokeLinecap="round" />
+                </>
+              )}
             </svg>
           </span>
         </span>
