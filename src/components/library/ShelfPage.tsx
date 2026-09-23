@@ -32,9 +32,9 @@ export function ShelfPage() {
 
       <section className="mt-2 overflow-hidden rounded-3xl bg-gradient-to-br from-purple-100 via-cream to-sky-soft">
         <div className="flex flex-col items-center gap-5 px-4 py-6 sm:flex-row sm:px-6 sm:py-8">
-          <span className="grid size-32 shrink-0 place-items-center overflow-hidden rounded-3xl shadow-lift sm:size-40">
+          <span className="block w-32 shrink-0 overflow-hidden rounded-3xl bg-white shadow-lift sm:w-44">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/library/shelf.webp" alt="" className="size-full object-cover object-[center_62%]" />
+            <img src="/library/shelf.webp" alt="ชั้นหนังสือของ Little Purple Garden" className="block h-auto w-full" />
           </span>
           <div className="min-w-0 text-center sm:text-left">
         <h1 className="text-3xl sm:text-4xl">📚 ชั้นหนังสือ</h1>

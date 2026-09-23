@@ -22,10 +22,18 @@ export function KidsCorner() {
     <div className="container-page py-5 sm:py-8">
       <div className="flex flex-wrap items-center gap-2"><BackButton fallback="/library" /><Link href="/library" className="text-[13px] text-purple-700 hover:underline">📚 ห้องสมุด</Link></div>
 
-      <section className="mt-2 rounded-3xl bg-gradient-to-br from-pink-soft via-cream to-yellow-soft px-4 py-8 text-center sm:px-6">
-        <p className="text-6xl">🧸</p>
-        <h1 className="mt-2 text-3xl sm:text-4xl">มุมหนังสือ</h1>
-        <p className="mt-1 text-[15px] text-ink-soft">พื้นที่เล็ก ๆ สำหรับเด็ก ๆ ได้อ่าน ฟัง และจินตนาการ 💜</p>
+      <section className="mt-2 overflow-hidden rounded-3xl bg-gradient-to-br from-pink-soft via-cream to-yellow-soft">
+        <div className="flex flex-col items-center gap-5 px-4 py-6 sm:flex-row sm:px-6 sm:py-8">
+          <span className="block w-36 shrink-0 overflow-hidden rounded-3xl bg-white shadow-lift sm:w-48">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/library/kids.webp" alt="มุมหนังสือของ Little Purple Garden" className="block h-auto w-full" />
+          </span>
+          <div className="min-w-0 text-center sm:text-left">
+            <h1 className="text-3xl sm:text-4xl">🧸 มุมหนังสือ</h1>
+            <p className="mt-1 text-[15px] text-ink-soft">พื้นที่เล็ก ๆ สำหรับเด็ก ๆ ได้อ่าน ฟัง และจินตนาการ 💜</p>
+            <p className="mt-2 text-[14px] text-ink-soft">📖 อ่านนิทาน · 🔊 ฟังนิทาน · 🎨 ทำกิจกรรมต่อยอด</p>
+          </div>
+        </div>
       </section>
 
       <div className="no-scrollbar mt-4 flex gap-2 overflow-x-auto pb-1">

@@ -91,7 +91,9 @@ export default function HomePage() {
             </span>
           </Link>
           <Link href="/library/kids" className="card card-hover animate-rise delay-1 group flex items-center gap-4 p-5">
-            <span className="grid size-20 shrink-0 place-items-center rounded-3xl bg-gradient-to-br from-pink-soft to-yellow-soft text-5xl transition-transform group-hover:scale-105">🧸</span>
+            <span className="grid size-24 shrink-0 place-items-center overflow-hidden rounded-3xl bg-gradient-to-br from-pink-soft to-yellow-soft shadow-soft transition-transform group-hover:scale-105">
+              <Image src="/library/kids.webp" alt="" width={256} height={256} className="size-full object-cover object-[center_52%]" />
+            </span>
             <span className="min-w-0 flex-1">
               <span className="block text-xl">🧸 มุมหนังสือ</span>
               <span className="mt-0.5 block text-[14px] text-ink-soft">นิทานและเรื่องราวสำหรับเด็ก — อ่าน ฟัง และทำกิจกรรมต่อยอด</span>
