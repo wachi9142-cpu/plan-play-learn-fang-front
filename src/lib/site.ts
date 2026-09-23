@@ -30,6 +30,7 @@ export interface NavItem extends NavLink {
   emoji: string;
   description: string;
   tint: string;          // tailwind bg class for the icon bubble
+  image?: string;        // ภาพประกอบแทนอีโมจิ (พื้นหลังโปร่งใส)
   children?: NavLink[];  // เมนูย่อย (dropdown บน desktop / accordion บนมือถือ)
 }
 
@@ -78,6 +79,7 @@ export const NAV_ITEMS: NavItem[] = [
     label: "ใบงาน",
     description: "คลังใบงานแยกหมวด ค้นหา/กรองด้วยแท็ก พิมพ์ได้ทันที",
     tint: "bg-yellow-soft",
+    image: "/worksheets/cover.webp",
   },
   { href: "/studio", emoji: "🌱", label: "Garden Studio · ห้องสร้างสื่อ", description: "สร้าง แก้ไข และจัดเก็บแผน/กำหนดการสอน/เอกสาร บันทึกอัตโนมัติ", tint: "bg-mint-soft" },
   { href: "/library/media", emoji: "🗂️", label: "คลังสื่อรวม", description: "รูป วิดีโอ เสียง PDF Word PPT และผลงาน รวมจากทุกระบบในที่เดียว", tint: "bg-mint-soft" },

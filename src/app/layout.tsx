@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Mitr, Sarabun } from "next/font/google";
 import { AppShell } from "@/components/layout";
 import { SITE } from "@/lib/site";
+import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import "./globals.css";
 
 const sarabun = Sarabun({
@@ -37,7 +38,11 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="th" className={`${sarabun.variable} ${mitr.variable}`}>
+    <html lang="th" className={`${sarabun.variable} ${mitr.variable}`} suppressHydrationWarning>
+      <head>
+        {/* 💜 ตั้งธีมก่อนหน้าเว็บวาด — กันจอกะพริบขาวก่อนเข้าโหมดมืด */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
       <body>
         <AppShell>{children}</AppShell>
       </body>

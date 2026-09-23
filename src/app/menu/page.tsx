@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { NavIcon } from "@/components/ui/NavIcon";
 import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
 import { LIBRARY_ITEMS, MENU_ITEMS } from "@/lib/site";
@@ -14,7 +15,7 @@ export default function MenuPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {MENU_ITEMS.map((item, i) => (
           <Link key={item.href} href={item.href} className="card card-hover animate-rise group flex items-center gap-4 p-5" style={{ animationDelay: `${i * 70}ms` }}>
-            <span className={cn("grid size-14 shrink-0 place-items-center rounded-2xl text-3xl transition-transform group-hover:-rotate-6", item.tint)}>{item.emoji}</span>
+            <NavIcon emoji={item.emoji} image={item.image} label={item.label} tint={item.tint} className="size-14 text-3xl transition-transform group-hover:-rotate-6" />
             <span className="min-w-0 flex-1">
               <span className="block text-[13px] text-purple-500">{i + 1}.</span>
               <span className="block font-display text-lg leading-snug text-purple-800">{item.label}</span>
@@ -29,7 +30,7 @@ export default function MenuPage() {
       <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         {LIBRARY_ITEMS.map((item) => (
           <Link key={item.href} href={item.href} className="card card-hover flex items-center gap-3 p-4">
-            <span className={cn("grid size-11 shrink-0 place-items-center rounded-xl text-2xl", item.tint)}>{item.emoji}</span>
+            <NavIcon emoji={item.emoji} image={item.image} label={item.label} tint={item.tint} className="size-11 rounded-xl! text-2xl" />
             <span className="min-w-0 font-display text-[15px] leading-snug text-purple-800">{item.label}</span>
           </Link>
         ))}

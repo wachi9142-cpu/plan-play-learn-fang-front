@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
+import { ThemeMenuPanel } from "@/components/theme";
 
 /** รายการในแถบลอย — เพิ่ม/ลดได้ที่นี่ */
 const DOCK_ITEMS = [
@@ -38,6 +40,56 @@ export function FloatingDock() {
           </Link>
         );
       })}
+      <DockSettings />
     </nav>
+  );
+}
+
+/** ⚙️ เมนูตั้งค่าในแถบลอย — เปลี่ยนธีม ☀️ 🌙 ⚙️ ได้จากตรงนี้เลย */
+function DockSettings() {
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const active = pathname === "/settings";
+
+  useEffect(() => setOpen(false), [pathname]);
+  useEffect(() => {
+    if (!open) return;
+    const onDoc = (e: MouseEvent) => { if (!ref.current?.contains(e.target as Node)) setOpen(false); };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => { document.removeEventListener("mousedown", onDoc); document.removeEventListener("keydown", onKey); };
+  }, [open]);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        title="ตั้งค่า · ธีมการแสดงผล"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        className={cn(
+          "group flex w-[80px] flex-col items-center gap-0.5 rounded-2xl px-1 py-2.5 text-center transition-all",
+          active || open ? "bg-purple-100 text-purple-800" : "text-ink-soft hover:bg-purple-50 hover:text-purple-700",
+        )}
+      >
+        <span className={cn("text-2xl leading-none transition-transform group-hover:-translate-y-0.5", (active || open) && "scale-110")}>⚙️</span>
+        <span className={cn("text-[11px] leading-tight", (active || open) && "font-medium")}>ตั้งค่า</span>
+      </button>
+      {/* เปิดออกทางซ้าย เพราะแถบลอยชิดขอบขวา */}
+      <div
+        role="menu"
+        className={cn(
+          "absolute right-full top-1/2 z-50 w-64 -translate-y-1/2 pr-2 transition-all duration-150",
+          open ? "visible translate-x-0 opacity-100" : "invisible translate-x-1 opacity-0",
+        )}
+      >
+        <div className="card overflow-hidden p-1.5">
+          <ThemeMenuPanel onPicked={() => setOpen(false)} />
+        </div>
+      </div>
+    </div>
   );
 }

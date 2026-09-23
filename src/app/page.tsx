@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { NavIcon } from "@/components/ui/NavIcon";
 import { ArrowRight, Mail, MapPin, Phone } from "lucide-react";
 import { MENU_ITEMS, SITE } from "@/lib/site";
 import { NEWS_CATEGORIES, sortedNews } from "@/data/news";
@@ -51,7 +52,7 @@ export default function HomePage() {
 
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link href="/about" className="tap inline-flex w-full items-center justify-center gap-2 rounded-full bg-purple-600 px-7 py-3 text-base font-medium text-white shadow-soft transition hover:bg-purple-700 hover:shadow-lift sm:w-auto">
-                <Image src="/school/house.webp" alt="" width={120} height={178} className="h-7! w-auto" /> รู้จักโรงเรียน <ArrowRight size={18} />
+                <Image src="/school/house.webp" alt="" width={120} height={178} className="h-7! w-[19px]! shrink-0" /> รู้จักโรงเรียน <ArrowRight size={18} />
               </Link>
               <Link href="/menu" className="tap inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-purple-200 bg-white px-7 py-3 text-base font-medium text-purple-700 transition hover:border-purple-300 hover:bg-purple-50 sm:w-auto">
                 💜 เข้าสู่แผนเล่นเรียน
@@ -140,7 +141,7 @@ export default function HomePage() {
             <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
               {PLAN_MENU.map((item, i) => (
                 <Link key={item.href} href={item.href} className="card card-hover animate-rise group flex flex-col items-center p-4 text-center sm:flex-row sm:items-center sm:gap-4 sm:p-5 sm:text-left" style={{ animationDelay: `${i * 70}ms` }}>
-                  <span className={cn("grid size-14 shrink-0 place-items-center rounded-2xl text-3xl transition-transform group-hover:-rotate-6 group-hover:scale-105 sm:size-16 sm:text-4xl", item.tint)}>{item.emoji}</span>
+                  <NavIcon emoji={item.emoji} image={item.image} label={item.label} tint={item.tint} className="size-14 text-3xl transition-transform group-hover:-rotate-6 group-hover:scale-105 sm:size-16 sm:text-4xl" />
                   <span className="mt-2 min-w-0 flex-1 sm:mt-0">
                     <span className="block font-display text-[16px] leading-snug text-purple-800 sm:text-lg">{item.label}</span>
                     <span className="mt-0.5 hidden text-[14px] text-ink-soft sm:block">{item.description}</span>

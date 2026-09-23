@@ -8,6 +8,7 @@ import { ChevronDown, LogIn, Menu, X } from "lucide-react";
 import { PRIMARY_NAV, SITE, TOP_LINKS, type NavItem } from "@/lib/site";
 import { cn } from "@/lib/cn";
 import { ThaiClock } from "./ThaiClock";
+import { ThemeToggle } from "@/components/theme";
 
 export function Header() {
   const pathname = usePathname();
@@ -64,6 +65,7 @@ export function Header() {
             </Link>
           ))}
           <ThaiClock className="ml-1" />
+          <ThemeToggle className="ml-1" />
           <Link href="/login" className={cn("ml-1 inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-4 py-2 text-[15px] font-medium shadow-soft transition", pathname === "/login" ? "bg-purple-700 text-white" : "bg-purple-600 text-white hover:bg-purple-700")}>
             <LogIn size={16} /> เข้าสู่ระบบ
           </Link>
@@ -71,6 +73,7 @@ export function Header() {
 
         <div className="flex items-center gap-2 lg:hidden">
           <ThaiClock />
+          <ThemeToggle />
           <button
           type="button"
           onClick={() => setOpen((v) => !v)}
@@ -102,6 +105,7 @@ export function Header() {
           {TOP_LINKS.map((item) => (
             <MobileLink key={item.href} href={item.href} emoji={item.emoji} label={item.label} active={isActive(item)} tint={item.tint} />
           ))}
+          <MobileLink href="/settings" emoji="⚙️" label="ตั้งค่า" active={pathname === "/settings"} tint="bg-purple-100" />
           <Link href="/login" className="tap mt-1 inline-flex items-center justify-center gap-2 rounded-2xl bg-purple-600 px-4 py-3 text-base font-medium text-white shadow-soft">
             <LogIn size={18} /> เข้าสู่ระบบ
           </Link>

@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { registerSW } from "@/lib/offline";
+import { Snowfall } from "@/components/theme";
 import { Header } from "./Header";
 import { FloatingDock } from "./FloatingDock";
 import { Footer } from "./Footer";
@@ -21,6 +22,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <main className="flex-1">{children}</main>
       {!studioEditor && <Footer />}
       {!studioEditor && <FloatingDock />}
+      <Snowfall />
     </div>
   );
 }

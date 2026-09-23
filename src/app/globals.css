@@ -38,6 +38,87 @@
   color-scheme: light;
 }
 
+/* ---------- 🌙 โหมดมืด — ทับค่า token เดิม ทุกหน้าจึงเปลี่ยนตามทันที ---------- */
+html[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* ม่วง: เฉดอ่อน = พื้นหลังเข้ม · เฉดเข้ม = ตัวอักษรสว่าง */
+  --color-purple-50: #241a35;
+  --color-purple-100: #2e2243;
+  --color-purple-200: #453357;
+  --color-purple-300: #8e6bc4;
+  --color-purple-400: #a184d4;
+  --color-purple-500: #b79ae4;
+  --color-purple-600: #a87ff0;
+  --color-purple-700: #c3a8f7;
+  --color-purple-800: #e2d3fb;
+  --color-purple-900: #f2ebfe;
+
+  --color-cream: #14101c;
+  --color-cream-dark: #1b1626;
+  --color-white: #221b30;
+
+  --color-pink-soft: #3a2230;
+  --color-pink-accent: #e08bad;
+  --color-yellow-soft: #3a3020;
+  --color-yellow-accent: #d9b84a;
+  --color-mint-soft: #1d3129;
+  --color-sky-soft: #1e2b3a;
+
+  --color-ink: #ece5f5;
+  --color-ink-soft: #ab9fbd;
+  --color-line: #362a4a;
+
+  --shadow-soft: 0 6px 24px -8px rgb(0 0 0 / 0.55);
+  --shadow-lift: 0 14px 36px -10px rgb(0 0 0 / 0.7);
+}
+
+/* ปุ่มม่วง: ต้องเป็นสีทึบให้ตัวอักษรขาวอ่านออก (แยกจาก text-purple-600/700 ที่ต้องสว่าง) */
+html[data-theme="dark"] .bg-purple-600 { background-color: #6f45cc; }
+html[data-theme="dark"] .bg-purple-700 { background-color: #8355dd; }
+html[data-theme="dark"] .hover\:bg-purple-600:hover { background-color: #7d51dd; }
+html[data-theme="dark"] .hover\:bg-purple-700:hover { background-color: #8f61e8; }
+html[data-theme="dark"] .text-white { color: #fbf9ff; }
+/* ฉากหลังมืดของ popup/modal ต้องมืดเสมอ แม้ --color-ink จะกลายเป็นสีสว่าง */
+html[data-theme="dark"] [class*="bg-ink/"] { background-color: rgb(6 4 11 / 0.72); }
+html[data-theme="dark"] .bg-dots { opacity: 0.22; }
+html[data-theme="dark"] img:not([src*=".svg"]) { filter: brightness(0.94); }
+html[data-theme="dark"] .emoji-shadow { text-shadow: 0 0 0 #ece5f5; filter: brightness(0) invert(1) opacity(0.8); }
+
+/* 📄 กระดาษ/เอกสาร/ใบงาน/สไลด์: เป็นสีขาวเสมอ (เหมือน Word โหมดมืด) จึงคืนค่าสีชุดสว่างให้ข้างใน */
+html[data-theme="dark"] :is(.doc-page, .sheet, .slide-page, .canvas-print, .paper-light) {
+  color-scheme: light;
+  --color-purple-50: #f6f0fc;
+  --color-purple-100: #ece0f8;
+  --color-purple-200: #d9c3f1;
+  --color-purple-300: #bf9ce4;
+  --color-purple-400: #9c6bcd;
+  --color-purple-500: #7e4bb8;
+  --color-purple-600: #6d3aa8;
+  --color-purple-700: #582d8a;
+  --color-purple-800: #45236b;
+  --color-purple-900: #2f1849;
+  --color-cream: #fff9f0;
+  --color-cream-dark: #fbf1e0;
+  --color-white: #ffffff;
+  --color-pink-soft: #fde4ec;
+  --color-yellow-soft: #fff1bf;
+  --color-mint-soft: #e2f5ec;
+  --color-sky-soft: #e3f0fb;
+  --color-ink: #3b2f4a;
+  --color-ink-soft: #6d6379;
+  --color-line: #ecdff5;
+  color: var(--color-ink);
+}
+html[data-theme="dark"] :is(.doc-page, .sheet, .slide-page, .paper-light) :is(h1, h2, h3, h4) { color: var(--color-purple-800); }
+html[data-theme="dark"] :is(.doc-page, .sheet, .slide-page, .paper-light) img { filter: none; }
+
+/* สลับธีมแบบนุ่ม ๆ ไม่แสบตา */
+html.theme-switching, html.theme-switching * { transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease; }
+@media (prefers-reduced-motion: reduce) {
+  html.theme-switching, html.theme-switching * { transition: none; }
+}
+
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
@@ -63,7 +144,7 @@ img, svg { max-width: 100%; height: auto; }
 
 /* ---------- Utilities ---------- */
 @utility card {
-  background: #fff;
+  background: var(--color-white);
   border: 1px solid var(--color-line);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-soft);
@@ -221,3 +302,66 @@ img, svg { max-width: 100%; height: auto; }
 @media print {
   .slide-page { page-break-after: always; border: 0; border-radius: 0; }
 }
+
+/* ---------- ❄️ Winter Mode — หิมะตกทั่วหน้าเว็บ ---------- */
+.snowfall {
+  position: fixed;
+  inset: 0;
+  z-index: 20;              /* อยู่หน้าเนื้อหา แต่ใต้แถบเมนู (z-40) และ popup (z-50) */
+  overflow: hidden;
+  pointer-events: none;     /* คลิก/แตะทะลุไปยังปุ่มและเมนูได้ตามปกติ */
+  contain: strict;          /* กันไม่ให้การขยับของหิมะไปคิดเลย์เอาต์ใหม่ทั้งหน้า */
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+.snowfall[data-visible="on"] { opacity: 1; }
+
+.snow-fall {
+  position: absolute;
+  top: -5vh;
+  animation-name: snow-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+.snow-sway {
+  display: block;
+  border-radius: 50%;
+  animation-name: snow-sway;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  filter: blur(0.2px);
+  will-change: transform;
+}
+@keyframes snow-fall {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(0, 110vh, 0); }
+}
+@keyframes snow-sway {
+  from { transform: translate3d(calc(var(--drift) * -1), 0, 0); }
+  to   { transform: translate3d(var(--drift), 0, 0); }
+}
+
+/* โหมดมืด: หิมะเรืองนวลขึ้นเล็กน้อยให้เห็นชัดบนพื้นเข้ม */
+html[data-theme="dark"] .snow-sway { filter: blur(0.2px) drop-shadow(0 0 3px rgb(226 211 251 / 0.5)); }
+
+/* แสงนวล ๆ ของฤดูหนาวที่ขอบบนของหน้าจอ */
+.snowfall::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 40vh;
+  background: linear-gradient(to bottom, rgb(227 240 251 / 0.5), transparent);
+}
+html[data-theme="dark"] .snowfall::before { background: linear-gradient(to bottom, rgb(60 48 92 / 0.45), transparent); }
+
+/* มือถือ/แท็บเล็ต: ลดจำนวนเกล็ดลง ให้เบาเครื่องและไม่รบกวนสายตา */
+@media (max-width: 640px) { .snow-fall:nth-child(n + 13) { display: none; } }
+@media (min-width: 641px) and (max-width: 1023px) { .snow-fall:nth-child(n + 19) { display: none; } }
+
+/* เคารพการตั้งค่า "ลดการเคลื่อนไหว" ของอุปกรณ์ — ไม่เล่นหิมะเลย */
+@media (prefers-reduced-motion: reduce) { .snowfall { display: none; } }
+
+/* ไม่พิมพ์หิมะลงกระดาษ */
+@media print { .snowfall { display: none !important; } }
