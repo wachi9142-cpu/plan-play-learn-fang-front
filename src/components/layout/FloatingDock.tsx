@@ -10,7 +10,7 @@ import { ThemeMenuPanel } from "@/components/theme";
 const DOCK_ITEMS = [
   { href: "/news", emoji: "📢", label: "ประชาสัมพันธ์" },
   { href: "/worksheets", emoji: "📝", label: "ใบงาน" },
-  { href: "/games", emoji: "🎮", label: "เกมการศึกษา" },
+  { href: "/play", emoji: "🎮", label: "เกม" },
   { href: "/gallery/works", emoji: "🏆", label: "ผลงานเด็ก" },
   { href: "/search", emoji: "🔍", label: "ค้นหา" },
 ];

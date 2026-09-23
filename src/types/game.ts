@@ -50,6 +50,8 @@ export interface Game {
   skills: string[];         // 🎯 ทักษะที่เด็กจะได้ฝึก
   gradeId: string;          // 🎯 เหมาะกับ
   category: GameCategory;   // 🧩 ประเภท
+  /** 🎮 fun = เล่นสนุก/ผ่อนคลาย · 🧩 edu = ฝึกทักษะมีเป้าหมายชัดเจน (ค่าเริ่มต้น edu) */
+  zone?: "fun" | "edu";
   planIds: string[];        // 📖 หน่วย/เรื่องที่เกี่ยวข้อง
   activityType: ActivityType; // 🎈 กิจกรรมหลัก (ปกติ "game")
   ages?: string;              // 👶 อายุที่เหมาะสม (ถ้าไม่ใส่ใช้ของระดับชั้น)

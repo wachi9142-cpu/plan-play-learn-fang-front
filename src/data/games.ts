@@ -20,6 +20,23 @@ export const GAME_CATEGORIES: Record<GameCategory, { emoji: string; label: strin
 export { SKILLS } from "./game-skills";
 
 /**
+ * 🎮 เกม (fun) กับ 🧩 เกมการศึกษา (edu) แยกกันคนละพื้นที่
+ * - 🎮 เกม: เล่นสนุก ผ่อนคลาย สร้างสรรค์ ไม่จำเป็นต้องผูกกับแผนการสอน
+ * - 🧩 เกมการศึกษา: มีเป้าหมายทักษะชัดเจน เชื่อม หลักสูตร → แผน → กิจกรรม → ผลการเล่น → Portfolio
+ */
+const FUN_IDS = new Set(["fruit-match", "animal-match", "tile-puzzle-farm", "shadow-animals", "shadow-things"]);
+
+/** โซนของเกม — ถ้าไม่ระบุไว้ในข้อมูล ถือเป็นเกมการศึกษา */
+export function gameZone(g: Game): "fun" | "edu" {
+  return g.zone ?? (FUN_IDS.has(g.id) ? "fun" : "edu");
+}
+
+export const ZONES = {
+  fun: { href: "/play", emoji: "🎮", label: "เกม", tagline: "เกมและกิจกรรมออนไลน์ เล่นสนุก สำรวจ และสร้างสรรค์" },
+  edu: { href: "/games", emoji: "🧩", label: "เกมการศึกษา", tagline: "เกมฝึกทักษะ เรียนรู้ผ่านการเล่น และพัฒนาการคิด" },
+} as const;
+
+/**
  * คลังเกมออนไลน์ — เพิ่มเกมใหม่ = เพิ่ม object ใหม่ (เลือก engine ที่มีอยู่ + ใส่ config)
  * ทุกเกมเชื่อมกับแผน (planIds) และกิจกรรมหลัก (activityType)
  */
@@ -266,3 +283,8 @@ export const GAMES: Game[] = [
 export const getGame = (id: string) => GAMES.find((g) => g.id === id);
 export const getGamesForPlan = (planId: string) => GAMES.filter((g) => g.planIds.includes(planId));
 export const getGamesByCategory = (c: GameCategory) => GAMES.filter((g) => g.category === c);
+
+/** 🎮 เกมเล่นสนุก */
+export const funGames = () => GAMES.filter((g) => gameZone(g) === "fun");
+/** 🧩 เกมการศึกษา (ฝึกทักษะ) */
+export const eduGames = () => GAMES.filter((g) => gameZone(g) === "edu");

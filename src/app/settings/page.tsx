@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { ThemeCards, WinterCard } from "@/components/theme";
+import { EffectCards, ThemeCards } from "@/components/theme";
 import { BackButton } from "@/components/ui/BackButton";
 
 export const metadata: Metadata = {
   title: "ตั้งค่า",
-  description: "ธีมการแสดงผล ☀️ 🌙 ⚙️ · โหมดฤดูหนาว ❄️ และการตั้งค่าอื่น ๆ ของ Little Purple Garden",
+  description: "ธีมการแสดงผล ☀️ 🌙 ⚙️ · เอฟเฟกต์บรรยากาศ ❄️ 🌠 🌸 🍂 และการตั้งค่าอื่น ๆ ของ Little Purple Garden",
 };
 
 const SHORTCUTS = [
@@ -31,9 +31,9 @@ export default function SettingsPage() {
       </section>
 
       <section className="mt-8">
-        <h2 className="text-xl sm:text-2xl">🎉 ลูกเล่นตามฤดูกาล</h2>
-        <p className="mt-1 text-[14px] text-ink-soft">เปิดไว้เมื่อไหร่ก็ได้ ระบบจำค่าไว้ให้เหมือนกับธีม</p>
-        <div className="mt-3"><WinterCard /></div>
+        <h2 className="text-xl sm:text-2xl">✨ เอฟเฟกต์บรรยากาศ</h2>
+        <p className="mt-1 text-[14px] text-ink-soft">ลูกเล่นตามฤดูกาลและเทศกาล — เปิดไว้เมื่อไหร่ก็ได้ ระบบจำค่าไว้ให้เหมือนกับธีม</p>
+        <div className="mt-3"><EffectCards /></div>
       </section>
 
       <section className="mt-8">

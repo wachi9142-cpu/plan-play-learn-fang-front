@@ -1,7 +1,7 @@
 export { ThemeToggle } from "./ThemeToggle";
 export { ThemeCards } from "./ThemeCards";
 export { ThemeMenuPanel } from "./ThemeMenuPanel";
-export { WinterCard } from "./WinterCard";
-export { Snowfall } from "./Snowfall";
+export { EffectCards } from "./EffectCards";
+export { Ambient } from "./Ambient";
 export { useTheme } from "./useTheme";
-export { useWinter } from "./useWinter";
+export { useAmbient } from "./useAmbient";

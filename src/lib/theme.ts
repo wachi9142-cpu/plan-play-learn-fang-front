@@ -7,9 +7,25 @@ export type Resolved = "light" | "dark";
 export const THEME_KEY = "lpg-theme-v1";
 export const THEME_EVENT = "lpg-theme";
 
-/** ❄️ โหมดฤดูหนาว — เปิด/ปิดแยกจากธีมสว่าง-มืด และจำค่าไว้เหมือนกัน */
+/** ✨ เอฟเฟกต์บรรยากาศ — เปิดได้ทีละ 1 อย่าง แยกจากธีมสว่าง-มืด และจำค่าไว้เหมือนกัน */
+export const EFFECT_KEY = "lpg-effect-v1";
+export const EFFECT_EVENT = "lpg-effect";
+/** คีย์เดิมสมัยที่มีแต่โหมดฤดูหนาว — ใช้ย้ายค่าของผู้ใช้เก่าให้อัตโนมัติ */
 export const WINTER_KEY = "lpg-winter-v1";
-export const WINTER_EVENT = "lpg-winter";
+
+export type AmbientEffect = "none" | "winter" | "starlight" | "spring" | "autumn";
+
+export const EFFECTS: { id: AmbientEffect; emoji: string; label: string; hint: string }[] = [
+  { id: "none", emoji: "⭕", label: "ไม่มีเอฟเฟกต์", hint: "หน้าเว็บสะอาดตา ไม่มีอะไรเคลื่อนไหว" },
+  { id: "winter", emoji: "❄️", label: "Winter — หิมะตก", hint: "หิมะขาวนวลและเกล็ดคริสตัลตกเบา ๆ ทั่วหน้าเว็บ" },
+  { id: "starlight", emoji: "🌠", label: "Starlight — สวนใต้แสงดาว", hint: "ดาวกระพริบ ดาวตกหางยาว และประกายดอกไม้เล็ก ๆ" },
+  { id: "spring", emoji: "🌸", label: "Spring — กลีบดอกไม้ปลิว", hint: "กลีบดอกไม้สีชมพู–ม่วงปลิวผ่านหน้าจอ" },
+  { id: "autumn", emoji: "🍂", label: "Autumn — ใบไม้ร่วง", hint: "ใบไม้สีทอง–ส้มหมุนร่วงลงมาช้า ๆ" },
+];
+
+export function effectInfo(id: AmbientEffect) {
+  return EFFECTS.find((e) => e.id === id) ?? EFFECTS[0];
+}
 
 export const THEME_MODES: { id: ThemeMode; emoji: string; label: string; hint: string }[] = [
   { id: "light", emoji: "☀️", label: "โหมดสว่าง", hint: "พื้นหลังครีม–ขาว ใช้สีม่วงของสวนเป็นสีหลัก เหมาะกับการใช้งานทั่วไป" },
@@ -58,14 +74,21 @@ export function setTheme(mode: ThemeMode) {
   window.dispatchEvent(new CustomEvent(THEME_EVENT, { detail: mode }));
 }
 
-export function readWinter(): boolean {
-  return typeof window !== "undefined" && localStorage.getItem(WINTER_KEY) === "on";
+const EFFECT_IDS: AmbientEffect[] = ["none", "winter", "starlight", "spring", "autumn"];
+
+export function readEffect(): AmbientEffect {
+  if (typeof window === "undefined") return "none";
+  const v = localStorage.getItem(EFFECT_KEY);
+  if (v && (EFFECT_IDS as string[]).includes(v)) return v as AmbientEffect;
+  // ผู้ใช้เดิมที่เคยเปิดโหมดฤดูหนาวไว้ ให้ได้หิมะต่อโดยไม่ต้องตั้งใหม่
+  return localStorage.getItem(WINTER_KEY) === "on" ? "winter" : "none";
 }
 
-export function setWinter(on: boolean) {
-  localStorage.setItem(WINTER_KEY, on ? "on" : "off");
-  document.documentElement.dataset.winter = on ? "on" : "off";
-  window.dispatchEvent(new CustomEvent(WINTER_EVENT, { detail: on }));
+export function setEffect(id: AmbientEffect) {
+  localStorage.setItem(EFFECT_KEY, id);
+  localStorage.removeItem(WINTER_KEY);
+  document.documentElement.dataset.effect = id;
+  window.dispatchEvent(new CustomEvent(EFFECT_EVENT, { detail: id }));
 }
 
 /** ผู้ใช้ตั้งให้ลดการเคลื่อนไหวไว้ที่เครื่องหรือไม่ — ถ้าใช่ จะไม่เล่นหิมะ */
@@ -77,4 +100,4 @@ export function prefersReducedMotion(): boolean {
  * สคริปต์เล็ก ๆ ที่รันก่อนหน้าเว็บวาด เพื่อไม่ให้จอกะพริบเป็นสีขาวก่อนเข้าโหมดมืด
  * (ต้องเป็นสตริง เพราะฝังลงใน <script> ของ layout)
  */
-export const THEME_INIT_SCRIPT = `(function(){try{var m=localStorage.getItem('${THEME_KEY}')||'system';var d=m==='dark'||(m==='system'&&matchMedia('(prefers-color-scheme: dark)').matches);var e=document.documentElement;e.dataset.theme=d?'dark':'light';e.dataset.themeMode=m;e.style.colorScheme=d?'dark':'light';e.dataset.winter=localStorage.getItem('${WINTER_KEY}')==='on'?'on':'off';}catch(x){}})();`;
+export const THEME_INIT_SCRIPT = `(function(){try{var m=localStorage.getItem('${THEME_KEY}')||'system';var d=m==='dark'||(m==='system'&&matchMedia('(prefers-color-scheme: dark)').matches);var e=document.documentElement;e.dataset.theme=d?'dark':'light';e.dataset.themeMode=m;e.style.colorScheme=d?'dark':'light';var f=localStorage.getItem('${EFFECT_KEY}');if(!f)f=localStorage.getItem('${WINTER_KEY}')==='on'?'winter':'none';e.dataset.effect=f;}catch(x){}})();`;

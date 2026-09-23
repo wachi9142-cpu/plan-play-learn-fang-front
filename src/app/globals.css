@@ -82,7 +82,7 @@ html[data-theme="dark"] .text-white { color: #fbf9ff; }
 /* ฉากหลังมืดของ popup/modal ต้องมืดเสมอ แม้ --color-ink จะกลายเป็นสีสว่าง */
 html[data-theme="dark"] [class*="bg-ink/"] { background-color: rgb(6 4 11 / 0.72); }
 html[data-theme="dark"] .bg-dots { opacity: 0.22; }
-html[data-theme="dark"] img:not([src*=".svg"]) { filter: brightness(0.94); }
+html[data-theme="dark"] img:not([src*=".svg"]):not(.snow-flake-img) { filter: brightness(0.94); }
 html[data-theme="dark"] .emoji-shadow { text-shadow: 0 0 0 #ece5f5; filter: brightness(0) invert(1) opacity(0.8); }
 
 /* 📄 กระดาษ/เอกสาร/ใบงาน/สไลด์: เป็นสีขาวเสมอ (เหมือน Word โหมดมืด) จึงคืนค่าสีชุดสว่างให้ข้างใน */
@@ -303,75 +303,197 @@ img, svg { max-width: 100%; height: auto; }
   .slide-page { page-break-after: always; border: 0; border-radius: 0; }
 }
 
-/* ---------- ❄️ Winter Mode — หิมะตกทั่วหน้าเว็บ ---------- */
-.snowfall {
+/* ---------- ✨ เอฟเฟกต์บรรยากาศ (เปิดได้ทีละ 1: ❄️ 🌠 🌸 🍂) ---------- */
+.fx-layer {
   position: fixed;
   inset: 0;
   z-index: 20;              /* อยู่หน้าเนื้อหา แต่ใต้แถบเมนู (z-40) และ popup (z-50) */
   overflow: hidden;
   pointer-events: none;     /* คลิก/แตะทะลุไปยังปุ่มและเมนูได้ตามปกติ */
-  contain: strict;          /* กันไม่ให้การขยับของหิมะไปคิดเลย์เอาต์ใหม่ทั้งหน้า */
+  contain: strict;          /* กันไม่ให้การขยับไปคิดเลย์เอาต์ใหม่ทั้งหน้า */
   opacity: 0;
   transition: opacity 600ms ease;
 }
-.snowfall[data-visible="on"] { opacity: 1; }
+.fx-layer[data-visible="on"] { opacity: 1; }
 
-.snow-fall {
+/* เครื่องมือร่วม: ตกลงมา · ส่ายซ้ายขวา · หมุน · เบลอให้มีระยะ */
+.fx-fall {
   position: absolute;
-  top: -5vh;
-  animation-name: snow-fall;
+  top: -8vh;
+  animation-name: fx-fall;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
   will-change: transform;
 }
-.snow-sway {
+.fx-sway {
   display: block;
-  animation-name: snow-sway;
+  animation-name: fx-sway;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
   animation-direction: alternate;
-  filter: blur(0.2px);
   will-change: transform;
 }
-@keyframes snow-fall {
-  from { transform: translate3d(0, 0, 0); }
-  to   { transform: translate3d(0, 110vh, 0); }
-}
-.snow-spin {
-  animation-name: snow-spin;
+.fx-spin {
+  animation-name: fx-spin;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
   will-change: transform;
-  filter: drop-shadow(0 1px 1px rgb(74 127 208 / 0.25));
 }
-@keyframes snow-spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+.fx-far { filter: blur(1.1px); }
+
+@keyframes fx-fall {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(0, 116vh, 0); }
 }
-@keyframes snow-sway {
+@keyframes fx-sway {
   from { transform: translate3d(calc(var(--drift) * -1), 0, 0); }
   to   { transform: translate3d(var(--drift), 0, 0); }
 }
+@keyframes fx-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
 
-/* โหมดมืด: หิมะเรืองนวลขึ้นเล็กน้อยให้เห็นชัดบนพื้นเข้ม */
-html[data-theme="dark"] .snow-sway { filter: blur(0.2px) drop-shadow(0 0 3px rgb(226 211 251 / 0.5)); }
+/* ---------- ❄️ หิมะ ---------- */
+/* ☀️ โหมดสว่าง — ขาว + ลาเวนเดอร์ + ฟ้าอ่อน พร้อมเงานุ่ม ๆ ให้ไม่กลืนกับพื้นครีม */
+.snow-dot { border-radius: 50%; }
+.snow-tone-0 { background: radial-gradient(circle at 34% 30%, #ffffff 0%, #ffffff 46%, rgb(255 255 255 / 0) 100%); box-shadow: 0 1px 4px rgb(109 58 168 / 0.35), 0 0 0 0.6px rgb(146 110 200 / 0.35); }
+.snow-tone-1 { background: radial-gradient(circle at 34% 30%, #ffffff 0%, #dcd2f5 62%, rgb(220 210 245 / 0) 100%); box-shadow: 0 1px 4px rgb(109 58 168 / 0.3); }
+.snow-tone-2 { background: radial-gradient(circle at 34% 30%, #ffffff 0%, #dcebfa 62%, rgb(220 235 250 / 0) 100%); box-shadow: 0 1px 4px rgb(74 127 208 / 0.32); }
+.snow-tone-3 { background: radial-gradient(circle at 34% 30%, #ffffff 0%, #e8e0f8 62%, rgb(232 224 248 / 0) 100%); box-shadow: 0 1px 4px rgb(109 58 168 / 0.28); }
+.snow-crystal .fx-spin { filter: drop-shadow(0 1px 2px rgb(74 127 208 / 0.45)); }
+.snow-flake-img { object-fit: contain; }
+
+/* 🌙 โหมดมืด — เรืองนวล ๆ แต่ไม่แสบตา */
+html[data-theme="dark"] .snow-tone-0 { box-shadow: 0 0 5px rgb(255 255 255 / 0.4); }
+html[data-theme="dark"] .snow-tone-1 { box-shadow: 0 0 5px rgb(220 210 245 / 0.45); }
+html[data-theme="dark"] .snow-tone-2 { box-shadow: 0 0 5px rgb(220 235 250 / 0.45); }
+html[data-theme="dark"] .snow-tone-3 { box-shadow: 0 0 5px rgb(232 224 248 / 0.4); }
+html[data-theme="dark"] .fx-far { filter: blur(1.1px) brightness(1.05); }
+html[data-theme="dark"] .snow-crystal .fx-spin { filter: drop-shadow(0 0 4px rgb(220 235 250 / 0.55)); }
+html[data-theme="dark"] img.snow-flake-img { filter: brightness(1.25) drop-shadow(0 0 4px rgb(220 235 250 / 0.5)); }
 
 /* แสงนวล ๆ ของฤดูหนาวที่ขอบบนของหน้าจอ */
-.snowfall::before {
+.fx-winter::before {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
   height: 40vh;
   background: linear-gradient(to bottom, rgb(227 240 251 / 0.5), transparent);
 }
-html[data-theme="dark"] .snowfall::before { background: linear-gradient(to bottom, rgb(60 48 92 / 0.45), transparent); }
+html[data-theme="dark"] .fx-winter::before { background: linear-gradient(to bottom, rgb(60 48 92 / 0.45), transparent); }
 
-/* มือถือ/แท็บเล็ต: ลดจำนวนเกล็ดลง ให้เบาเครื่องและไม่รบกวนสายตา */
-@media (max-width: 640px) { .snow-fall:nth-child(n + 13) { display: none; } }
-@media (min-width: 641px) and (max-width: 1023px) { .snow-fall:nth-child(n + 19) { display: none; } }
+/* ---------- 🌸 กลีบดอกไม้ · 🍂 ใบไม้ร่วง ---------- */
+.fx-petal { filter: drop-shadow(0 1px 2px rgb(109 58 168 / 0.28)); }
+.fx-leaf  { filter: drop-shadow(0 1px 2px rgb(140 80 20 / 0.3)); }
+html[data-theme="dark"] .fx-petal { filter: drop-shadow(0 0 4px rgb(242 161 189 / 0.45)); }
+html[data-theme="dark"] .fx-leaf  { filter: drop-shadow(0 0 4px rgb(247 211 90 / 0.4)); }
 
-/* เคารพการตั้งค่า "ลดการเคลื่อนไหว" ของอุปกรณ์ — ไม่เล่นหิมะเลย */
-@media (prefers-reduced-motion: reduce) { .snowfall { display: none; } }
+/* ---------- 🌠 สวนใต้แสงดาว ---------- */
+/* ผ้าคลุมบาง ๆ ให้รู้สึกเป็นยามค่ำคืน โดยไม่เปลี่ยนธีมทั้งเว็บ */
+.fx-starlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 70% at 78% 0%, rgb(109 58 168 / 0.12), transparent 62%);
+}
+html[data-theme="dark"] .fx-starlight::before { background: radial-gradient(120% 70% at 78% 0%, rgb(160 130 235 / 0.16), transparent 62%); }
 
-/* ไม่พิมพ์หิมะลงกระดาษ */
-@media print { .snowfall { display: none !important; } }
+.fx-moon {
+  position: absolute;
+  top: 4.5vh;
+  right: 6vw;
+  width: 34px;
+  height: 34px;
+  filter: drop-shadow(0 0 10px rgb(247 211 90 / 0.55));
+  animation: fx-twinkle 6s ease-in-out infinite;
+}
+
+.fx-star {
+  position: absolute;
+  display: block;
+  animation-name: fx-twinkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: opacity, transform;
+  filter: drop-shadow(0 0 3px rgb(196 168 247 / 0.6));
+}
+@keyframes fx-twinkle {
+  0%, 100% { opacity: 0.18; transform: scale(0.72); }
+  50%      { opacity: 0.95; transform: scale(1); }
+}
+
+/* ดาวตก: วิ่งเฉียงลงซ้ายเป็นระยะ ๆ แล้วหยุดพักก่อนมาใหม่ */
+.fx-shoot {
+  position: absolute;
+  display: block;
+  width: 0;
+  height: 0;
+  animation-name: fx-shoot;
+  animation-timing-function: ease-in;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+.fx-shoot-tail {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 2px;
+  width: var(--tail);
+  transform-origin: left center;
+  transform: rotate(-24deg);
+  border-radius: 999px;
+  background: linear-gradient(to left, var(--hue), rgb(255 255 255 / 0));
+  filter: blur(0.4px);
+}
+.fx-shoot-head {
+  position: absolute;
+  top: -7px;
+  left: -7px;
+  display: block;
+  width: 14px;
+  height: 14px;
+  filter: drop-shadow(0 0 6px var(--hue));
+}
+@keyframes fx-shoot {
+  0%      { opacity: 0; transform: translate3d(0, 0, 0); }
+  3%      { opacity: 1; }
+  14%     { opacity: 1; transform: translate3d(-46vw, 20vw, 0); }
+  17%     { opacity: 0; transform: translate3d(-52vw, 23vw, 0); }
+  100%    { opacity: 0; transform: translate3d(-52vw, 23vw, 0); }
+}
+
+/* ประกายดอกไม้เล็ก ๆ ที่ดาวตกทิ้งไว้ชั่วครู่ */
+.fx-bloom {
+  position: absolute;
+  display: block;
+  width: 18px;
+  height: 18px;
+  opacity: 0;
+  animation-name: fx-bloom;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  filter: drop-shadow(0 0 5px rgb(247 211 90 / 0.5));
+}
+@keyframes fx-bloom {
+  0%, 74%   { opacity: 0; transform: scale(0.4) rotate(0deg); }
+  80%       { opacity: 0.9; transform: scale(1) rotate(20deg); }
+  88%       { opacity: 0.75; transform: scale(1.05) rotate(30deg); }
+  100%      { opacity: 0; transform: scale(0.8) rotate(44deg); }
+}
+
+/* มือถือ/แท็บเล็ต: ลดจำนวนอนุภาคลง ให้เบาเครื่องและไม่รบกวนสายตา */
+@media (max-width: 640px) {
+  .fx-fall:nth-child(n + 13) { display: none; }
+  .fx-star:nth-child(n + 11) { display: none; }
+}
+@media (min-width: 641px) and (max-width: 1023px) {
+  .fx-fall:nth-child(n + 19) { display: none; }
+  .fx-star:nth-child(n + 15) { display: none; }
+}
+
+/* เคารพการตั้งค่า "ลดการเคลื่อนไหว" ของอุปกรณ์ — ไม่เล่นเอฟเฟกต์เลย */
+@media (prefers-reduced-motion: reduce) { .fx-layer { display: none; } }
+
+/* ไม่พิมพ์เอฟเฟกต์ลงกระดาษ */
+@media print { .fx-layer { display: none !important; } }

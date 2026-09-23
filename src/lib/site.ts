@@ -67,10 +67,17 @@ export const NAV_ITEMS: NavItem[] = [
     tint: "bg-pink-soft",
   },
   {
-    href: "/games",
+    href: "/play",
     emoji: "🎮",
+    label: "เกม",
+    description: "เกมและกิจกรรมออนไลน์ เล่นสนุก สำรวจ และสร้างสรรค์",
+    tint: "bg-pink-soft",
+  },
+  {
+    href: "/games",
+    emoji: "🧩",
     label: "เกมการศึกษา",
-    description: "คลังเกมออนไลน์ เล่นได้เลยบนเว็บ เพิ่มเกมใหม่ได้เรื่อย ๆ",
+    description: "เกมฝึกทักษะ เรียนรู้ผ่านการเล่น และพัฒนาการคิด",
     tint: "bg-mint-soft",
   },
   {
@@ -101,7 +108,7 @@ export const NAV_ITEMS: NavItem[] = [
 export const MAIN_MENU_COUNT = 6;
 
 /** ลำดับ "เมนู" ตามบรีฟ: กำหนดการสอน → แผนฯ → โครงการ → 6 กิจกรรมหลัก → เกม → ใบงาน → สื่อการเรียนการสอน */
-const MENU_ORDER = ["/schedules", "/plans", "/projects", "/core-activities", "/games", "/worksheets", "/media", "/curriculum", "/online-classroom", "/portfolio", "/development", "/studio", "/canvas"];
+const MENU_ORDER = ["/schedules", "/plans", "/projects", "/core-activities", "/play", "/games", "/worksheets", "/media", "/curriculum", "/online-classroom", "/portfolio", "/development", "/studio", "/canvas"];
 export const MENU_ITEMS: NavItem[] = MENU_ORDER.map((h) => NAV_ITEMS.find((n) => n.href === h)!);
 export const LIBRARY_ITEMS: NavItem[] = NAV_ITEMS.slice(MAIN_MENU_COUNT).filter((n) => !MENU_ORDER.includes(n.href));
 
