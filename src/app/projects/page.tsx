@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { NavIcon } from "@/components/ui/NavIcon";
 import type { Metadata } from "next";
 import { ArrowRight, Clock } from "lucide-react";
 import { PROJECTS } from "@/data/projects";
@@ -16,7 +17,7 @@ export default function ProjectsPage() {
         {PROJECTS.map((p, i) => (
           <Link key={p.id} href={`/projects/${p.id}`} className="card card-hover animate-rise group flex flex-col p-5" style={{ animationDelay: `${i * 70}ms` }}>
             <div className="flex items-start gap-3">
-              <span className="grid size-14 shrink-0 place-items-center rounded-2xl bg-yellow-soft text-3xl transition-transform group-hover:-rotate-6">{p.emoji}</span>
+              <NavIcon emoji={p.emoji} image={p.image} label={p.title} tint="bg-yellow-soft" className="size-14 text-3xl transition-transform group-hover:-rotate-6" />
               <div className="min-w-0">
                 <h2 className="text-lg leading-snug sm:text-xl">{p.title}</h2>
                 {p.subtitle && <p className="text-[13px] text-purple-500">{p.subtitle}</p>}

@@ -26,6 +26,7 @@ export const PROJECTS: Project[] = [
     materials: ["ไข่ไก่ ไข่เป็ด ไข่นกกระทา", "ตู้ฟักไข่", "แว่นขยาย", "สมุดบันทึกการสังเกต", "ตาชั่ง"],
     outcomes: ["แผนภูมิเปรียบเทียบไข่", "สมุดบันทึกการฟักไข่", "นิทรรศการโลกของไข่"],
     relatedPlanIds: ["animals", "food"],
+    image: "/projects/egg-explorer.webp",
   },
   {
     id: "mango-lab",

@@ -32,13 +32,20 @@ export default async function ProjectDetailPage({ params }: { params: Promise<Pa
     <div className="container-page py-8 sm:py-12">
       <Breadcrumb items={[{ label: "โครงการ", href: "/projects" }, { label: project.title }]} />
 
-      <PageHeader emoji={project.emoji} title={`โครงการ${project.title}`} description={project.subtitle}>
+      <PageHeader emoji={project.emoji} image={project.image} title={`โครงการ${project.title}`} description={project.subtitle}>
         <div className="flex flex-wrap gap-2">
           {grade && <Tag tone="pink">{grade.name}</Tag>}
           <Tag tone="sky"><Clock size={13} className="mr-1" /> {project.duration}</Tag>
           <Tag tone="yellow">Project Approach</Tag>
         </div>
       </PageHeader>
+
+      {project.image && (
+        <div className="animate-rise delay-1 mb-6 overflow-hidden rounded-3xl border border-line shadow-soft">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={project.image} alt={`ภาพบรรยากาศโครงการ${project.title}`} className="block h-56! w-full object-cover object-center sm:h-72! lg:h-80!" />
+        </div>
+      )}
 
       <p className="animate-rise delay-1 mb-8 text-base sm:text-lg">{project.description}</p>
 

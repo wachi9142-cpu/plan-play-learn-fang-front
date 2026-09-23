@@ -167,4 +167,5 @@ export interface Project {
   materials: string[];
   outcomes: string[];
   relatedPlanIds?: string[];   // → LessonPlan
+  image?: string;              // ภาพประกอบโครงการ (/projects/xxx.webp)
 }
