@@ -5,10 +5,10 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/cn";
 
 /** รายการในแถบลอย — เพิ่ม/ลดได้ที่นี่ */
-const DOCK_ITEMS = [
+const DOCK_ITEMS: { href: string; emoji: string; label: string; image?: string }[] = [
   { href: "/calendar", emoji: "📅", label: "ปฏิทิน" },
   { href: "/school-events", emoji: "🎈", label: "กิจกรรม" },
-  { href: "/news", emoji: "📢", label: "ประชาสัมพันธ์" },
+  { href: "/news", emoji: "📢", label: "ประชาสัมพันธ์", image: "/news/announce.webp" },
   { href: "/worksheets", emoji: "📝", label: "ใบงาน" },
   { href: "/play", emoji: "🎮", label: "เกม" },
   { href: "/gallery/works", emoji: "🏆", label: "ผลงานเด็ก" },
@@ -35,7 +35,14 @@ export function FloatingDock() {
               active ? "bg-purple-100 text-purple-800" : "text-ink-soft hover:bg-purple-50 hover:text-purple-700",
             )}
           >
-            <span className={cn("text-2xl leading-none transition-transform group-hover:-translate-y-0.5", active && "scale-110")}>{item.emoji}</span>
+            <span className={cn("grid h-7 place-items-center text-2xl leading-none transition-transform group-hover:-translate-y-0.5", active && "scale-110")}>
+              {item.image ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={item.image} alt="" className="h-7! w-auto object-contain" />
+              ) : (
+                item.emoji
+              )}
+            </span>
             <span className={cn("text-[11px] leading-tight", active && "font-medium")}>{item.label}</span>
           </Link>
         );

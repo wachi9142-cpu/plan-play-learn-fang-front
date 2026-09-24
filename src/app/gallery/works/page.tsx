@@ -10,7 +10,7 @@ export default function WorksPage() {
   const items = getGalleryByKind("work");
   return (
     <div className="container-page py-8 sm:py-12">
-      <PageHeader emoji="🖼️" title="ผลงานเด็ก" description="ผลงานศิลปะ งานปั้น และชิ้นงานจากกิจกรรมของเด็ก ๆ เชื่อมกับแผนที่ทำกิจกรรมนั้น">
+      <PageHeader emoji="🖼️" image="/gallery/works.webp" title="ผลงานเด็ก" description="ผลงานศิลปะ งานปั้น และชิ้นงานจากกิจกรรมของเด็ก ๆ เชื่อมกับแผนที่ทำกิจกรรมนั้น">
         <Tag tone="purple">{items.length} ผลงาน</Tag>
       </PageHeader>
       <PublishedWorks />
