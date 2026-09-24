@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, CalendarDays, Clock, MapPin, Users } from "lucide-react";
 import { EVENT_CATEGORIES, EVENT_STATUS, daysUntil, eventStatus, prepareSoon, upcomingEvents, type SchoolEvent } from "@/data/school-events";
 import { cn } from "@/lib/cn";
+import { NavIcon } from "@/components/ui/NavIcon";
 
 /**
  * ⭐📅 กิจกรรมที่กำลังจะมาถึง — ข้อมูลครบสำหรับผู้ปกครอง
@@ -41,7 +42,7 @@ export function EventCard({ event: e, delay = 0 }: { event: SchoolEvent; delay?:
   return (
     <article className={cn("card animate-rise flex flex-col p-5", urgent && "border-yellow-accent! ring-2 ring-yellow-soft")} style={{ animationDelay: `${delay}ms` }}>
       <div className="flex items-start gap-3">
-        <span className={cn("grid size-12 shrink-0 place-items-center rounded-2xl text-2xl", cat.tint)}>{e.emoji}</span>
+        <NavIcon emoji={e.emoji} image={e.icon} label={e.title} tint={cat.tint} className={cn("size-12 text-2xl")} />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-1.5">
             <span className={cn("rounded-full px-2.5 py-0.5 text-[12px] font-medium", st.tint, st.text)}>{st.emoji} {st.label}</span>
@@ -113,7 +114,7 @@ export function PrepThisWeek({ days = 10 }: { days?: number }) {
               return (
                 <li key={e.id}>
                   <Link href={`/school-events/${e.id}`} className={cn("flex items-start gap-3 rounded-2xl px-4 py-3 transition hover:brightness-95", urgent ? "bg-yellow-soft" : "bg-cream-dark")}>
-                    <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-white/80 text-xl">{e.emoji}</span>
+                    <NavIcon emoji={e.emoji} image={e.icon} label={e.title} tint="bg-white/80" className="size-10 rounded-xl! text-xl" />
                     <span className="min-w-0 flex-1">
                       <span className="flex flex-wrap items-center gap-1.5">
                         <span className="font-display text-[15px] text-purple-800">{e.dateLabel} — {e.title}</span>

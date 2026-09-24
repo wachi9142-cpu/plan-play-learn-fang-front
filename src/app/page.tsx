@@ -234,7 +234,11 @@ export default function HomePage() {
 
       {/* ---------- 📸 กิจกรรมโรงเรียน + 🏆 ผลงานเด็ก ---------- */}
       <section className="container-page pb-12 sm:pb-16">
-        <h2 className="mb-5 text-2xl sm:text-3xl">🎨 กิจกรรมและผลงานเด็ก</h2>
+        <h2 className="mb-5 flex items-center gap-2 text-2xl sm:text-3xl">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/art/palette.webp" alt="" className="h-9! w-auto object-contain sm:h-11!" />
+          กิจกรรมและผลงานเด็ก
+        </h2>
         <div className="grid gap-4 lg:grid-cols-2">
           <div className="card p-5">
             <div className="mb-3 flex items-end justify-between gap-2">
@@ -270,7 +274,14 @@ export default function HomePage() {
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={w.image} alt={w.title} className="aspect-square w-full object-cover transition group-hover:scale-105" />
                   ) : (
-                    <span className={cn("grid aspect-square place-items-center text-4xl transition group-hover:scale-110 sm:text-5xl", ["bg-pink-soft", "bg-yellow-soft", "bg-mint-soft"][i % 3])}>{w.emoji}</span>
+                    <span className={cn("grid aspect-square place-items-center overflow-hidden text-4xl transition group-hover:scale-110 sm:text-5xl", ["bg-pink-soft", "bg-yellow-soft", "bg-mint-soft"][i % 3])}>
+                      {w.icon ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={w.icon} alt="" className="h-[62%]! w-auto object-contain" />
+                      ) : (
+                        w.emoji
+                      )}
+                    </span>
                   )}
                   <span className="block truncate px-2 py-1.5 text-[12px] text-ink sm:text-[13px]">{w.title}</span>
                 </Link>

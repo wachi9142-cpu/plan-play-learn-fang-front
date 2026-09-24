@@ -25,6 +25,8 @@ export interface SchoolEvent {
   prepareByLabel?: string;
   /** หมายเหตุถึงผู้ปกครอง */
   parentNote?: string;
+  /** ภาพไอคอนแทนอีโมจิ (พื้นหลังโปร่งใส) */
+  icon?: string;
 }
 
 /** สถานะกิจกรรมสำหรับแสดงให้ผู้ปกครอง */
@@ -86,7 +88,7 @@ export const EVENT_CATEGORIES: Record<SchoolEventCategory, { emoji: string; labe
 
 export const SCHOOL_EVENTS: SchoolEvent[] = [
   {
-    id: "nature-art", emoji: "🎨", title: "ศิลปะจากธรรมชาติ", category: "art",
+    id: "nature-art", emoji: "🎨", icon: "/art/palette.webp", title: "ศิลปะจากธรรมชาติ", category: "art",
     date: "2026-09-25", dateLabel: "25 ก.ย. 2569",
     time: "09:00–11:00 น.", place: "มุมศิลปะ อาคาร 1", grades: ["เนอร์เซอรี่", "เตรียมอนุบาล", "อนุบาล 1"],
     description: "เด็ก ๆ เก็บใบไม้ กิ่งไม้ และดอกไม้รอบโรงเรียน มาสร้างเป็นภาพติดปะของตัวเอง",

@@ -14,7 +14,7 @@ export interface NewsItem {
 }
 
 export const NEWS_CATEGORIES: Record<NewsCategory, { emoji: string; label: string; tone: "purple" | "pink" | "yellow" | "mint" | "sky"; image?: string }> = {
-  announce: { emoji: "📣", label: "ประกาศ", tone: "purple" },
+  announce: { emoji: "📣", label: "ประกาศ", tone: "purple", image: "/news/announce.webp" },
   event: { emoji: "🎉", label: "กิจกรรม", tone: "pink" },
   holiday: { emoji: "🌴", label: "วันหยุด", tone: "mint" },
   parents: { emoji: "👨‍👩‍👧", label: "ถึงผู้ปกครอง", tone: "sky", image: "/news/parents.webp" },

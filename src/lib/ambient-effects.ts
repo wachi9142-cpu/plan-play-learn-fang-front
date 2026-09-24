@@ -35,6 +35,8 @@ export interface EffectDef {
   enabled: boolean;
   /** ช่วงเวลาที่แนะนำ เช่น "18:00–06:00" — เป็นคำแนะนำเท่านั้น ไม่ปิดเอฟเฟกต์อัตโนมัติ */
   time?: string;
+  /** ใช้ได้เฉพาะ 🌙 โหมดมืด (ระบบไม่เปลี่ยนธีมให้เอง ผู้ใช้ต้องเลือกเอง) */
+  darkOnly?: boolean;
 }
 
 /** ค่าตั้งต้นจากโค้ด — ผู้ดูแลระบบแก้ทับได้ */
@@ -51,6 +53,7 @@ export const BUILT_IN_EFFECTS: EffectDef[] = [
   { id: "halloween", emoji: "🎃", label: "Halloween Garden — ฮาโลวีนน่ารัก", hint: "ผีน้อยน่ารักลอยผ่าน ฟักทองยิ้ม โคมไฟอุ่น ๆ และพระจันทร์เสี้ยว (ไม่น่ากลัว)", season: "festival", order: 90, enabled: true },
   { id: "christmas", emoji: "🎄", label: "Christmas Garden — คริสต์มาส", hint: "หิมะตกเบา ๆ ไฟประดับกะพริบ ต้นสนเล็ก ๆ และดาวสีทอง", season: "festival", order: 100, enabled: true },
   { id: "newyear", emoji: "🎆", label: "New Year Garden — ฉลองปีใหม่", hint: "ดอกไม้ไฟดวงเล็กนาน ๆ ครั้ง และประกายแสงลอยขึ้นนุ่ม ๆ", season: "festival", order: 110, enabled: true },
+  { id: "firefly", emoji: "🌌", label: "Firefly Garden — สวนหิ่งห้อย", hint: "หิ่งห้อยตัวเล็ก ๆ เรืองแสงทองอ่อน บินช้า ๆ รอบสวนยามค่ำคืน", season: "night", order: 115, enabled: true, time: "18:00–06:00", darkOnly: true },
   { id: "purplenight", emoji: "💜", label: "Purple Night Garden — สวนกลางคืน", hint: "ม่านม่วงนวล พระจันทร์ ดาวกระพริบ และหิ่งห้อยบินผ่าน", season: "night", order: 120, enabled: true, time: "18:00–06:00" },
 ];
 

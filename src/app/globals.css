@@ -386,6 +386,12 @@ html[data-theme="dark"] {
   --xmas-2: #f7d98a;
   --xmas-3: #c4a5f7;
   --pine: #5aa96d;
+
+  /* 🌌 หิ่งห้อย — ทองอ่อน เหลืองอุ่น เขียวอมเหลือง */
+  --ff-0: #ffe9a3;
+  --ff-1: #ffd977;
+  --ff-2: #dff08a;
+  --ff-3: #f7e6b8;
 }
 
 .fx-layer {
@@ -594,6 +600,56 @@ html[data-theme="dark"] .fx-purplenight::after { background: linear-gradient(to 
   100%    { opacity: 0; transform: scale(0.8) rotate(44deg); }
 }
 
+/* ---------- 🌌 สวนหิ่งห้อย ---------- */
+/* ม่านม่วงเข้มบาง ๆ ให้รู้สึกเป็นค่ำคืนในสวน — ไม่เปลี่ยนธีมของเว็บ */
+.fx-firefly::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(90% 60% at 20% 100%, rgb(90 60 160 / 0.16), transparent 62%),
+    radial-gradient(80% 55% at 85% 0%, rgb(120 90 200 / 0.14), transparent 60%);
+}
+/* พระจันทร์หรี่แสงลง เพื่อให้หิ่งห้อยเป็นพระเอก */
+.fx-moon-dim { opacity: 0.45; width: 26px; height: 26px; }
+
+/* เส้นทางบิน: ช้า นุ่ม ไม่เป็นเส้นตรง */
+.ff-path {
+  position: absolute;
+  display: block;
+  animation-name: ff-path;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+.ff-far { opacity: 0.55; transform: scale(0.75); filter: blur(0.6px); }
+@keyframes ff-path {
+  0%   { transform: translate3d(0, 0, 0); }
+  25%  { transform: translate3d(calc(var(--dx) * 0.6), calc(var(--dy) * -0.8), 0); }
+  50%  { transform: translate3d(var(--dx), calc(var(--dy) * 0.3), 0); }
+  75%  { transform: translate3d(calc(var(--dx) * 0.35), var(--dy), 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+/* ตัวหิ่งห้อย: ค่อย ๆ สว่างแล้วค่อย ๆ หรี่ ไม่กะพริบแรง */
+.ff-body {
+  border-radius: 50%;
+  background: radial-gradient(circle at 42% 38%, #fffdf2 0%, var(--ff) 45%, rgb(255 233 163 / 0) 100%);
+  box-shadow: 0 0 6px var(--ff), 0 0 14px rgb(255 217 119 / 0.45);
+  opacity: 0;
+  animation-name: ff-glow;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: opacity, transform;
+}
+@keyframes ff-glow {
+  0%, 100% { opacity: 0; transform: scale(0.65); }
+  18%      { opacity: 0.35; transform: scale(0.9); }
+  42%      { opacity: 0.95; transform: scale(1); }
+  66%      { opacity: 0.45; transform: scale(0.92); }
+  84%      { opacity: 0.08; transform: scale(0.72); }
+}
+
 /* ---------- 🌧️ ฝนตกเบา ๆ ---------- */
 .fx-rainy::before {
   content: "";
@@ -730,7 +786,7 @@ html[data-theme="dark"] .fx-bf-img { filter: brightness(1.12); }
   from { transform: translate3d(-22px, 10px, 0); }
   to   { transform: translate3d(26px, -14px, 0); }
 }
-.fx-firefly {
+.pn-firefly {
   border-radius: 50%;
   background: radial-gradient(circle at 40% 35%, #fff8d6 0%, var(--star-4) 55%, rgb(247 211 90 / 0) 100%);
   animation-name: fx-twinkle;
@@ -964,12 +1020,14 @@ html[data-theme="dark"] .fx-tree { filter: drop-shadow(0 0 7px rgb(110 200 130 /
   .fx-fly:nth-child(n + 6) { display: none; }
   .fx-sm-hide { display: none; }
   .fx-light:nth-child(2n) { display: none; }
+  .ff-path:nth-child(n + 13) { display: none; }   /* มือถือ ~10 ตัว */
 }
 @media (min-width: 641px) and (max-width: 1023px) {
   .fx-fall:nth-child(n + 19) { display: none; }
   .fx-star:nth-child(n + 15) { display: none; }
   .fx-drop:nth-child(n + 25) { display: none; }
   .fx-fly:nth-child(n + 8) { display: none; }
+  .ff-path:nth-child(n + 19) { display: none; }   /* แท็บเล็ต ~16 ตัว */
 }
 
 /* 🎯 Activity Mode — หน้าที่ต้องลงมือทำกิจกรรม ปิดเอฟเฟกต์ทุกชนิด */

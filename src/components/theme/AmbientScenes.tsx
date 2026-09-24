@@ -561,7 +561,62 @@ function PurpleNight() {
       <TwinkleStars count={12} />
       {FIREFLIES.map((f, i) => (
         <span key={i} className="fx-glide" style={{ position: "absolute", left: `${f.left}%`, top: `${f.top}%`, animationDuration: `${f.dur}s`, animationDelay: `${f.delay}s` }}>
-          <span className="fx-firefly block" style={{ width: `${f.size}px`, height: `${f.size}px`, animationDuration: `${f.beat}s`, animationDelay: `${f.delay}s` }} />
+          <span className="pn-firefly block" style={{ width: `${f.size}px`, height: `${f.size}px`, animationDuration: `${f.beat}s`, animationDelay: `${f.delay}s` }} />
+        </span>
+      ))}
+    </>
+  );
+}
+
+/* ================= 🌌 สวนหิ่งห้อย (เฉพาะโหมดมืด) ================= */
+
+/** หิ่งห้อย 22 ตัว — ขนาด ความสว่าง ความเร็ว และทิศทางต่างกันทุกตัว */
+const FLIES = Array.from({ length: 22 }, (_, i) => ({
+  left: +(rnd(i, 13.773) * 92 + 4).toFixed(2),
+  top: +(rnd(i, 47.229) * 84 + 8).toFixed(2),
+  size: +(3.5 + rnd(i, 68.117) * 4.5).toFixed(2),      // ตัวเล็ก 3.5–8px
+  drift: +(26 + rnd(i, 31.441) * 28).toFixed(2),        // บินช้ามาก 26–54 วิ ต่อรอบ
+  glow: +(3.4 + rnd(i, 55.907) * 4.2).toFixed(2),       // จังหวะเรืองแสง 3.4–7.6 วิ
+  delay: +(-rnd(i, 79.331) * 26).toFixed(2),            // ไม่สว่างพร้อมกัน
+  dx: +(30 + rnd(i, 24.881) * 70).toFixed(0),           // ระยะบินแนวนอน
+  dy: +(20 + rnd(i, 61.117) * 46).toFixed(0),           // ระยะบินแนวตั้ง
+  dir: i % 2 === 0 ? 1 : -1,                            // บินคนละทิศ
+  tone: (i % 4) as 0 | 1 | 2 | 3,
+  far: i % 3 === 1,                                     // บางตัวอยู่ไกล (เล็กลง จางลง)
+}));
+
+const FLY_COLORS = ["--ff-0", "--ff-1", "--ff-2", "--ff-3"];
+
+function Firefly() {
+  return (
+    <>
+      {/* บรรยากาศสวนกลางคืนแบบเบามาก — หิ่งห้อยต้องเป็นพระเอก */}
+      <Moon className="fx-moon fx-moon-dim" />
+      <TwinkleStars count={5} />
+
+      {FLIES.map((f, i) => (
+        <span
+          key={i}
+          className={`ff-path ${f.far ? "ff-far" : ""}`}
+          style={{
+            left: `${f.left}%`,
+            top: `${f.top}%`,
+            ["--dx" as string]: `${+f.dx * f.dir}px`,
+            ["--dy" as string]: `${f.dy}px`,
+            animationDuration: `${f.drift}s`,
+            animationDelay: `${f.delay}s`,
+          }}
+        >
+          <span
+            className="ff-body block"
+            style={{
+              width: `${f.size}px`,
+              height: `${f.size}px`,
+              ["--ff" as string]: `var(${FLY_COLORS[f.tone]})`,
+              animationDuration: `${f.glow}s`,
+              animationDelay: `${f.delay}s`,
+            }}
+          />
         </span>
       ))}
     </>
@@ -671,5 +726,6 @@ export const SCENES: Record<string, () => React.JSX.Element> = {
   halloween: Halloween,
   christmas: Christmas,
   newyear: NewYear,
+  firefly: Firefly,
   purplenight: PurpleNight,
 };

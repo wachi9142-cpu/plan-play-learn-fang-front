@@ -3,14 +3,17 @@
 import { Check } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { useAmbient } from "./useAmbient";
+import { useTheme } from "./useTheme";
 
 /** ✨ การ์ดเลือกเอฟเฟกต์บรรยากาศในหน้าตั้งค่า ⚙️ — เปิดได้ทีละ 1 อย่าง */
 export function EffectCards() {
   const { effect, effects, ready, reduced, choose } = useAmbient();
+  const { resolved, setMode } = useTheme();
   return (
     <div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {effects.map((e) => {
+          const needsDark = e.darkOnly === true && resolved !== "dark";
           const on = ready && effect === e.id && !(reduced && e.id !== "none");
           const locked = reduced && e.id !== "none";
           return (
@@ -32,7 +35,21 @@ export function EffectCards() {
                   {on && <Check size={16} className="ml-auto shrink-0 text-purple-600" />}
                 </span>
                 <span className="mt-0.5 block text-[13px] leading-snug text-ink-soft">{e.hint}</span>
-                {e.time && <span className="mt-1 block text-[12px] text-purple-700">🕐 แนะนำช่วง {e.time} — เปิดเวลาอื่นก็ได้ ระบบปรับสีให้มองเห็นชัดเอง</span>}
+                {e.time && <span className="mt-1 block text-[12px] text-purple-700">🕐 แนะนำช่วง {e.time}{e.darkOnly ? "" : " — เปิดเวลาอื่นก็ได้ ระบบปรับสีให้มองเห็นชัดเอง"}</span>}
+                {needsDark && (
+                  <span className="mt-1.5 flex flex-wrap items-center gap-1.5 text-[12px] text-ink-soft">
+                    🌙 โหมดนี้ใช้ร่วมกับโหมดมืด
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      onClick={(ev) => { ev.stopPropagation(); ev.preventDefault(); setMode("dark"); }}
+                      onKeyDown={(ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.stopPropagation(); ev.preventDefault(); setMode("dark"); } }}
+                      className="tap inline-flex cursor-pointer items-center rounded-full bg-purple-600 px-3 py-1 font-medium text-white hover:bg-purple-700"
+                    >
+                      เปิด Dark Mode
+                    </span>
+                  </span>
+                )}
               </span>
             </button>
           );

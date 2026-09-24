@@ -22,13 +22,13 @@ const timeAgo = (iso: string) => {
 };
 
 /** แถวไอคอนกลม (แบบภาพอ้างอิง) — ประเภทเอกสาร + เครื่องมือ */
-type Chip = { id: string; emoji: string; label: string; color: string; action: "create" | "templates" | "uploads" | "projects" | "more"; type?: DocType; badge?: string };
+type Chip = { id: string; emoji: string; label: string; color: string; action: "create" | "templates" | "uploads" | "projects" | "more"; type?: DocType; badge?: string; icon?: string };
 const CHIPS: Chip[] = [
   { id: "templates", emoji: "📑", label: "แม่แบบ", color: "bg-purple-100 text-purple-800", action: "templates" },
   { id: "plan", emoji: "📖", label: "แผนฯ", color: "bg-purple-600 text-white", action: "create", type: "plan" },
   { id: "schedule", emoji: "📅", label: "กำหนดการสอน", color: "bg-[#2b8ad6] text-white", action: "create", type: "schedule" },
   { id: "worksheet", emoji: "📝", label: "ใบงาน", color: "bg-[#2ea672] text-white", action: "create", type: "worksheet" },
-  { id: "media", emoji: "🎨", label: "สื่อการสอน", color: "bg-[#e0508a] text-white", action: "create", type: "media" },
+  { id: "media", emoji: "🎨", label: "สื่อการสอน", color: "bg-[#e0508a] text-white", action: "create", type: "media", icon: "/art/palette.webp" },
   { id: "slides", emoji: "🎞️", label: "สไลด์", color: "bg-[#f2a33a] text-white", action: "create", type: "slides", badge: "ใหม่" },
   { id: "sheet", emoji: "📊", label: "ชีต", color: "bg-[#1f9d6b] text-white", action: "create", type: "sheet", badge: "ใหม่" },
   { id: "other", emoji: "📄", label: "เอกสาร", color: "bg-[#f2a33a] text-white", action: "create", type: "other" },
@@ -119,7 +119,14 @@ export function StudioHome({ presetType }: { presetType?: DocType }) {
               {CHIPS.map((c, i) => (
                 <button key={c.id} type="button" onClick={() => onChip(c)} className="group flex w-[88px] shrink-0 flex-col items-center gap-2 text-center">
                   <span className="relative">
-                    <span className={cn("grid size-14 place-items-center rounded-full text-2xl shadow-soft transition group-hover:-translate-y-1 group-hover:shadow-lift", c.color, (picker === c.type && c.type) || panel === c.action ? "ring-4 ring-purple-300" : "")}>{c.emoji}</span>
+                    <span className={cn("grid size-14 place-items-center overflow-hidden rounded-full text-2xl shadow-soft transition group-hover:-translate-y-1 group-hover:shadow-lift", c.color, (picker === c.type && c.type) || panel === c.action ? "ring-4 ring-purple-300" : "")}>
+                      {c.icon ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={c.icon} alt="" className="h-[70%]! w-auto object-contain" />
+                      ) : (
+                        c.emoji
+                      )}
+                    </span>
                     {c.badge && <span className="absolute -right-2 -top-1 rounded-full bg-[#e0508a] px-1.5 text-[10px] text-white">{c.badge}</span>}
                   </span>
                   <span className="text-[12px] leading-tight text-ink">{c.label}</span>
@@ -134,7 +141,15 @@ export function StudioHome({ presetType }: { presetType?: DocType }) {
         {/* สร้างตามประเภท */}
         {picker && (
           <section className="card animate-rise mt-4 p-5 sm:p-6">
-            <h2 className="text-xl">{DOC_TYPES[picker].emoji} สร้าง{DOC_TYPES[picker].label}</h2>
+            <h2 className="flex items-center gap-1.5 text-xl">
+              {DOC_TYPES[picker].icon ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={DOC_TYPES[picker].icon} alt="" className="h-7! w-auto object-contain" />
+              ) : (
+                DOC_TYPES[picker].emoji
+              )}
+              สร้าง{DOC_TYPES[picker].label}
+            </h2>
             <p className="text-[14px] text-ink-soft">{DOC_TYPES[picker].description}</p>
             {picker !== "slides" && picker !== "sheet" && (
               <button type="button" onClick={() => start(picker)} className="tap mt-4 inline-flex items-center gap-2 rounded-full bg-purple-600 px-5 py-2.5 text-[15px] font-medium text-white shadow-soft hover:bg-purple-700"><Plus size={16} /> สร้างใหม่ (มีแบบฟอร์มให้)</button>

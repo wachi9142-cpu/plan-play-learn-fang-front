@@ -21,7 +21,14 @@ export function GalleryGrid({ items, emptyTitle }: { items: GalleryItem[]; empty
               // eslint-disable-next-line @next/next/no-img-element
               <img src={g.image} alt={g.title} className="aspect-square w-full object-cover" loading="lazy" />
             ) : (
-              <div className={`grid aspect-square place-items-center text-6xl sm:text-7xl ${TINTS[i % TINTS.length]}`} aria-hidden>{g.emoji}</div>
+              <div className={`grid aspect-square place-items-center overflow-hidden text-6xl sm:text-7xl ${TINTS[i % TINTS.length]}`} aria-hidden>
+                {g.icon ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={g.icon} alt="" className="h-[58%]! w-auto object-contain" />
+                ) : (
+                  g.emoji
+                )}
+              </div>
             )}
             <figcaption className="flex flex-1 flex-col p-3 sm:p-4">
               <p className="text-[12px] text-ink-soft">{g.date}</p>

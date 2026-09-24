@@ -3,8 +3,10 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { isActivityPath } from "@/lib/activity-mode";
+import { findEffect } from "@/lib/ambient-effects";
 import { SCENES } from "./AmbientScenes";
 import { useAmbient } from "./useAmbient";
+import { useTheme } from "./useTheme";
 
 /**
  * ✨ ชั้นเอฟเฟกต์บรรยากาศของ Little Purple Garden
@@ -18,7 +20,10 @@ import { useAmbient } from "./useAmbient";
 
 export function Ambient() {
   const { effect, ready, reduced } = useAmbient();
+  const { resolved } = useTheme();
   const pathname = usePathname();
+  // เอฟเฟกต์บางอย่าง (🌌 สวนหิ่งห้อย) สวยเฉพาะบนพื้นมืด — ไม่เปลี่ยนธีมให้เอง แค่ไม่เล่น
+  const needsDark = ready && effect !== "none" && findEffect(effect).darkOnly === true && resolved !== "dark";
   const activity = isActivityPath(pathname);
   const [shown, setShown] = useState<string>("none");
   const [visible, setVisible] = useState(false);
@@ -29,7 +34,7 @@ export function Ambient() {
   }, [activity]);
 
   useEffect(() => {
-    if (!ready || reduced || activity || effect === "none" || !SCENES[effect]) {
+    if (!ready || reduced || activity || needsDark || effect === "none" || !SCENES[effect]) {
       setVisible(false);
       const t = window.setTimeout(() => setShown("none"), 700); // เฟดออกให้จบก่อนค่อยถอดออก
       return () => window.clearTimeout(t);
@@ -37,7 +42,7 @@ export function Ambient() {
     setShown(effect);
     const t = window.setTimeout(() => setVisible(true), 20); // เฟดเข้า
     return () => window.clearTimeout(t);
-  }, [effect, ready, reduced, activity]);
+  }, [effect, ready, reduced, activity, needsDark]);
 
   if (shown === "none") return null;
   const Scene = SCENES[shown];

@@ -23,8 +23,8 @@ export const CONTACT = {
   ],
   hoursNote: "เวลาเป็นตัวอย่าง สามารถแก้ไขภายหลังได้",
   channels: [
-    { id: "phone", emoji: "☎️", label: "โทรศัพท์", value: "0XX-XXX-XXXX", href: "tel:0XXXXXXXXX" },
-    { id: "email", emoji: "📧", label: "Email", value: "hello@littlepurplegarden.example", href: "mailto:hello@littlepurplegarden.example" },
+    { id: "phone", emoji: "☎️", label: "โทรศัพท์", value: "091-756-051X", href: "tel:091756051X" },
+    { id: "email", emoji: "📧", label: "Email", value: "littlepurplegardenkf@hotmail.com", href: "mailto:littlepurplegardenkf@hotmail.com" },
     { id: "line", emoji: "💬", label: "LINE", value: "@littlepurplegarden", href: "https://line.me/R/ti/p/@littlepurplegarden" },
     { id: "facebook", emoji: "📘", label: "Facebook", value: "Little Purple Garden", href: "https://www.facebook.com/" },
     { id: "instagram", emoji: "📷", label: "Instagram", value: "@teacher.kaowfang", href: "https://www.instagram.com/" },

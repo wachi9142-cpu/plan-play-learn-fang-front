@@ -228,11 +228,11 @@ export function createDoc(type: DocType, opts: { planId?: string; scheduleId?: s
   return doc;
 }
 
-export const DOC_TYPES: Record<DocType, { emoji: string; label: string; description: string; tint: string }> = {
+export const DOC_TYPES: Record<DocType, { emoji: string; label: string; description: string; tint: string; icon?: string }> = {
   plan: { emoji: "📖", label: "แผนการจัดประสบการณ์", description: "แบบฟอร์มแผน: จุดประสงค์ สาระ กิจกรรม สื่อ การประเมิน", tint: "bg-purple-100" },
   schedule: { emoji: "📅", label: "กำหนดการสอน", description: "ตาราง 20 สัปดาห์ เชื่อมกับแผนแต่ละเรื่อง", tint: "bg-sky-soft" },
   worksheet: { emoji: "📝", label: "ใบงาน", description: "หัวกระดาษ ชื่อ–นามสกุล–ห้อง + คำสั่ง + พื้นที่ใบงาน", tint: "bg-mint-soft" },
-  media: { emoji: "🎨", label: "สื่อการเรียนการสอน", description: "บัตรภาพ โปสเตอร์ สื่อทำมือ พร้อมวิธีใช้", tint: "bg-pink-soft" },
+  media: { emoji: "🎨", label: "สื่อการเรียนการสอน", description: "บัตรภาพ โปสเตอร์ สื่อทำมือ พร้อมวิธีใช้", tint: "bg-pink-soft", icon: "/art/palette.webp" },
   slides: { emoji: "🎞️", label: "สไลด์ / งานนำเสนอ", description: "สไลด์ 16:9 สำหรับสอนหน้าห้อง เล่านิทาน อัลบั้มรูป", tint: "bg-[#ffe3c8]" },
   sheet: { emoji: "📊", label: "สเปรดชีต", description: "ตารางข้อมูล เช็คชื่อ บันทึกพัฒนาการ งบประมาณ พร้อมสูตร", tint: "bg-mint-soft" },
   other: { emoji: "📄", label: "เอกสารอื่น ๆ", description: "เอกสารว่าง ใส่บล็อกได้อิสระ", tint: "bg-yellow-soft" },
