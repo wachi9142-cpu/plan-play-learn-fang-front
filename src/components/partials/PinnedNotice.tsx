@@ -19,8 +19,8 @@ export function PinnedNotice() {
               className="animate-rise group flex items-start gap-3 rounded-3xl border-2 border-pink-accent bg-pink-soft p-4 shadow-soft transition hover:brightness-[0.97] sm:p-5"
               style={{ animationDelay: `${i * 70}ms` }}
             >
-              {c.image ? (
-                <NewsIcon emoji={c.emoji} image={c.image} label={c.label} className="size-11 rounded-2xl" />
+              {n.icon ?? c.image ? (
+                <NewsIcon emoji={c.emoji} image={n.icon ?? c.image} label={c.label} className="size-11 rounded-2xl" />
               ) : (
                 <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-white/85 text-[#a8456c]">
                   <Megaphone size={20} />

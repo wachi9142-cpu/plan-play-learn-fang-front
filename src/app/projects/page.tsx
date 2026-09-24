@@ -17,7 +17,7 @@ export default function ProjectsPage() {
         {PROJECTS.map((p, i) => (
           <Link key={p.id} href={`/projects/${p.id}`} className="card card-hover animate-rise group flex flex-col p-5" style={{ animationDelay: `${i * 70}ms` }}>
             <div className="flex items-start gap-3">
-              <NavIcon emoji={p.emoji} image={p.image} label={p.title} tint="bg-yellow-soft" className="size-14 text-3xl transition-transform group-hover:-rotate-6" />
+              <NavIcon emoji={p.emoji} image={p.icon ?? p.image} label={p.title} tint="bg-yellow-soft" className="size-14 text-3xl transition-transform group-hover:-rotate-6" />
               <div className="min-w-0">
                 <h2 className="text-lg leading-snug sm:text-xl">{p.title}</h2>
                 {p.subtitle && <p className="text-[13px] text-purple-500">{p.subtitle}</p>}

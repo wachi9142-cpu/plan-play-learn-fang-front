@@ -53,16 +53,16 @@ export function Header() {
 
         {/* Desktop: เมนูอยู่กลาง ยืดเต็มพื้นที่ว่างระหว่างโลโก้กับปุ่มด้านขวา */}
         <nav className="hidden min-w-0 flex-1 items-center justify-center gap-0.5 lg:flex xl:gap-1" aria-label="เมนูหลัก">
-          <Link href="/" className={cn("whitespace-nowrap rounded-full px-3 py-2 text-[14px] transition-colors xl:px-4 xl:text-[15px]", pathname === "/" ? "bg-purple-100 font-medium text-purple-800" : "text-ink hover:bg-purple-50 hover:text-purple-700")}>
-            🏠 หน้าแรก
+          <Link href="/" className={cn("inline-flex items-center gap-1 whitespace-nowrap rounded-full px-3 py-2 text-[14px] transition-colors xl:px-4 xl:text-[15px]", pathname === "/" ? "bg-purple-100 font-medium text-purple-800" : "text-ink hover:bg-purple-50 hover:text-purple-700")}>
+            <MenuIcon emoji="🏠" image="/nav/home.webp" /> หน้าแรก
           </Link>
           {/* 📅 ปฏิทิน · 🎈 กิจกรรม · 📢 ประชาสัมพันธ์ ไม่อยู่ตรงนี้ เพราะซ้ำกับแถบลอยด้านขวา */}
           {PRIMARY_NAV.map((item) => (
             <Dropdown key={item.href} item={item} active={isActive(item)} />
           ))}
           {TOP_LINKS.slice(3).map((item) => (
-            <Link key={item.href} href={item.href} className={cn("whitespace-nowrap rounded-full px-3 py-2 text-[14px] transition-colors xl:px-4 xl:text-[15px]", isActive(item) ? "bg-purple-100 font-medium text-purple-800" : "text-ink hover:bg-purple-50 hover:text-purple-700")}>
-              {item.emoji} {item.label}
+            <Link key={item.href} href={item.href} className={cn("inline-flex items-center gap-1 whitespace-nowrap rounded-full px-3 py-2 text-[14px] transition-colors xl:px-4 xl:text-[15px]", isActive(item) ? "bg-purple-100 font-medium text-purple-800" : "text-ink hover:bg-purple-50 hover:text-purple-700")}>
+              <MenuIcon emoji={item.emoji} image={item.image} /> {item.label}
             </Link>
           ))}
         </nav>
@@ -103,7 +103,7 @@ export function Header() {
         aria-hidden={!open}
       >
         <nav className="container-page grid gap-2 py-3 pb-6" aria-label="เมนูมือถือ">
-          <MobileLink href="/" emoji="🏠" label="หน้าแรก" active={pathname === "/"} tint="bg-purple-100" />
+          <MobileLink href="/" emoji="🏠" image="/nav/home.webp" label="หน้าแรก" active={pathname === "/"} tint="bg-purple-100" />
           {/* 📅 ปฏิทิน · 🎈 กิจกรรม · 📢 ประชาสัมพันธ์ — ผู้ปกครองใช้บ่อย จึงอยู่บนสุด */}
           <div className="grid grid-cols-3 gap-2">
             {TOP_LINKS.slice(0, 3).map((item) => (
@@ -117,7 +117,7 @@ export function Header() {
             <MobileGroup key={item.href} item={item} pathname={pathname} active={isActive(item)} />
           ))}
           {TOP_LINKS.slice(3).map((item) => (
-            <MobileLink key={item.href} href={item.href} emoji={item.emoji} label={item.label} active={isActive(item)} tint={item.tint} />
+            <MobileLink key={item.href} href={item.href} emoji={item.emoji} label={item.label} active={isActive(item)} tint={item.tint} image={item.image} />
           ))}
           <MobileLink href="/settings" emoji="⚙️" label="ตั้งค่า" active={pathname === "/settings"} tint="bg-purple-100" />
           <Link href="/login" className="tap mt-1 inline-flex items-center justify-center gap-2 rounded-2xl bg-purple-600 px-4 py-3 text-base font-medium text-white shadow-soft">
@@ -175,7 +175,7 @@ function Dropdown({ item, active, showAll = true }: { item: NavItem; active: boo
           show ? "visible translate-y-0 opacity-100" : "invisible -translate-y-1 opacity-0",
         )}
       >
-        <div className="card overflow-hidden p-1.5">
+        <div className="card no-scrollbar max-h-[70vh] overflow-y-auto overscroll-contain p-1.5">
           {showAll && (
             <>
               <Link href={item.href} role="menuitem" onClick={() => setShow(false)} className="flex items-center gap-2 rounded-xl px-3 py-2 text-[15px] font-medium text-purple-800 hover:bg-purple-50">
@@ -197,7 +197,7 @@ function Dropdown({ item, active, showAll = true }: { item: NavItem; active: boo
 }
 
 /* ---------- Mobile ---------- */
-function MobileLink({ href, emoji, label, active, tint }: { href: string; emoji: string; label: string; active: boolean; tint: string }) {
+function MobileLink({ href, emoji, label, active, tint, image }: { href: string; emoji: string; label: string; active: boolean; tint: string; image?: string }) {
   return (
     <Link
       href={href}
@@ -206,7 +206,7 @@ function MobileLink({ href, emoji, label, active, tint }: { href: string; emoji:
         active ? "border-purple-200 bg-purple-100 font-medium text-purple-800" : "border-line bg-white text-ink active:bg-purple-50",
       )}
     >
-      <span className={cn("grid size-10 shrink-0 place-items-center rounded-xl text-xl", tint)}>{emoji}</span>
+      <span className={cn("grid size-10 shrink-0 place-items-center overflow-hidden rounded-xl text-xl", tint)}>{image ? <MenuIcon emoji={emoji} image={image} className="h-6" /> : emoji}</span>
       <span>{label}</span>
     </Link>
   );
@@ -214,7 +214,7 @@ function MobileLink({ href, emoji, label, active, tint }: { href: string; emoji:
 
 function MobileGroup({ item, pathname, active }: { item: NavItem; pathname: string; active: boolean }) {
   const [expanded, setExpanded] = useState(active);
-  if (!item.children) return <MobileLink href={item.href} emoji={item.emoji} label={item.label} active={active} tint={item.tint} />;
+  if (!item.children) return <MobileLink href={item.href} emoji={item.emoji} label={item.label} active={active} tint={item.tint} image={item.image} />;
 
   return (
     <div className={cn("overflow-hidden rounded-2xl border", active ? "border-purple-200" : "border-line")}>

@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "ค้นหา" };
 export default function SearchPage() {
   return (
     <div className="container-page max-w-3xl py-8 sm:py-12">
-      <PageHeader emoji="🔍" title="ค้นหา" description="ค้นหาใบงาน แผน เกม โครงการ สื่อ ข่าว หรือกิจกรรมต่าง ๆ ในเว็บ" />
+      <PageHeader emoji="🔍" image="/nav/search.webp" title="ค้นหา" description="ค้นหาใบงาน แผน เกม โครงการ สื่อ ข่าว หรือกิจกรรมต่าง ๆ ในเว็บ" />
       <Suspense fallback={null}>
         <SiteSearch />
       </Suspense>

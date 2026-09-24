@@ -19,7 +19,7 @@ export default function NewsPage() {
           const c = NEWS_CATEGORIES[n.category];
           return (
             <Link key={n.id} href={`/news/${n.id}`} className="card card-hover animate-rise group flex gap-4 p-4 sm:p-5" style={{ animationDelay: `${i * 60}ms` }}>
-              <NewsIcon emoji={c.emoji} image={c.image} label={c.label} className="size-12 rounded-xl text-2xl" />
+              <NewsIcon emoji={c.emoji} image={n.icon ?? c.image} label={c.label} className="size-12 rounded-xl text-2xl" />
               <span className="min-w-0 flex-1">
                 <span className="flex flex-wrap items-center gap-1.5">
                   <Tag tone={c.tone}>{c.label}</Tag>

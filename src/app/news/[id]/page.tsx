@@ -23,7 +23,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<Param
   return (
     <div className="container-page max-w-3xl py-8 sm:py-12">
       <Breadcrumb items={[{ label: "ประชาสัมพันธ์", href: "/news" }, { label: n.title }]} />
-      <PageHeader emoji={c.emoji} title={n.title}>
+      <PageHeader emoji={c.emoji} image={n.icon ?? c.image} title={n.title}>
         <div className="flex flex-wrap gap-2">
           <Tag tone={c.tone}>{c.label}</Tag>
           <Tag tone="sky"><CalendarDays size={13} className="mr-1" /> {n.dateLabel}</Tag>

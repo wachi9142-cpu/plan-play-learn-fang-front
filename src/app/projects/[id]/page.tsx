@@ -32,7 +32,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<Pa
     <div className="container-page py-8 sm:py-12">
       <Breadcrumb items={[{ label: "โครงการ", href: "/projects" }, { label: project.title }]} />
 
-      <PageHeader emoji={project.emoji} image={project.image} title={`โครงการ${project.title}`} description={project.subtitle}>
+      <PageHeader emoji={project.emoji} image={project.icon ?? project.image} title={`โครงการ${project.title}`} description={project.subtitle}>
         <div className="flex flex-wrap gap-2">
           {grade && <Tag tone="pink">{grade.name}</Tag>}
           <Tag tone="sky"><Clock size={13} className="mr-1" /> {project.duration}</Tag>
@@ -41,13 +41,13 @@ export default async function ProjectDetailPage({ params }: { params: Promise<Pa
       </PageHeader>
 
       {project.image && (
-        <figure className="animate-rise delay-1 mx-auto mb-6 max-w-3xl overflow-hidden rounded-3xl border border-line shadow-soft">
+        <figure className="animate-rise delay-1 mx-auto mb-6 grid max-w-3xl place-items-center overflow-hidden rounded-3xl border border-line bg-gradient-to-br from-purple-50 to-cream p-4 shadow-soft">
           {/* ใช้สัดส่วนจริงของภาพ จึงเห็นเต็มภาพ ไม่โดนตัดหัวหรือขอบ */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={project.image}
             alt={`ภาพบรรยากาศโครงการ${project.title}`}
-            className="block aspect-[1168/784] h-auto w-full object-cover"
+            className="mx-auto block h-auto max-h-[460px] w-auto max-w-full object-contain"
           />
         </figure>
       )}

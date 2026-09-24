@@ -10,6 +10,7 @@ export interface NewsItem {
   summary: string;
   body?: string[];     // ย่อหน้า
   pinned?: boolean;
+  icon?: string;       // ภาพเฉพาะข่าวนี้ (แทนไอคอนหมวด)
   link?: { href: string; label: string };
 }
 
@@ -40,6 +41,7 @@ export const NEWS: NewsItem[] = [
   {
     id: "loy-krathong-2569",
     title: "ชวนเด็ก ๆ ประดิษฐ์กระทงจากใบตอง วันอังคารที่ 24 พ.ย. 69",
+    icon: "/news/krathong.webp",
     category: "event", date: "2026-11-16", dateLabel: "16 พ.ย. 2569",
     summary: "กิจกรรมลอยกระทงน้อย ผู้ปกครองที่สะดวกสามารถส่งใบตองหรือดอกไม้มาให้เด็ก ๆ ได้ค่ะ",
     link: { href: "/school-events/loy-krathong", label: "รายละเอียดกิจกรรม" },
@@ -47,6 +49,7 @@ export const NEWS: NewsItem[] = [
   {
     id: "holiday-dec",
     title: "แจ้งวันหยุดเดือนธันวาคม 2569",
+    icon: "/news/holiday.webp",
     category: "holiday", date: "2026-11-30", dateLabel: "30 พ.ย. 2569",
     summary: "หยุดชดเชยวันพ่อแห่งชาติ 7 ธ.ค. · วันรัฐธรรมนูญ 10 ธ.ค. · หยุดปีใหม่ 31 ธ.ค. – 1 ม.ค.",
     link: { href: "/calendar", label: "ดูปฏิทินโรงเรียน" },

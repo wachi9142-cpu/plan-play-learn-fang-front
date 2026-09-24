@@ -10,7 +10,8 @@ export interface SchoolEvent {
   dateLabel: string;     // "24 พ.ย. 2569"
   description: string;
   highlights?: string[];
-  image?: string;        // /events/xxx.jpg
+  image?: string;        // /events/xxx.jpg — ภาพหลักบนหน้ารายละเอียด
+  photos?: string[];     // ภาพบรรยากาศเพิ่มเติม
   projectId?: string;
   planId?: string;
 
@@ -99,7 +100,7 @@ export const SCHOOL_EVENTS: SchoolEvent[] = [
     planId: "nature",
   },
   {
-    id: "mango-lab-open", emoji: "🥭", title: "Mango Lab — วันเปิดห้องทดลองมะม่วง", category: "project",
+    id: "mango-lab-open", emoji: "🥭", icon: "/events/mango.webp", title: "Mango Lab — วันเปิดห้องทดลองมะม่วง", category: "project",
     date: "2026-09-28", dateLabel: "28 ก.ย. 2569",
     time: "10:00–11:30 น.", place: "ห้องกิจกรรม ชั้น 2", grades: ["อนุบาล 1", "อนุบาล 2", "อนุบาล 3"],
     description: "ชิม ดม สังเกต และเปรียบเทียบมะม่วงดิบ–สุก แล้วบันทึกผลลงสมุดนักสำรวจ",
@@ -119,9 +120,9 @@ export const SCHOOL_EVENTS: SchoolEvent[] = [
   { id: "plant-day", emoji: "🌱", title: "วันปลูกต้นไม้ของหนู", category: "nature", date: "2026-11-20", dateLabel: "20 พ.ย. 2569", description: "ทุกคนเพาะถั่วงอกและปลูกต้นกล้าในกระถางของตัวเอง แล้วช่วยกันรดน้ำทุกเช้า", highlights: ["เพาะถั่วงอก", "ตกแต่งกระถาง"], planId: "nature", time: "09:30–11:00 น.", place: "สวนหลังอาคาร", prepare: ["กระถางเล็ก 1 ใบ", "ชุดสำรอง"], prepareBy: "2026-11-19", prepareByLabel: "19 พ.ย. 2569" },
   { id: "loy-krathong", emoji: "🪷", title: "ลอยกระทงน้อย", category: "festival", date: "2026-11-24", dateLabel: "24 พ.ย. 2569", description: "ประดิษฐ์กระทงจากใบตองและดอกไม้ แล้วลอยในอ่างน้ำที่สนามโรงเรียน", planId: "loy-krathong", time: "09:00–11:00 น.", place: "สนามหน้าโรงเรียน", prepare: ["ใบตอง 2 ใบ", "ดอกไม้สด"], prepareBy: "2026-11-23", prepareByLabel: "23 พ.ย. 2569" },
   { id: "father-day", emoji: "👨", title: "กิจกรรมวันพ่อ", category: "parents", date: "2026-12-04", dateLabel: "4 ธ.ค. 2569", description: "คุณพ่อมาร่วมกิจกรรมในห้อง เด็ก ๆ มอบการ์ดและร้องเพลงให้", planId: "father" },
-  { id: "egg-hatch", emoji: "🥚", title: "โครงการนักสำรวจไข่ตัวจิ๋ว — วันฟักไข่", category: "project", date: "2026-12-16", dateLabel: "16 ธ.ค. 2569", description: "หลังเฝ้าดูตู้ฟักมา 3 สัปดาห์ ลูกเจี๊ยบตัวแรกก็ออกจากไข่", projectId: "egg-explorer" },
-  { id: "mango-day", emoji: "🥭", title: "Mango Day — ปิดโครงการ Mango Lab", category: "project", date: "2027-01-29", dateLabel: "29 ม.ค. 2570", description: "ร้านมะม่วงจำลอง มะม่วงปั่น และการนำเสนอผลงานให้เพื่อนห้องอื่น", projectId: "mango-lab" },
-  { id: "sports-day", emoji: "🏃", title: "กีฬาสีอนุบาล", category: "outdoor", date: "2027-02-26", dateLabel: "26 ก.พ. 2570", description: "วิ่งเก็บของ ขี่ม้าก้านกล้วย และเชียร์ลีดเดอร์ตัวจิ๋ว", highlights: ["วิ่งเก็บของ", "ขบวนพาเหรด"], time: "08:00–12:00 น.", place: "สนามกีฬาโรงเรียน", prepare: ["เสื้อสีประจำทีม", "หมวก", "ขวดน้ำ"], prepareBy: "2027-02-24", prepareByLabel: "24 ก.พ. 2570" },
+  { id: "egg-hatch", emoji: "🥚", icon: "/events/egg-nest.webp", image: "/events/egg-hatch-1.webp", photos: ["/events/egg-hatch-2.webp"], title: "โครงการนักสำรวจไข่ตัวจิ๋ว — วันฟักไข่", category: "project", date: "2026-12-16", dateLabel: "16 ธ.ค. 2569", description: "หลังเฝ้าดูตู้ฟักมา 3 สัปดาห์ ลูกเจี๊ยบตัวแรกก็ออกจากไข่", projectId: "egg-explorer" },
+  { id: "mango-day", emoji: "🥭", icon: "/events/mango.webp", title: "Mango Day — ปิดโครงการ Mango Lab", category: "project", date: "2027-01-29", dateLabel: "29 ม.ค. 2570", description: "ร้านมะม่วงจำลอง มะม่วงปั่น และการนำเสนอผลงานให้เพื่อนห้องอื่น", projectId: "mango-lab" },
+  { id: "sports-day", emoji: "🏃", icon: "/events/sports.webp", title: "กีฬาสีอนุบาล", category: "outdoor", date: "2027-02-26", dateLabel: "26 ก.พ. 2570", description: "วิ่งเก็บของ ขี่ม้าก้านกล้วย และเชียร์ลีดเดอร์ตัวจิ๋ว", highlights: ["วิ่งเก็บของ", "ขบวนพาเหรด"], time: "08:00–12:00 น.", place: "สนามกีฬาโรงเรียน", prepare: ["เสื้อสีประจำทีม", "หมวก", "ขวดน้ำ"], prepareBy: "2027-02-24", prepareByLabel: "24 ก.พ. 2570" },
 ];
 
 export const getSchoolEvent = (id: string) => SCHOOL_EVENTS.find((e) => e.id === id);

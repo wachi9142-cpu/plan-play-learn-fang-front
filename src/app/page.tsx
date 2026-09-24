@@ -104,7 +104,7 @@ export default function HomePage() {
             const c = NEWS_CATEGORIES[n.category];
             return (
               <Link key={n.id} href={`/news/${n.id}`} className="card card-hover animate-rise group flex gap-4 p-4 sm:p-5" style={{ animationDelay: `${i * 60}ms` }}>
-                <NewsIcon emoji={c.emoji} image={c.image} label={c.label} className="size-12 rounded-xl text-2xl" />
+                <NewsIcon emoji={c.emoji} image={n.icon ?? c.image} label={c.label} className="size-12 rounded-xl text-2xl" />
                 <span className="min-w-0 flex-1">
                   <span className="flex flex-wrap items-center gap-1.5">
                     <Tag tone={c.tone}>{c.label}</Tag>
@@ -145,7 +145,8 @@ export default function HomePage() {
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={t.icon} alt="" className="h-[78%]! w-auto object-contain" />
                       ) : (
-                        "📅"
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src="/nav/calendar.webp" alt="" className="h-[78%]! w-auto object-contain" />
                       )}
                     </span>
                     <span className="min-w-0">
@@ -265,7 +266,14 @@ export default function HomePage() {
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={e.image} alt={e.title} className="aspect-square w-full object-cover transition group-hover:scale-105" />
                     ) : (
-                      <span className={cn("grid aspect-square place-items-center text-4xl transition group-hover:scale-110 sm:text-5xl", c.tint)}>{e.emoji}</span>
+                      <span className={cn("grid aspect-square place-items-center overflow-hidden text-4xl transition group-hover:scale-110 sm:text-5xl", c.tint)}>
+                        {e.icon ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={e.icon} alt="" className="h-[68%]! w-auto object-contain" />
+                        ) : (
+                          e.emoji
+                        )}
+                      </span>
                     )}
                     <span className="block truncate px-2 py-1.5 text-[12px] text-ink sm:text-[13px]">{e.title}</span>
                   </Link>
@@ -275,7 +283,11 @@ export default function HomePage() {
           </div>
           <div className="card p-5">
             <div className="mb-3 flex items-end justify-between gap-2">
-              <h3 className="text-xl">🏆 ผลงานของเด็ก</h3>
+              <h3 className="flex items-center gap-1.5 text-xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/nav/trophy.webp" alt="" className="h-7! w-auto object-contain" />
+                ผลงานของเด็ก
+              </h3>
               <Link href="/gallery/works" className="text-[14px] font-medium text-purple-700 hover:underline">ดูทั้งหมด →</Link>
             </div>
             <div className="grid grid-cols-3 gap-2">
@@ -311,7 +323,14 @@ export default function HomePage() {
         <div className="grid gap-4 sm:grid-cols-3">
           {featuredProjects.map((p, i) => (
             <Link key={p.id} href={`/projects/${p.id}`} className="card card-hover animate-rise group flex flex-col p-5" style={{ animationDelay: `${i * 70}ms` }}>
-              <span className="grid size-16 place-items-center rounded-2xl bg-yellow-soft text-4xl transition-transform group-hover:-rotate-6">{p.emoji}</span>
+              <span className="grid size-16 place-items-center overflow-hidden rounded-2xl bg-yellow-soft text-4xl transition-transform group-hover:-rotate-6">
+                {p.icon ?? p.image ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={(p.icon ?? p.image) as string} alt="" className="h-[80%]! w-auto object-contain" />
+                ) : (
+                  p.emoji
+                )}
+              </span>
               <span className="mt-3 font-display text-lg leading-snug text-purple-800">{p.title}</span>
               <span className="mt-1 flex-1 text-[14px] text-ink-soft">{p.description}</span>
               <span className="mt-3 inline-flex items-center gap-1 text-[14px] font-medium text-purple-600">ดูโครงการ <ArrowRight size={14} className="transition group-hover:translate-x-1" /></span>
@@ -342,7 +361,11 @@ export default function HomePage() {
         <div className="card p-6 sm:p-8">
           <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
-              <h2 className="text-2xl sm:text-3xl">📞 มีข้อสงสัยหรือต้องการสอบถามข้อมูล?</h2>
+              <h2 className="flex items-center gap-2 text-2xl sm:text-3xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/nav/phone.webp" alt="" className="h-9! w-auto object-contain sm:h-11!" />
+                มีข้อสงสัยหรือต้องการสอบถามข้อมูล?
+              </h2>
               <ul className="mt-4 grid gap-2 text-[15px] sm:grid-cols-2">
                 <li className="flex items-start gap-2"><MapPin size={18} className="mt-1 shrink-0 text-purple-500" /><span>{CONTACT.address.lines.join(" ")}</span></li>
                 <li className="flex items-center gap-2"><Phone size={18} className="shrink-0 text-purple-500" /><a href={CONTACT.channels[0].href} className="hover:underline">{CONTACT.channels[0].value}</a></li>

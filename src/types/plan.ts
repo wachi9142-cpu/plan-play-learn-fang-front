@@ -167,5 +167,6 @@ export interface Project {
   materials: string[];
   outcomes: string[];
   relatedPlanIds?: string[];   // → LessonPlan
-  image?: string;              // ภาพประกอบโครงการ (/projects/xxx.webp)
+  image?: string;              // ภาพแบนเนอร์ของโครงการ (/projects/xxx.webp)
+  icon?: string;               // ไอคอนเล็กบนการ์ด/หัวเรื่อง (ถ้าไม่ใส่ ใช้ image)
 }

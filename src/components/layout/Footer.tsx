@@ -19,13 +19,27 @@ export function Footer() {
           <p className="mt-3 max-w-xs text-[15px] text-ink-soft">“{SITE.concept}”</p>
         </div>
         <div>
-          <p className="mb-2 font-display text-lg text-purple-800">📞 ติดต่อเรา</p>
+          <p className="mb-2 flex items-center gap-1.5 font-display text-lg text-purple-800">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/nav/phone.webp" alt="" className="h-6! w-auto object-contain" />
+            ติดต่อเรา
+          </p>
           <address className="not-italic text-[15px] text-ink-soft">
             {CONTACT.address.lines.map((l) => <span key={l} className="block">{l}</span>)}
           </address>
           <ul className="mt-2 grid gap-1 text-[15px]">
             {CONTACT.channels.slice(0, 3).map((c) => (
-              <li key={c.id}><a href={c.href} className="text-ink hover:text-purple-700">{c.emoji} {c.value}</a></li>
+              <li key={c.id}>
+                <a href={c.href} className="inline-flex items-center gap-1.5 text-ink hover:text-purple-700">
+                  {"icon" in c && c.icon ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={c.icon as string} alt="" className="h-5! w-auto object-contain" />
+                  ) : (
+                    c.emoji
+                  )}
+                  {c.value}
+                </a>
+              </li>
             ))}
           </ul>
           <Link href="/contact" className="mt-2 inline-block text-[14px] font-medium text-purple-700 hover:underline">ดูแผนที่และเวลาเปิด–ปิด →</Link>

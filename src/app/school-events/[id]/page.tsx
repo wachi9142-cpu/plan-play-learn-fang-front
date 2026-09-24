@@ -49,6 +49,15 @@ export default async function SchoolEventPage({ params }: { params: Promise<Para
         </div>
       )}
 
+      {e.photos && e.photos.length > 0 && (
+        <div className="animate-rise delay-2 mt-3 grid gap-3 sm:grid-cols-2">
+          {e.photos.map((src) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img key={src} src={src} alt={e.title} className="card h-auto w-full object-cover" />
+          ))}
+        </div>
+      )}
+
       <section className="card animate-rise delay-2 mt-6 p-5 sm:p-6">
         <p className="text-base leading-relaxed sm:text-lg">{e.description}</p>
         {e.highlights && (

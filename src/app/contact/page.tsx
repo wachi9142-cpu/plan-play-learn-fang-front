@@ -73,7 +73,14 @@ export default function ContactPage() {
           <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {CONTACT.channels.map((c) => (
               <a key={c.id} href={c.href} target={c.href.startsWith("http") ? "_blank" : undefined} rel="noopener" className="card card-hover flex items-center gap-3 p-4">
-                <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-purple-100 text-2xl">{c.emoji}</span>
+                <span className="grid size-12 shrink-0 place-items-center overflow-hidden rounded-xl bg-purple-100 text-2xl">
+                  {"icon" in c && c.icon ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={c.icon as string} alt="" className="h-[78%]! w-auto object-contain" />
+                  ) : (
+                    c.emoji
+                  )}
+                </span>
                 <span className="min-w-0 flex-1">
                   <span className="block text-[13px] text-ink-soft">{c.label}</span>
                   <span className="block truncate font-medium text-purple-800">{c.value}</span>

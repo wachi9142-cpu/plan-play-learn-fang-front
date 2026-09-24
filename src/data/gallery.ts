@@ -21,8 +21,8 @@ export interface GalleryItem {
 
 export const GALLERY: GalleryItem[] = [
   { id: "w-color-mix", kind: "work", title: "สนุกกับการผสมสี", description: "ผลงานสีน้ำจากกิจกรรมสร้างสรรค์ สัปดาห์ที่ 2 หน่วยตัวเรา", date: "มิ.ย. 2569", emoji: "🎨", icon: "/art/palette.webp", planId: "myself", tags: ["ศิลปะ", "หน่วยตัวเรา"] },
-  { id: "w-clay-me", kind: "work", title: "ปั้นดินน้ำมัน “ตัวฉัน”", description: "เด็ก ๆ ปั้นตัวเองด้วยดินน้ำมัน", date: "มิ.ย. 2569", emoji: "🧸", planId: "myself", tags: ["ปั้น", "หน่วยตัวเรา"] },
-  { id: "w-fruit-print", kind: "work", title: "พิมพ์ภาพจากผลไม้", description: "พิมพ์ภาพจากหน้าตัดมะนาวและกระเจี๊ยบ", date: "พ.ย. 2569", emoji: "🍋", planId: "food", tags: ["ศิลปะ", "หน่วยอาหาร"] },
+  { id: "w-clay-me", kind: "work", title: "ปั้นดินน้ำมัน “ตัวฉัน”", description: "เด็ก ๆ ปั้นตัวเองด้วยดินน้ำมัน", date: "มิ.ย. 2569", emoji: "🧸", icon: "/gallery/clay.webp", planId: "myself", tags: ["ปั้น", "หน่วยตัวเรา"] },
+  { id: "w-fruit-print", kind: "work", title: "พิมพ์ภาพจากผลไม้", description: "พิมพ์ภาพจากหน้าตัดมะนาวและกระเจี๊ยบ", date: "พ.ย. 2569", emoji: "🍋", icon: "/gallery/fruit-print.webp", planId: "food", tags: ["ศิลปะ", "หน่วยอาหาร"] },
   { id: "w-family-draw", kind: "work", title: "วาดครอบครัวของฉัน", description: "ใบงานวาดครอบครัว หน่วยครอบครัว", date: "ก.ค. 2569", emoji: "🏠", planId: "family", tags: ["วาดภาพ", "หน่วยครอบครัว"] },
   { id: "p-egg", kind: "photo", title: "นักสำรวจไข่ตัวจิ๋ว", description: "วันฟักไข่ เด็ก ๆ ตื่นเต้นกันมาก", date: "พ.ย. 2569", emoji: "🐣", projectId: "egg-explorer", tags: ["โครงการ"] },
   { id: "p-outdoor", kind: "photo", title: "วิ่งเก็บสีในสนาม", description: "กิจกรรมกลางแจ้ง หน่วยตัวเรา", date: "มิ.ย. 2569", emoji: "🌳", planId: "myself", tags: ["กลางแจ้ง"] },

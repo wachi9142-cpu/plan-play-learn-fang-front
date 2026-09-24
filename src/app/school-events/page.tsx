@@ -28,7 +28,14 @@ export default function SchoolEventsPage() {
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={e.image} alt={e.title} className="aspect-[16/10] w-full object-cover" />
               ) : (
-                <div className={cn("grid aspect-[16/10] place-items-center text-6xl transition-transform group-hover:scale-105", c.tint)}>{e.emoji}</div>
+                <div className={cn("grid aspect-[16/10] place-items-center overflow-hidden text-6xl transition-transform group-hover:scale-105", c.tint)}>
+                  {e.icon ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={e.icon} alt="" className="h-[74%]! w-auto object-contain" />
+                  ) : (
+                    e.emoji
+                  )}
+                </div>
               )}
               <div className="flex flex-1 flex-col p-4 sm:p-5">
                 <p className="text-[13px] font-medium text-purple-500">{c.emoji} {c.label}</p>

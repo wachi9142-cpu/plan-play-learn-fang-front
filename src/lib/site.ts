@@ -144,11 +144,18 @@ export const TOP_LINKS: NavItem[] = [
   { href: "/calendar", emoji: "📅", label: "ปฏิทิน", description: "เปิด–ปิดเทอม วันหยุด วันสำคัญ และกิจกรรมประจำเดือน", tint: "bg-sky-soft" },
   { href: "/school-events", emoji: "🎈", label: "กิจกรรม", description: "กิจกรรมโรงเรียน วันที่ เวลา และสิ่งที่ต้องเตรียมให้ลูก", tint: "bg-yellow-soft" },
   { href: "/news", emoji: "📢", label: "ประชาสัมพันธ์", description: "ประกาศ ข่าวสาร และเรื่องแจ้งถึงผู้ปกครอง", tint: "bg-pink-soft" },
-  { href: "/contact", emoji: "📞", label: "ติดต่อเรา", description: "ที่อยู่ แผนที่ เวลาเปิด–ปิด และช่องทางติดต่อ", tint: "bg-mint-soft" },
+  { href: "/contact", emoji: "📞", label: "ติดต่อเรา", description: "ที่อยู่ แผนที่ เวลาเปิด–ปิด และช่องทางติดต่อ", tint: "bg-mint-soft", image: "/nav/phone.webp" },
 ];
 
 /** 3 เมนูที่ผู้ปกครองใช้บ่อยที่สุด — แสดงเด่นเป็นพิเศษบนมือถือ */
 export const PARENT_LINKS: NavItem[] = TOP_LINKS.slice(0, 3);
+
+/** ภาพไอคอนของรายการในเมนูย่อย (เพิ่มรายการใหม่ได้ที่นี่) */
+const NAV_MENU_ICONS: Record<string, string | undefined> = {
+  "/schedules": "/nav/calendar.webp",
+  "/plans": "/nav/book.webp",
+  "/media": "/art/palette.webp",
+};
 
 /**
  * แถบ Navigation ด้านบน (ตามบรีฟ): หน้าแรก · เกี่ยวกับ ▾ · เมนู ▾ · ปฏิทินโรงเรียน · กิจกรรมโรงเรียน · ติดต่อเรา · เข้าสู่ระบบ
@@ -171,7 +178,7 @@ export const PRIMARY_NAV: NavItem[] = [
     tint: "bg-purple-100",
     // 📚 ห้องสมุด รวมอยู่ในเมนู "การเรียนรู้" ไม่แยกเป็นเมนูบนอีกเมนูหนึ่ง
     children: [
-      ...MENU_ITEMS.map(({ href, emoji, label }) => ({ href, emoji, label, image: href === "/plans" ? "/nav/book.webp" : undefined })),
+      ...MENU_ITEMS.map(({ href, emoji, label }) => ({ href, emoji, label, image: NAV_MENU_ICONS[href] })),
       { href: "/library", emoji: "📚", label: "ห้องสมุด (ทั้งหมด)" },
       ...LIBRARY_NAV,
     ],

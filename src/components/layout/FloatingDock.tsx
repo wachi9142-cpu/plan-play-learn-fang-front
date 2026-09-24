@@ -6,13 +6,13 @@ import { cn } from "@/lib/cn";
 
 /** รายการในแถบลอย — เพิ่ม/ลดได้ที่นี่ */
 const DOCK_ITEMS: { href: string; emoji: string; label: string; image?: string }[] = [
-  { href: "/calendar", emoji: "📅", label: "ปฏิทิน" },
+  { href: "/calendar", emoji: "📅", label: "ปฏิทิน", image: "/nav/calendar.webp" },
   { href: "/school-events", emoji: "🎈", label: "กิจกรรม" },
   { href: "/news", emoji: "📢", label: "ประชาสัมพันธ์", image: "/news/announce.webp" },
   { href: "/worksheets", emoji: "📝", label: "ใบงาน" },
   { href: "/play", emoji: "🎮", label: "เกม" },
-  { href: "/gallery/works", emoji: "🏆", label: "ผลงานเด็ก" },
-  { href: "/search", emoji: "🔍", label: "ค้นหา" },
+  { href: "/gallery/works", emoji: "🏆", label: "ผลงานเด็ก", image: "/nav/trophy.webp" },
+  { href: "/search", emoji: "🔍", label: "ค้นหา", image: "/nav/search.webp" },
 ];
 
 /** แถบลอยด้านขวา (แท็บเล็ต/desktop) — ทางลัดไปส่วนที่ใช้บ่อย */
