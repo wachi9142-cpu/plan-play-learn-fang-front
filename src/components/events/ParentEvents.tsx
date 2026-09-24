@@ -22,7 +22,7 @@ export function UpcomingEvents({ limit = 3 }: { limit?: number }) {
           ดูกิจกรรมทั้งหมด <ArrowRight size={16} />
         </Link>
       </div>
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid items-stretch gap-4 lg:grid-cols-3">
         {events.map((e, i) => <EventCard key={e.id} event={e} delay={i * 70} />)}
       </div>
       <Link href="/school-events" className="tap mt-4 inline-flex items-center gap-1 text-[15px] font-medium text-purple-700 hover:underline sm:hidden">
@@ -77,9 +77,20 @@ export function EventCard({ event: e, delay = 0 }: { event: SchoolEvent; delay?:
         )}
       </div>
 
+      {e.suggest && e.suggest.length > 0 && (
+        <div className="mt-2 rounded-2xl bg-sky-soft px-4 py-3 text-[13px]">
+          <p className="font-medium text-[#2b5c8a]">💡 แนะนำ (ไม่บังคับ)</p>
+          <ul className="mt-1 list-inside list-disc leading-relaxed text-ink">
+            {e.suggest.map((x) => <li key={x}>{x}</li>)}
+          </ul>
+        </div>
+      )}
+
       {e.parentNote && <p className="mt-2 text-[12px] leading-snug text-ink-soft">💬 {e.parentNote}</p>}
 
-      <Link href={`/school-events/${e.id}`} className="tap mt-4 inline-flex w-fit items-center gap-1.5 rounded-full bg-purple-600 px-5 py-2 text-[14px] font-medium text-white shadow-soft transition hover:bg-purple-700">
+      <div className="mt-4" />
+
+      <Link href={`/school-events/${e.id}`} className="tap mt-auto inline-flex w-fit items-center gap-1.5 rounded-full bg-purple-600 px-5 py-2 text-[14px] font-medium text-white shadow-soft transition hover:bg-purple-700">
         ดูรายละเอียด <ArrowRight size={16} />
       </Link>
     </article>

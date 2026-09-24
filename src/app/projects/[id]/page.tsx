@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Clock } from "lucide-react";
 import { PROJECTS, getProject } from "@/data/projects";
 import { getGrade, getPlan } from "@/data/plans";
 import { Breadcrumb, PageHeader, Tag } from "@/components/ui";
+import { BackButton } from "@/components/ui/BackButton";
 import { PlanCard } from "@/components/partials/PlanCard";
 
 type Params = { id: string };
@@ -30,6 +31,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<Pa
 
   return (
     <div className="container-page py-8 sm:py-12">
+      <BackButton className="mb-1" />
       <Breadcrumb items={[{ label: "โครงการ", href: "/projects" }, { label: project.title }]} />
 
       <PageHeader emoji={project.emoji} image={project.icon ?? project.image} title={`โครงการ${project.title}`} description={project.subtitle}>
@@ -41,13 +43,13 @@ export default async function ProjectDetailPage({ params }: { params: Promise<Pa
       </PageHeader>
 
       {project.image && (
-        <figure className="animate-rise delay-1 mx-auto mb-6 grid max-w-3xl place-items-center overflow-hidden rounded-3xl border border-line bg-gradient-to-br from-purple-50 to-cream p-4 shadow-soft">
+        <figure className="animate-rise delay-1 mx-auto mb-6 w-fit max-w-full overflow-hidden rounded-3xl border border-line shadow-soft">
           {/* ใช้สัดส่วนจริงของภาพ จึงเห็นเต็มภาพ ไม่โดนตัดหัวหรือขอบ */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={project.image}
             alt={`ภาพบรรยากาศโครงการ${project.title}`}
-            className="mx-auto block h-auto max-h-[460px] w-auto max-w-full object-contain"
+            className="block h-auto max-h-[420px] w-auto max-w-full object-contain"
           />
         </figure>
       )}

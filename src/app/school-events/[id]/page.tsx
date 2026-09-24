@@ -58,6 +58,33 @@ export default async function SchoolEventPage({ params }: { params: Promise<Para
         </div>
       )}
 
+      {/* 🎒 สิ่งที่ต้องเตรียม / 💡 แนะนำ — ให้ผู้ปกครองเตรียมตัวล่วงหน้า */}
+      <section className="card animate-rise delay-2 mt-6 p-5 sm:p-6">
+        <h2 className="text-lg sm:text-xl">🎒 สิ่งที่ควรเตรียม</h2>
+        <div className={cn("mt-3 rounded-2xl px-4 py-3 text-[14px]", e.prepare && e.prepare.length > 0 ? "bg-yellow-soft" : "bg-mint-soft")}>
+          {e.prepare && e.prepare.length > 0 ? (
+            <>
+              <p className="font-medium text-[#8a6a00]">สิ่งที่ต้องเตรียม</p>
+              <ul className="mt-1 list-inside list-disc leading-relaxed text-ink">
+                {e.prepare.map((x) => <li key={x}>{x}</li>)}
+              </ul>
+              {e.prepareByLabel && <p className="mt-1.5 font-medium text-[#8a6a00]">⏰ เตรียมให้เสร็จภายใน {e.prepareByLabel}</p>}
+            </>
+          ) : (
+            <p className="text-[#1f6b4d]">✅ ไม่ต้องเตรียมอุปกรณ์เพิ่มเติม</p>
+          )}
+        </div>
+        {e.suggest && e.suggest.length > 0 && (
+          <div className="mt-2 rounded-2xl bg-sky-soft px-4 py-3 text-[14px]">
+            <p className="font-medium text-[#2b5c8a]">💡 แนะนำ (ไม่บังคับ)</p>
+            <ul className="mt-1 list-inside list-disc leading-relaxed text-ink">
+              {e.suggest.map((x) => <li key={x}>{x}</li>)}
+            </ul>
+          </div>
+        )}
+        {e.parentNote && <p className="mt-2 text-[13px] leading-snug text-ink-soft">💬 {e.parentNote}</p>}
+      </section>
+
       <section className="card animate-rise delay-2 mt-6 p-5 sm:p-6">
         <p className="text-base leading-relaxed sm:text-lg">{e.description}</p>
         {e.highlights && (
