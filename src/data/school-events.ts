@@ -109,7 +109,7 @@ export const SCHOOL_EVENTS: SchoolEvent[] = [
     projectId: "mango-lab",
   },
   {
-    id: "parents-meeting", emoji: "👨‍👩‍👧", title: "ประชุมผู้ปกครองภาคเรียนที่ 1", category: "parents",
+    id: "parents-meeting", emoji: "👨‍👩‍👧", icon: "/events/parents.webp", title: "ประชุมผู้ปกครองภาคเรียนที่ 1", category: "parents",
     date: "2026-10-10", dateLabel: "10 ต.ค. 2569",
     time: "13:00–15:00 น.", place: "ห้องประชุมใหญ่",
     description: "สรุปพัฒนาการของเด็ก ๆ ภาคเรียนที่ 1 และแนะนำแผนการเรียนรู้ภาคเรียนที่ 2",

@@ -90,7 +90,11 @@ export default function HomePage() {
       {/* ---------- 📢 ข่าวสารและประชาสัมพันธ์ ---------- */}
       <section className="container-page pb-12 sm:pb-16">
         <div className="mb-5 flex items-end justify-between gap-3">
-          <h2 className="text-2xl sm:text-3xl">📢 ประชาสัมพันธ์ล่าสุด</h2>
+          <h2 className="flex items-center gap-2 text-2xl sm:text-3xl">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/news/announce.webp" alt="" className="h-9! w-auto object-contain sm:h-11!" />
+            ประชาสัมพันธ์ล่าสุด
+          </h2>
           <Link href="/news" className="tap hidden items-center gap-1 text-[15px] font-medium text-purple-700 hover:underline sm:inline-flex">
             ดูประชาสัมพันธ์ทั้งหมด <ArrowRight size={16} />
           </Link>
@@ -136,7 +140,14 @@ export default function HomePage() {
               return (
                 <li key={e.id}>
                   <Link href="/calendar" className={cn("flex items-center gap-3 rounded-2xl px-4 py-3 transition hover:brightness-95", t.bg)}>
-                    <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-white/80 text-xl">📅</span>
+                    <span className="grid size-11 shrink-0 place-items-center overflow-hidden rounded-xl bg-white/80 text-xl">
+                      {t.icon ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={t.icon} alt="" className="h-[78%]! w-auto object-contain" />
+                      ) : (
+                        "📅"
+                      )}
+                    </span>
                     <span className="min-w-0">
                       <span className={cn("block text-[13px] font-medium", t.color)}>{thaiDate(e.date)}{e.endDate ? ` – ${thaiDate(e.endDate)}` : ""} · {t.emoji} {t.label}</span>
                       <span className="block truncate font-display text-[16px] text-purple-800">{e.title}</span>

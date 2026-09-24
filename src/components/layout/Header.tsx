@@ -129,6 +129,16 @@ export function Header() {
   );
 }
 
+
+/** ไอคอนในเมนู — ใช้ภาพถ้ากำหนดไว้ ไม่งั้นใช้อีโมจิ */
+function MenuIcon({ emoji, image, className = "h-5" }: { emoji?: string; image?: string; className?: string }) {
+  if (image) {
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img src={image} alt="" className={cn("inline-block w-auto shrink-0 object-contain align-[-0.3em]", className, "h-5!")} />;
+  }
+  return <>{emoji}</>;
+}
+
 /* ---------- Desktop dropdown ---------- */
 function Dropdown({ item, active, showAll = true }: { item: NavItem; active: boolean; showAll?: boolean }) {
   const [show, setShow] = useState(false);
@@ -155,7 +165,7 @@ function Dropdown({ item, active, showAll = true }: { item: NavItem; active: boo
           active || show ? "bg-purple-100 font-medium text-purple-800" : "text-ink hover:bg-purple-50 hover:text-purple-700",
         )}
       >
-        {item.emoji} {item.label}
+        <MenuIcon emoji={item.emoji} image={item.image} /> {item.label}
         <ChevronDown size={15} className={cn("transition-transform", show && "rotate-180")} />
       </button>
       <div
@@ -169,14 +179,14 @@ function Dropdown({ item, active, showAll = true }: { item: NavItem; active: boo
           {showAll && (
             <>
               <Link href={item.href} role="menuitem" onClick={() => setShow(false)} className="flex items-center gap-2 rounded-xl px-3 py-2 text-[15px] font-medium text-purple-800 hover:bg-purple-50">
-                {item.emoji} ดูทั้งหมด
+                <MenuIcon emoji={item.emoji} image={item.image} /> ดูทั้งหมด
               </Link>
               <div className="my-1 h-px bg-line" />
             </>
           )}
           {item.children!.map((c) => (
             <Link key={c.href} href={c.href} role="menuitem" onClick={() => setShow(false)} className="flex items-center gap-2 rounded-xl px-3 py-2 text-[15px] text-ink hover:bg-purple-50 hover:text-purple-800">
-              <span className="w-6 shrink-0 text-center">{c.emoji}</span>
+              <span className="grid w-6 shrink-0 place-items-center text-center">{c.image ? <MenuIcon emoji={c.emoji} image={c.image} /> : c.emoji}</span>
               <span className="leading-snug">{c.label}</span>
             </Link>
           ))}
@@ -210,7 +220,7 @@ function MobileGroup({ item, pathname, active }: { item: NavItem; pathname: stri
     <div className={cn("overflow-hidden rounded-2xl border", active ? "border-purple-200" : "border-line")}>
       <div className={cn("flex items-stretch", active ? "bg-purple-100" : "bg-white")}>
         <Link href={item.href} className={cn("flex min-w-0 flex-1 items-center gap-3 px-4 py-3 text-base", active ? "font-medium text-purple-800" : "text-ink")}>
-          <span className={cn("grid size-10 shrink-0 place-items-center rounded-xl text-xl", item.tint)}>{item.emoji}</span>
+          <span className={cn("grid size-10 shrink-0 place-items-center overflow-hidden rounded-xl text-xl", item.tint)}>{item.image ? <MenuIcon emoji={item.emoji} image={item.image} className="h-6" /> : item.emoji}</span>
           <span className="truncate">{item.label}</span>
         </Link>
         <button
@@ -229,7 +239,7 @@ function MobileGroup({ item, pathname, active }: { item: NavItem; pathname: stri
             const on = pathname === c.href || pathname.startsWith(c.href + "/");
             return (
               <Link key={c.href} href={c.href} className={cn("tap flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-[15px]", on ? "bg-white font-medium text-purple-800 shadow-soft" : "text-ink active:bg-white")}>
-                <span className="w-6 shrink-0 text-center">{c.emoji}</span>
+                <span className="grid w-6 shrink-0 place-items-center text-center">{c.image ? <MenuIcon emoji={c.emoji} image={c.image} /> : c.emoji}</span>
                 <span className="leading-snug">{c.label}</span>
               </Link>
             );

@@ -24,6 +24,7 @@ export interface NavLink {
   href: string;
   emoji?: string;
   label: string;
+  image?: string;        // ภาพเล็กแทนอีโมจิในเมนู
 }
 
 export interface NavItem extends NavLink {
@@ -156,6 +157,7 @@ export const PRIMARY_NAV: NavItem[] = [
   {
     href: "/about",
     emoji: "📖",
+    image: "/nav/book.webp",
     label: "เกี่ยวกับ",
     description: "เกี่ยวกับเว็บไซต์และการจัดการเรียนรู้ระดับปฐมวัย แยกตามระดับชั้น",
     tint: "bg-mint-soft",
@@ -169,7 +171,7 @@ export const PRIMARY_NAV: NavItem[] = [
     tint: "bg-purple-100",
     // 📚 ห้องสมุด รวมอยู่ในเมนู "การเรียนรู้" ไม่แยกเป็นเมนูบนอีกเมนูหนึ่ง
     children: [
-      ...MENU_ITEMS.map(({ href, emoji, label }) => ({ href, emoji, label })),
+      ...MENU_ITEMS.map(({ href, emoji, label }) => ({ href, emoji, label, image: href === "/plans" ? "/nav/book.webp" : undefined })),
       { href: "/library", emoji: "📚", label: "ห้องสมุด (ทั้งหมด)" },
       ...LIBRARY_NAV,
     ],

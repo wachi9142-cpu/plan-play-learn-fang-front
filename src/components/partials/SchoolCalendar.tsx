@@ -127,7 +127,12 @@ function EventRow({ e, compact = false }: { e: CalendarEvent; compact?: boolean 
   const d = (s: string) => `${Number(s.slice(8, 10))} ${THAI_MONTHS_SHORT[Number(s.slice(5, 7)) - 1]}`;
   return (
     <div className={cn("flex gap-3 rounded-xl px-3 py-2", t.bg)}>
-      <span className="text-xl">{t.emoji}</span>
+      {t.icon ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={t.icon} alt="" className="h-7! w-auto shrink-0 object-contain" />
+      ) : (
+        <span className="text-xl">{t.emoji}</span>
+      )}
       <div className="min-w-0">
         <p className={cn("font-medium leading-snug", t.color)}>{e.title}</p>
         <p className="text-[12px] text-ink-soft">

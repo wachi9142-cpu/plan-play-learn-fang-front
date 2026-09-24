@@ -11,12 +11,12 @@ export interface CalendarEvent {
   time?: string;       // "09:00–11:00"
 }
 
-export const CALENDAR_TYPES: Record<CalendarType, { emoji: string; label: string; color: string; bg: string }> = {
+export const CALENDAR_TYPES: Record<CalendarType, { emoji: string; label: string; color: string; bg: string; icon?: string }> = {
   term: { emoji: "🏫", label: "เปิด–ปิดภาคเรียน", color: "text-purple-800", bg: "bg-purple-100" },
   holiday: { emoji: "🌴", label: "วันหยุด", color: "text-[#2e6b4c]", bg: "bg-mint-soft" },
   important: { emoji: "⭐", label: "วันสำคัญ", color: "text-[#8a6a00]", bg: "bg-yellow-soft" },
   monthly: { emoji: "🎈", label: "กิจกรรมประจำเดือน", color: "text-[#a8456c]", bg: "bg-pink-soft" },
-  parents: { emoji: "👨‍👩‍👧", label: "ประชุมผู้ปกครอง", color: "text-[#2b5c8a]", bg: "bg-sky-soft" },
+  parents: { emoji: "👨‍👩‍👧", label: "ประชุมผู้ปกครอง", color: "text-[#2b5c8a]", bg: "bg-sky-soft", icon: "/events/parents.webp" },
   special: { emoji: "🎉", label: "กิจกรรมพิเศษ", color: "text-[#7a3e00]", bg: "bg-[#ffe3c8]" },
 };
 
