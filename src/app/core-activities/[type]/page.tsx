@@ -34,7 +34,7 @@ export default async function CoreActivityPage({ params }: { params: Promise<Par
     <div className="container-page py-8 sm:py-12">
       <Breadcrumb items={[{ label: "6 กิจกรรมหลัก", href: "/core-activities" }, { label: core.title }]} />
 
-      <PageHeader emoji={core.emoji} title={`${core.order}. ${core.title}`}>
+      <PageHeader emoji={core.emoji} image={core.icon} imageCover={core.cover} title={`${core.order}. ${core.title}`}>
         <Tag tone="purple">กิจกรรมหลักที่ {core.order} จาก 6</Tag>
       </PageHeader>
 

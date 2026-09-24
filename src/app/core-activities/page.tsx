@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { NavIcon } from "@/components/ui/NavIcon";
 import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
 import { CORE_ACTIVITIES, getActivitiesByType } from "@/data/core-activities";
@@ -19,7 +20,7 @@ export default function CoreActivitiesPage() {
           const games = c.type === "game" ? GAMES.length : 0;
           return (
             <Link key={c.type} href={`/core-activities/${c.type}`} className="card card-hover animate-rise group flex gap-4 p-5" style={{ animationDelay: `${i * 70}ms` }}>
-              <span className={cn("grid size-16 shrink-0 place-items-center rounded-2xl text-4xl transition-transform group-hover:-rotate-6", c.tint)}>{c.emoji}</span>
+              <NavIcon emoji={c.emoji} image={c.icon} label={c.title} tint={c.tint} className="size-16 text-4xl transition-transform group-hover:-rotate-6" imgClassName={c.cover ? "h-full! w-full! object-cover" : undefined} />
               <span className="min-w-0 flex-1">
                 <span className="block text-[13px] font-medium text-purple-500">กิจกรรมที่ {c.order}</span>
                 <span className="block font-display text-lg leading-snug text-purple-800 sm:text-xl">{c.title}</span>
