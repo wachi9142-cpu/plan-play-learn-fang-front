@@ -21,7 +21,7 @@ export const CONTACT = {
     { day: "เสาร์", time: "ปิด", closed: true },
     { day: "อาทิตย์", time: "ปิด", closed: true },
   ],
-  hoursNote: "เวลาเป็นตัวอย่าง สามารถแก้ไขภายหลังได้",
+  hoursNote: "วันหยุดนักขัตฤกษ์และวันหยุดพิเศษ ดูได้ที่ปฏิทินโรงเรียน",
   channels: [
     { id: "phone", emoji: "☎️", icon: "/nav/phone.webp", label: "โทรศัพท์", value: "091-756-051X", href: "tel:091756051X" },
     { id: "email", emoji: "📧", label: "Email", value: "littlepurplegardenkf@hotmail.com", href: "mailto:littlepurplegardenkf@hotmail.com" },

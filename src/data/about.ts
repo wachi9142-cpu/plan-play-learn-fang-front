@@ -141,9 +141,9 @@ export const ABOUT_SECTIONS: AboutSection[] = [
     title: "ข้อมูลบุคลากร",
     table: [
       { label: "ผู้บริหาร / ผู้ก่อตั้ง", value: "Teacher Kaowfang" },
-      { label: "ครูประจำชั้น", value: "— คน (ตัวอย่าง)" },
-      { label: "ครูพี่เลี้ยง", value: "— คน (ตัวอย่าง)" },
-      { label: "เจ้าหน้าที่", value: "— คน (ตัวอย่าง)" },
+      { label: "👩‍🏫 ครูประจำชั้น", value: "1 คน" },
+      { label: "📚 ครูฝึกสอน", value: "1 คน" },
+      { label: "🧸 พี่เลี้ยง", value: "1 คน" },
     ],
   },
 ];
