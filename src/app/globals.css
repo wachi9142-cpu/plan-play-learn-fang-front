@@ -413,7 +413,6 @@ html[data-theme="dark"] {
   animation-name: fx-fall;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
-  will-change: transform;
 }
 .fx-sway {
   display: block;
@@ -421,13 +420,11 @@ html[data-theme="dark"] {
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
   animation-direction: alternate;
-  will-change: transform;
 }
 .fx-spin {
   animation-name: fx-spin;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
-  will-change: transform;
 }
 .fx-far { filter: blur(1.1px); }
 html[data-theme="dark"] .fx-far { filter: blur(1.1px) brightness(1.05); }
@@ -535,7 +532,6 @@ html[data-theme="dark"] .fx-purplenight::after { background: linear-gradient(to 
   animation-name: fx-twinkle;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
-  will-change: opacity, transform;
   filter: drop-shadow(var(--star-glow));
 }
 @keyframes fx-twinkle {
@@ -551,7 +547,6 @@ html[data-theme="dark"] .fx-purplenight::after { background: linear-gradient(to 
   animation-name: fx-shoot;
   animation-timing-function: ease-in;
   animation-iteration-count: infinite;
-  will-change: transform, opacity;
 }
 .fx-shoot-tail {
   position: absolute;
@@ -620,7 +615,6 @@ html[data-theme="dark"] .fx-purplenight::after { background: linear-gradient(to 
   animation-name: ff-path;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
-  will-change: transform;
 }
 .ff-far { opacity: 0.55; transform: scale(0.75); filter: blur(0.6px); }
 @keyframes ff-path {
@@ -640,7 +634,6 @@ html[data-theme="dark"] .fx-purplenight::after { background: linear-gradient(to 
   animation-name: ff-glow;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
-  will-change: opacity, transform;
 }
 @keyframes ff-glow {
   0%, 100% { opacity: 0; transform: scale(0.65); }
@@ -669,7 +662,6 @@ html[data-theme="dark"] .fx-purplenight::after { background: linear-gradient(to 
   animation-name: fx-rain;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
-  will-change: transform;
 }
 html[data-theme="dark"] .fx-drop { filter: drop-shadow(0 0 2px rgb(185 212 245 / 0.5)); }
 
@@ -709,7 +701,6 @@ html[data-theme="dark"] .fx-drop { filter: drop-shadow(0 0 2px rgb(185 212 245 /
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
   filter: drop-shadow(0 1px 3px rgb(109 58 168 / 0.22));
-  will-change: opacity, transform;
 }
 html[data-theme="dark"] .fx-grow { filter: drop-shadow(0 0 5px rgb(199 169 245 / 0.45)); }
 @keyframes fx-grow {
@@ -727,7 +718,6 @@ html[data-theme="dark"] .fx-grow { filter: drop-shadow(0 0 5px rgb(199 169 245 /
   animation-name: fx-fly;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
-  will-change: transform, opacity;
 }
 .fx-fly-rtl { left: auto; right: -12vw; animation-name: fx-fly-rtl; }
 .fx-bob {
@@ -780,7 +770,6 @@ html[data-theme="dark"] .fx-bf-img { filter: brightness(1.12); }
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
   animation-direction: alternate;
-  will-change: transform;
 }
 @keyframes fx-glide {
   from { transform: translate3d(-22px, 10px, 0); }
@@ -813,7 +802,6 @@ html[data-theme="dark"] .fx-halloween::before { background: radial-gradient(95% 
   animation-name: fx-float;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
-  will-change: transform, opacity;
 }
 @keyframes fx-float {
   0%        { opacity: 0; transform: translate3d(0, 0, 0) scale(0.85); }
@@ -898,7 +886,6 @@ html[data-theme="dark"] .fx-tree { filter: drop-shadow(0 0 7px rgb(110 200 130 /
   animation-name: fx-fw-rocket;
   animation-timing-function: ease-out;
   animation-iteration-count: infinite;
-  will-change: transform, opacity;
 }
 @keyframes fx-fw-rocket {
   0%   { opacity: 0; transform: translate3d(0, 0, 0) scaleY(1); }
@@ -971,7 +958,6 @@ html[data-theme="dark"] .fx-tree { filter: drop-shadow(0 0 7px rgb(110 200 130 /
   animation-name: fx-fw-dot;
   animation-timing-function: cubic-bezier(0.15, 0.7, 0.4, 1);
   animation-iteration-count: infinite;
-  will-change: transform, opacity;
 }
 .fx-fw-dot-sm {
   width: 2.4px;
@@ -1038,3 +1024,18 @@ html[data-activity="on"] .fx-layer { display: none !important; }
 
 /* ไม่พิมพ์เอฟเฟกต์ลงกระดาษ */
 @media print { .fx-layer { display: none !important; } }
+
+/* ---------- 🩹 กันจอกะพริบเวลาเปิดเอฟเฟกต์ ---------- */
+/*
+ * แถบบนและแถบลอยใช้ backdrop-blur ซึ่งต้องคำนวณเบลอพื้นหลังใหม่ทุกเฟรม
+ * พอมีหิมะ/ดาว/ผีเสื้อขยับอยู่ข้างใต้ การ์ดจอจะวาดใหม่ทั้งจอตลอดเวลา จนเห็นเป็นภาพกะพริบ
+ * เมื่อเปิดเอฟเฟกต์จึงเปลี่ยนเป็นพื้นทึบแทน (หน้าตาเกือบเหมือนเดิม แต่นิ่งสนิท)
+ */
+html:not([data-effect="none"]) header.sticky,
+html:not([data-effect="none"]) nav[aria-label="ทางลัด"] {
+  /* ล้างตัวแปรเบลอของ Tailwind โดยตรง — ชัวร์กว่าการเขียนทับ backdrop-filter ที่โดนตัว prefix จัดการ */
+  --tw-backdrop-blur: initial;
+  backdrop-filter: none !important;
+}
+html:not([data-effect="none"]) header.sticky { background-color: var(--color-cream); }
+html:not([data-effect="none"]) nav[aria-label="ทางลัด"] { background-color: var(--color-white); }
