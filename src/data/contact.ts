@@ -4,7 +4,7 @@ export const CONTACT = {
   credit: "by Teacher Kaowfang",
   address: {
     lines: ["123/4 หมู่ 5 ถนนตัวอย่าง", "ตำบลตัวอย่าง อำเภอเมือง", "จังหวัดตัวอย่าง 10000"],
-    note: "ที่อยู่เป็นตัวอย่าง — แก้ไขได้ใน src/data/contact.ts",
+    note: "กำลังอัปเดตที่อยู่และแผนที่ — ระหว่างนี้สอบถามเส้นทางได้ทางโทรศัพท์หรือ LINE ค่ะ",
   },
   /** พิกัด/คำค้นสำหรับแผนที่ — ใส่ lat,lng หรือชื่อสถานที่ */
   map: {
@@ -23,7 +23,7 @@ export const CONTACT = {
   ],
   hoursNote: "วันหยุดนักขัตฤกษ์และวันหยุดพิเศษ ดูได้ที่ปฏิทินโรงเรียน",
   channels: [
-    { id: "phone", emoji: "☎️", icon: "/nav/phone.webp", label: "โทรศัพท์", value: "091-756-051X", href: "tel:091756051X" },
+    { id: "phone", emoji: "☎️", icon: "/nav/phone.webp", label: "โทรศัพท์", value: "091-756-0513", href: "tel:0917560513" },
     { id: "email", emoji: "📧", label: "Email", value: "littlepurplegardenkf@hotmail.com", href: "mailto:littlepurplegardenkf@hotmail.com" },
     { id: "line", emoji: "💬", label: "LINE", value: "@littlepurplegarden", href: "https://line.me/R/ti/p/@littlepurplegarden" },
     { id: "facebook", emoji: "📘", label: "Facebook", value: "Little Purple Garden", href: "https://www.facebook.com/" },
