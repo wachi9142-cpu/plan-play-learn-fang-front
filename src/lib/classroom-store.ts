@@ -19,7 +19,7 @@ const now = () => new Date().toISOString();
 
 /* ---------- ระดับชั้น ---------- */
 export const CLASS_GRADES: { id: ClassGradeId; emoji: string; label: string; short: string; tint: string }[] = [
-  { id: "nursery", emoji: "👶", label: "Nursery / เนอร์เซอรี่", short: "Nursery", tint: "bg-sky-soft" },
+  { id: "nursery", emoji: "👶", label: "Nursery / เนอสเซอรี่", short: "Nursery", tint: "bg-sky-soft" },
   { id: "k0", emoji: "🎒", label: "เตรียมอนุบาล", short: "เตรียมอนุบาล", tint: "bg-mint-soft" },
   { id: "k1", emoji: "🌱", label: "อนุบาล 1", short: "อนุบาล 1", tint: "bg-purple-100" },
   { id: "k2", emoji: "🌷", label: "อนุบาล 2", short: "อนุบาล 2", tint: "bg-pink-soft" },
