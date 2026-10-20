@@ -22,7 +22,7 @@ export default function AdmissionPage() {
           <Tag tone="pink">ครู 3 คน / ห้อง</Tag>
           <Tag tone="mint">{ADMISSION.period ?? "รับสมัครตลอดปี"}</Tag>
           {ADMISSION.trial.enabled && <Tag tone="yellow">🌼 ทดลองเรียนฟรี 1 วัน</Tag>}
-          {ADMISSION.summer.enabled && <Tag tone="sky">☀️ มีซัมเมอร์แคมป์</Tag>}
+          {ADMISSION.summer.enabled && <Tag tone="sky">☀️ ค่ายวันเดียว ไม่ค้างคืน</Tag>}
         </div>
       </PageHeader>
 
@@ -180,33 +180,54 @@ export default function AdmissionPage() {
         </section>
       )}
 
-      {/* ---------- ☀️ ซัมเมอร์แคมป์ ---------- */}
+      {/* ---------- ☀️ ค่ายวันเดียว ---------- */}
       {ADMISSION.summer.enabled && (
         <section className="card animate-rise mb-8 border-yellow-accent! bg-gradient-to-br from-yellow-soft to-cream p-5 sm:p-6">
           <div className="flex flex-wrap items-start gap-3">
             <span className="grid size-14 shrink-0 place-items-center rounded-2xl bg-white/70 text-3xl">☀️</span>
             <div className="min-w-0 flex-1">
-              <h2 className="text-xl sm:text-2xl">{ADMISSION.summer.title}</h2>
+              <h2 className="text-xl sm:text-2xl">
+                {ADMISSION.summer.title}
+                <span className="ml-2 rounded-full bg-white/80 px-3 py-1 align-middle text-[13px] font-medium text-[#8a6a00]">{ADMISSION.summer.format}</span>
+              </h2>
               <p className="mt-1 text-[15px] leading-relaxed text-ink">{ADMISSION.summer.tagline}</p>
             </div>
           </div>
 
-          <dl className="mt-4 grid gap-2 sm:grid-cols-3">
+          <dl className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-2xl bg-white/70 px-4 py-3">
-              <dt className="text-[13px] text-ink-soft">📅 ช่วงเวลา</dt>
+              <dt className="text-[13px] text-ink-soft">📅 วันที่จัด</dt>
               <dd className="mt-0.5 font-medium text-purple-800">{ADMISSION.summer.period ?? "สอบถามครู"}</dd>
             </div>
             <div className="rounded-2xl bg-white/70 px-4 py-3">
-              <dt className="text-[13px] text-ink-soft">⏰ เวลาเรียน</dt>
+              <dt className="text-[13px] text-ink-soft">⏰ เวลา</dt>
               <dd className="mt-0.5 font-medium text-purple-800">{ADMISSION.summer.days}</dd>
             </div>
             <div className="rounded-2xl bg-white/70 px-4 py-3">
               <dt className="text-[13px] text-ink-soft">👶 สำหรับ</dt>
               <dd className="mt-0.5 font-medium text-purple-800">{ADMISSION.summer.forAges}</dd>
             </div>
+            <div className="rounded-2xl bg-white/70 px-4 py-3">
+              <dt className="text-[13px] text-ink-soft">💰 ค่าใช้จ่าย</dt>
+              <dd className="mt-0.5 font-medium text-purple-800">{ADMISSION.summer.fee ?? "สอบถามครู"}</dd>
+              <dd className="text-[12px] text-ink-soft">{ADMISSION.summer.feeUnit}</dd>
+            </div>
           </dl>
 
-          <h3 className="mt-5 text-lg">กิจกรรมในแคมป์</h3>
+          <h3 className="mt-5 text-lg">ตารางวันแคมป์</h3>
+          <ol className="mt-2 grid gap-2">
+            {ADMISSION.summer.flow.map((f) => (
+              <li key={f.time} className="flex gap-3 rounded-2xl bg-white/70 px-4 py-3">
+                <span className="w-14 shrink-0 font-display text-[15px] text-purple-600">{f.time}</span>
+                <span className="min-w-0">
+                  <span className="block font-medium text-purple-800">{f.emoji} {f.title}</span>
+                  <span className="mt-0.5 block text-[14px] leading-relaxed text-ink-soft">{f.detail}</span>
+                </span>
+              </li>
+            ))}
+          </ol>
+
+          <h3 className="mt-5 text-lg">กิจกรรมที่จะได้เล่น</h3>
           <div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {ADMISSION.summer.highlights.map((h) => (
               <div key={h.title} className="rounded-2xl bg-white/70 px-4 py-3">
@@ -216,11 +237,18 @@ export default function AdmissionPage() {
             ))}
           </div>
 
+          <div className="mt-4 rounded-2xl bg-white/80 px-4 py-3 text-[14px]">
+            <p className="font-medium text-[#8a6a00]">🎒 สิ่งที่ต้องเตรียมมา</p>
+            <ul className="mt-1 list-inside list-disc leading-relaxed text-ink">
+              {ADMISSION.summer.bring.map((x) => <li key={x}>{x}</li>)}
+            </ul>
+          </div>
+
           <p className="mt-3 text-[13px] leading-snug text-ink-soft">💡 {ADMISSION.summer.note}</p>
 
           {phone && (
             <a href={phone.href} className="tap mt-4 inline-flex items-center gap-2 rounded-full bg-purple-600 px-5 py-2.5 text-[15px] font-medium text-white shadow-soft hover:bg-purple-700">
-              <Phone size={16} /> สอบถามซัมเมอร์แคมป์
+              <Phone size={16} /> สอบถามค่ายวันเดียว
             </a>
           )}
         </section>
