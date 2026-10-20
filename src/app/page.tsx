@@ -12,6 +12,7 @@ import { CALENDAR_EVENTS, CALENDAR_TYPES, THAI_MONTHS_SHORT } from "@/data/calen
 import { EVENT_CATEGORIES, SCHOOL_EVENTS } from "@/data/school-events";
 import { getGalleryByKind } from "@/data/gallery";
 import { CONTACT } from "@/data/contact";
+import { ADMISSION } from "@/data/admission";
 import { HeroBanner } from "@/components/partials/HeroBanner";
 import { PrepThisWeek, UpcomingEvents } from "@/components/events";
 import { PinnedNotice } from "@/components/partials/PinnedNotice";
@@ -54,8 +55,11 @@ export default function HomePage() {
             <p className="mx-auto mt-6 max-w-2xl font-display text-lg text-purple-800 sm:text-2xl">🌱 “{SITE.tagline}”</p>
 
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Link href="/about" className="tap inline-flex w-full items-center justify-center gap-2 rounded-full bg-purple-600 px-7 py-3 text-base font-medium text-white shadow-soft transition hover:bg-purple-700 hover:shadow-lift sm:w-auto">
-                <Image src="/school/house.webp" alt="" width={120} height={178} className="h-7! w-[19px]! shrink-0" /> รู้จักโรงเรียน <ArrowRight size={18} />
+              <Link href="/admission" className="tap inline-flex w-full items-center justify-center gap-2 rounded-full bg-purple-600 px-7 py-3 text-base font-medium text-white shadow-soft transition hover:bg-purple-700 hover:shadow-lift sm:w-auto">
+                🎒 สนใจสมัครเรียน <ArrowRight size={18} />
+              </Link>
+              <Link href="/about" className="tap inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-purple-200 bg-white px-7 py-3 text-base font-medium text-purple-700 transition hover:border-purple-300 hover:bg-purple-50 sm:w-auto">
+                <Image src="/school/house.webp" alt="" width={120} height={178} className="h-7! w-[19px]! shrink-0" /> รู้จักโรงเรียน
               </Link>
               <Link href="/menu" className="tap inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-purple-200 bg-white px-7 py-3 text-base font-medium text-purple-700 transition hover:border-purple-300 hover:bg-purple-50 sm:w-auto">
                 💜 เข้าสู่แผนเล่นเรียน
@@ -79,6 +83,26 @@ export default function HomePage() {
             อ่านเพิ่มเติม <ArrowRight size={18} />
           </Link>
         </div>
+      </section>
+
+      {/* ---------- 🌱 ทำไมผู้ปกครองเลือกที่นี่ ---------- */}
+      <section className="container-page pt-12 sm:pt-16">
+        <h2 className="text-2xl sm:text-3xl">🌱 ทำไมผู้ปกครองเลือก Little Purple Garden</h2>
+        <p className="mt-1 text-[15px] text-ink-soft">ดูแลแบบกลุ่มเล็ก · ครู 3 คนต่อห้อง · ผู้ปกครองเห็นพัฒนาการลูกได้ทุกวัน</p>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {ADMISSION.reasons.map((r, i) => (
+            <div key={r.title} className="card animate-rise flex gap-3 p-4" style={{ animationDelay: `${i * 50}ms` }}>
+              <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-purple-50 text-2xl">{r.emoji}</span>
+              <span className="min-w-0">
+                <span className="block font-display text-[16px] text-purple-800">{r.title}</span>
+                <span className="mt-0.5 block text-[14px] leading-relaxed text-ink-soft">{r.detail}</span>
+              </span>
+            </div>
+          ))}
+        </div>
+        <Link href="/admission" className="tap mt-4 inline-flex items-center gap-2 rounded-full bg-purple-600 px-6 py-3 text-base font-medium text-white shadow-soft transition hover:bg-purple-700">
+          🎒 ดูขั้นตอนสมัครเรียน <ArrowRight size={18} />
+        </Link>
       </section>
 
       {/* ---------- 📢 ประกาศสำคัญ ---------- */}

@@ -61,7 +61,16 @@ export function Header() {
             <Dropdown key={item.href} item={item} active={isActive(item)} />
           ))}
           {TOP_LINKS.slice(3).map((item) => (
-            <Link key={item.href} href={item.href} className={cn("inline-flex items-center gap-1 whitespace-nowrap rounded-full px-3 py-2 text-[14px] transition-colors xl:px-4 xl:text-[15px]", isActive(item) ? "bg-purple-100 font-medium text-purple-800" : "text-ink hover:bg-purple-50 hover:text-purple-700")}>
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "inline-flex items-center gap-1 whitespace-nowrap rounded-full px-3 py-2 text-[14px] transition-colors xl:px-4 xl:text-[15px]",
+                item.href === "/admission"
+                  ? cn("font-medium ring-1 ring-purple-300", isActive(item) ? "bg-purple-600 text-white ring-purple-600" : "bg-purple-50 text-purple-800 hover:bg-purple-100")
+                  : isActive(item) ? "bg-purple-100 font-medium text-purple-800" : "text-ink hover:bg-purple-50 hover:text-purple-700",
+              )}
+            >
               <MenuIcon emoji={item.emoji} image={item.image} /> {item.label}
             </Link>
           ))}

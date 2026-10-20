@@ -144,6 +144,7 @@ export const TOP_LINKS: NavItem[] = [
   { href: "/calendar", emoji: "📅", label: "ปฏิทิน", description: "เปิด–ปิดเทอม วันหยุด วันสำคัญ และกิจกรรมประจำเดือน", tint: "bg-sky-soft" },
   { href: "/school-events", emoji: "🎈", label: "กิจกรรม", description: "กิจกรรมโรงเรียน วันที่ เวลา และสิ่งที่ต้องเตรียมให้ลูก", tint: "bg-yellow-soft" },
   { href: "/news", emoji: "📢", label: "ประชาสัมพันธ์", description: "ประกาศ ข่าวสาร และเรื่องแจ้งถึงผู้ปกครอง", tint: "bg-pink-soft" },
+  { href: "/admission", emoji: "🎒", label: "สมัครเรียน", description: "รับอายุ 1.5–6 ปี · ขั้นตอนสมัคร เอกสาร และคำถามที่พบบ่อย", tint: "bg-purple-100" },
   { href: "/contact", emoji: "📞", label: "ติดต่อเรา", description: "ที่อยู่ แผนที่ เวลาเปิด–ปิด และช่องทางติดต่อ", tint: "bg-mint-soft", image: "/nav/phone.webp" },
 ];
 
