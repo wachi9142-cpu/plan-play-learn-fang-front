@@ -22,7 +22,8 @@ export default function AdmissionPage() {
           <Tag tone="pink">ครู 3 คน / ห้อง</Tag>
           <Tag tone="mint">{ADMISSION.period ?? "รับสมัครตลอดปี"}</Tag>
           {ADMISSION.trial.enabled && <Tag tone="yellow">🌼 ทดลองเรียนฟรี 1 วัน</Tag>}
-          {ADMISSION.summer.enabled && <Tag tone="sky">☀️ ค่ายวันเดียว ไม่ค้างคืน</Tag>}
+          {ADMISSION.summer.enabled && <Tag tone="sky">☀️ ค่ายวันเดียว อ.3</Tag>}
+          {ADMISSION.fieldTrip.enabled && <Tag tone="mint">🚌 มีทัศนศึกษา</Tag>}
         </div>
       </PageHeader>
 
@@ -109,6 +110,7 @@ export default function AdmissionPage() {
               ))}
             </ul>
           )}
+          <p className="mt-3 text-[13px] leading-relaxed text-ink-soft">💡 {ADMISSION.ageNote}</p>
         </div>
 
         <div className="card p-5">
@@ -248,7 +250,57 @@ export default function AdmissionPage() {
 
           {phone && (
             <a href={phone.href} className="tap mt-4 inline-flex items-center gap-2 rounded-full bg-purple-600 px-5 py-2.5 text-[15px] font-medium text-white shadow-soft hover:bg-purple-700">
-              <Phone size={16} /> สอบถามค่ายวันเดียว
+              <Phone size={16} /> สอบถามค่ายอนุบาล 3
+            </a>
+          )}
+        </section>
+      )}
+
+      {/* ---------- 🚌 ทัศนศึกษา ---------- */}
+      {ADMISSION.fieldTrip.enabled && (
+        <section className="card animate-rise mb-8 border-sky-accent! p-5 sm:p-6">
+          <div className="flex flex-wrap items-start gap-3">
+            <span className="grid size-14 shrink-0 place-items-center rounded-2xl bg-sky-soft text-3xl">🚌</span>
+            <div className="min-w-0 flex-1">
+              <h2 className="text-xl sm:text-2xl">{ADMISSION.fieldTrip.title}</h2>
+              <p className="mt-1 text-[15px] leading-relaxed text-ink-soft">{ADMISSION.fieldTrip.tagline}</p>
+            </div>
+          </div>
+
+          <dl className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="rounded-2xl bg-cream-dark px-4 py-3">
+              <dt className="text-[13px] text-ink-soft">📅 วันที่จัด</dt>
+              <dd className="mt-0.5 font-medium text-purple-800">{ADMISSION.fieldTrip.period ?? "สอบถามครู"}</dd>
+            </div>
+            <div className="rounded-2xl bg-cream-dark px-4 py-3">
+              <dt className="text-[13px] text-ink-soft">📍 สถานที่</dt>
+              <dd className="mt-0.5 font-medium text-purple-800">{ADMISSION.fieldTrip.place ?? "สอบถามครู"}</dd>
+            </div>
+            <div className="rounded-2xl bg-cream-dark px-4 py-3">
+              <dt className="text-[13px] text-ink-soft">👶 สำหรับ</dt>
+              <dd className="mt-0.5 font-medium text-purple-800">{ADMISSION.fieldTrip.forAges}</dd>
+            </div>
+            <div className="rounded-2xl bg-cream-dark px-4 py-3">
+              <dt className="text-[13px] text-ink-soft">💰 ค่าใช้จ่าย</dt>
+              <dd className="mt-0.5 font-medium text-purple-800">{ADMISSION.fieldTrip.fee ?? "สอบถามครู"}</dd>
+            </div>
+          </dl>
+
+          <h3 className="mt-5 text-lg">ผู้ปกครองสบายใจได้</h3>
+          <div className="mt-2 grid gap-2 sm:grid-cols-2">
+            {ADMISSION.fieldTrip.care.map((c) => (
+              <div key={c.title} className="rounded-2xl bg-cream-dark px-4 py-3">
+                <p className="font-medium text-purple-800">{c.emoji} {c.title}</p>
+                <p className="mt-0.5 text-[13px] leading-relaxed text-ink-soft">{c.detail}</p>
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-3 text-[13px] leading-snug text-ink-soft">💬 {ADMISSION.fieldTrip.note}</p>
+
+          {phone && (
+            <a href={phone.href} className="tap mt-4 inline-flex items-center gap-2 rounded-full bg-purple-600 px-5 py-2.5 text-[15px] font-medium text-white shadow-soft hover:bg-purple-700">
+              <Phone size={16} /> สอบถามทัศนศึกษา
             </a>
           )}
         </section>
