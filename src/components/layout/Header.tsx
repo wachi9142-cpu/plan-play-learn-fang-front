@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, LogIn, Menu, X } from "lucide-react";
 import { PRIMARY_NAV, SITE, TOP_LINKS, type NavItem } from "@/lib/site";
+import { getClassMe, isTeacher } from "@/lib/classroom-store";
 import { cn } from "@/lib/cn";
 import { ThaiClock } from "./ThaiClock";
 import { ThemeToggle } from "@/components/theme";
@@ -15,6 +16,10 @@ export function Header() {
   const [open, setOpen] = useState(false);
   /** มีโลโก้แนวนอนไหม (public/logo-wide.webp) — ถ้ามีจะใช้แทนโลโก้กลม + ข้อความ */
   const [wideLogo, setWideLogo] = useState(false);
+  /** 👩‍🏫 โซน "ห้องครู" ขึ้นเมื่อเข้าสู่ระบบเป็นครูแล้วเท่านั้น (ยังเปิดจากลิงก์ตรงได้) */
+  const [teacher, setTeacher] = useState(false);
+  useEffect(() => { setTeacher(isTeacher(getClassMe())); }, [pathname]);
+  const zones = PRIMARY_NAV.filter((z) => !z.teacherOnly || teacher);
   useEffect(() => { const img = new window.Image(); img.onload = () => setWideLogo(true); img.src = "/logo-wide.webp"; }, []);
 
   // ปิดเมนูอัตโนมัติเมื่อเปลี่ยนหน้า
@@ -57,7 +62,7 @@ export function Header() {
             <MenuIcon emoji="🏠" image="/nav/home.webp" /> หน้าแรก
           </Link>
           {/* 📅 ปฏิทิน · 🎈 กิจกรรม · 📢 ประชาสัมพันธ์ ไม่อยู่ตรงนี้ เพราะซ้ำกับแถบลอยด้านขวา */}
-          {PRIMARY_NAV.map((item) => (
+          {zones.map((item) => (
             <Dropdown key={item.href} item={item} active={isActive(item)} />
           ))}
           {TOP_LINKS.slice(3).map((item) => (
@@ -122,7 +127,7 @@ export function Header() {
               </Link>
             ))}
           </div>
-          {PRIMARY_NAV.map((item) => (
+          {zones.map((item) => (
             <MobileGroup key={item.href} item={item} pathname={pathname} active={isActive(item)} />
           ))}
           {TOP_LINKS.slice(3).map((item) => (

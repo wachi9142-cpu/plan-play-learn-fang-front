@@ -1,38 +1,59 @@
 import Link from "next/link";
-import { NavIcon } from "@/components/ui/NavIcon";
 import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
-import { LIBRARY_ITEMS, MENU_ITEMS } from "@/lib/site";
+import { NAV_ITEMS, ZONES } from "@/lib/site";
+import { NavIcon } from "@/components/ui/NavIcon";
 import { PageHeader } from "@/components/ui";
-import { cn } from "@/lib/cn";
 
-export const metadata: Metadata = { title: "เมนู" };
+export const metadata: Metadata = { title: "ทุกเมนู" };
 
+/** 🧭 หน้ารวมทุกเมนู — แบ่งตาม 4 โซน: โรงเรียน · สำหรับเด็ก · ห้องครู · ของลูกฉัน */
 export default function MenuPage() {
   return (
     <div className="container-page py-8 sm:py-12">
-      <PageHeader emoji="📚" title="เมนู" description="หมวดหมู่หลักของเว็บไซต์ ทุกหมวดเชื่อมโยงถึงกัน: กำหนดการสอน → แผน → กิจกรรมหลัก → เกม → ใบงาน" />
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {MENU_ITEMS.map((item, i) => (
-          <Link key={item.href} href={item.href} className="card card-hover animate-rise group flex items-center gap-4 p-5" style={{ animationDelay: `${i * 70}ms` }}>
-            <NavIcon emoji={item.emoji} image={item.image} label={item.label} tint={item.tint} className="size-14 text-3xl transition-transform group-hover:-rotate-6" />
-            <span className="min-w-0 flex-1">
-              <span className="block text-[13px] text-purple-500">{i + 1}.</span>
-              <span className="block font-display text-lg leading-snug text-purple-800">{item.label}</span>
-              <span className="block text-[14px] text-ink-soft">{item.description}</span>
-            </span>
-            <ArrowRight size={20} className="shrink-0 text-purple-300 transition group-hover:translate-x-1 group-hover:text-purple-600" />
-          </Link>
-        ))}
-      </div>
+      <PageHeader
+        emoji="🧭"
+        title="ทุกเมนู"
+        description="เว็บไซต์แบ่งเป็น 4 โซนตามว่าใครใช้ — กดที่ชื่อโซนเพื่อดูหน้ารวมของโซนนั้น"
+      />
 
-      <h2 className="mt-12 mb-4 text-xl sm:text-2xl">🧺 คลังความรู้เพิ่มเติม</h2>
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-        {LIBRARY_ITEMS.map((item) => (
-          <Link key={item.href} href={item.href} className="card card-hover flex items-center gap-3 p-4">
-            <NavIcon emoji={item.emoji} image={item.image} label={item.label} tint={item.tint} className="size-11 rounded-xl! text-2xl" />
-            <span className="min-w-0 font-display text-[15px] leading-snug text-purple-800">{item.label}</span>
-          </Link>
+      <div className="grid gap-10">
+        {ZONES.map((zone) => (
+          <section key={zone.href}>
+            <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
+              <div>
+                <h2 className="text-2xl sm:text-3xl">{zone.emoji} {zone.label}</h2>
+                <p className="mt-1 text-[14px] text-ink-soft sm:text-[15px]">{zone.description}</p>
+              </div>
+              <Link href={zone.href} className="tap inline-flex shrink-0 items-center gap-1 text-[15px] font-medium text-purple-700 hover:underline">
+                เปิดโซนนี้ <ArrowRight size={16} />
+              </Link>
+            </div>
+
+            {zone.teacherOnly && (
+              <p className="mb-3 rounded-2xl bg-yellow-soft px-4 py-2.5 text-[13px] leading-relaxed text-[#8a6a00]">
+                🔒 โซนนี้ไม่ขึ้นในเมนูของผู้ปกครอง — จะเห็นเมื่อเข้าสู่ระบบเป็นครูแล้วเท่านั้น
+              </p>
+            )}
+
+            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4">
+              {zone.children?.map((item) => {
+                const full = NAV_ITEMS.find((n) => n.href === item.href);
+                return (
+                  <Link key={zone.href + item.href} href={item.href} className="card card-hover flex items-center gap-2.5 p-3">
+                    <NavIcon
+                      emoji={item.emoji ?? "•"}
+                      image={item.image ?? full?.image}
+                      label={item.label}
+                      tint={full?.tint ?? zone.tint}
+                      className="size-10 rounded-xl! text-xl"
+                    />
+                    <span className="min-w-0 font-display text-[14px] leading-snug text-purple-800">{item.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
         ))}
       </div>
     </div>

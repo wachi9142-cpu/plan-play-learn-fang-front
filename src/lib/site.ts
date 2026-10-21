@@ -168,29 +168,99 @@ const NAV_MENU_ICONS: Record<string, string | undefined> = {
 };
 
 /**
- * แถบ Navigation ด้านบน (ตามบรีฟ): หน้าแรก · เกี่ยวกับ ▾ · เมนู ▾ · ปฏิทินโรงเรียน · กิจกรรมโรงเรียน · ติดต่อเรา · เข้าสู่ระบบ
+ * 🧭 แบ่งเว็บเป็น 4 โซนตาม "ใครใช้" ไม่ใช่ "เป็นสื่อประเภทไหน"
+ *
+ *   🏫 โรงเรียน      — ผู้ปกครองและคนทั่วไป
+ *   🧸 สำหรับเด็ก    — เด็กเล่นเอง หรือครูเปิดให้ดูหน้าห้อง
+ *   👩‍🏫 ห้องครู      — เครื่องมือทำงานของครู (ซ่อนจากเมนูจนกว่าจะเข้าสู่ระบบเป็นครู)
+ *   👨‍👩‍👧 ของลูกฉัน   — ข้อมูลรายคนของเด็ก สำหรับผู้ปกครอง
+ *
+ * เพิ่มหน้าใหม่ = เพิ่ม 1 บรรทัดในโซนที่ใช่ แล้วเมนูบน/มือถือ/หน้าโซนจะขึ้นเองทั้งหมด
  */
-export const PRIMARY_NAV: NavItem[] = [
+
+const link = (href: string): NavLink => {
+  const n = NAV_ITEMS.find((x) => x.href === href);
+  return { href, emoji: n?.emoji ?? "•", label: n?.label ?? href, image: n?.image ?? NAV_MENU_ICONS[href] };
+};
+
+/** 🏫 โรงเรียน — เปิดดูได้ทุกคน */
+export const SCHOOL_ZONE: NavLink[] = [
+  ...ABOUT_ITEMS,
+  { href: "/calendar", emoji: "📅", label: "ปฏิทินโรงเรียน" },
+  { href: "/school-events", emoji: "🎈", label: "กิจกรรมโรงเรียน" },
+  { href: "/news", emoji: "📢", label: "ประชาสัมพันธ์" },
+  { href: "/admission", emoji: "🎒", label: "สมัครเรียน" },
+  { href: "/gallery/photos", emoji: "📷", label: "ภาพกิจกรรม" },
+  { href: "/gallery/works", emoji: "🏆", label: "ผลงานเด็ก" },
+  { href: "/contact", emoji: "📞", label: "ติดต่อเรา", image: "/nav/phone.webp" },
+];
+
+/** 🧸 สำหรับเด็ก — เด็กเปิดเล่นเองได้ ไม่มีอะไรที่เด็กไม่ควรเห็น */
+export const KIDS_ZONE: NavLink[] = [
+  link("/play"),
+  link("/games"),
+  link("/worksheets"),
+  link("/flashcards"),
+  { href: "/library/kids", emoji: "🧸", label: "มุมหนังสือ — นิทานสำหรับเด็ก" },
+  link("/canvas"),
+  link("/core-activities"),
+  link("/projects"),
+];
+
+/** 👩‍🏫 ห้องทำงานครู — ซ่อนจากเมนูถ้ายังไม่ได้เข้าสู่ระบบเป็นครู */
+export const TEACHER_ZONE: NavLink[] = [
+  link("/schedules"),
+  link("/plans"),
+  link("/weekly"),
+  link("/curriculum"),
+  link("/media"),
+  link("/activities"),
+  link("/studio"),
+  { href: "/library/shelf", emoji: "📚", label: "ชั้นหนังสือ — สำหรับครูและผู้ใหญ่" },
+  { href: "/library/media", emoji: "🗂️", label: "คลังสื่อรวม (ไฟล์จากทุกระบบ)" },
+  link("/classroom"),
+  link("/notes"),
+  { href: "/admin", emoji: "👑", label: "ผู้ดูแลระบบ" },
+];
+
+/** 👨‍👩‍👧 ของลูกฉัน — ข้อมูลรายคน ผู้ปกครองดูของลูกตัวเอง */
+export const CHILD_ZONE: NavLink[] = [
+  link("/portfolio"),
+  link("/development"),
+  link("/online-classroom"),
+];
+
+export interface Zone extends NavItem {
+  /** true = ซ่อนจากเมนูจนกว่าจะเข้าสู่ระบบเป็นครู (ยังเปิดจากลิงก์ตรงได้) */
+  teacherOnly?: boolean;
+}
+
+/** 4 โซนหลักของเว็บ */
+export const ZONES: Zone[] = [
   {
-    href: "/about",
-    emoji: "📖",
-    image: "/nav/book.webp",
-    label: "เกี่ยวกับ",
-    description: "เกี่ยวกับเว็บไซต์และการจัดการเรียนรู้ระดับปฐมวัย แยกตามระดับชั้น",
-    tint: "bg-mint-soft",
-    children: ABOUT_ITEMS,
+    href: "/about", emoji: "🏫", image: "/nav/book.webp", label: "โรงเรียน",
+    description: "เกี่ยวกับโรงเรียน ระดับชั้น ปฏิทิน กิจกรรม ประชาสัมพันธ์ สมัครเรียน และติดต่อเรา",
+    tint: "bg-mint-soft", children: SCHOOL_ZONE,
   },
   {
-    href: "/menu",
-    emoji: "🎒",
-    label: "การเรียนรู้",
-    description: "กำหนดการสอน แผน โครงการ กิจกรรมหลัก เกม ใบงาน สื่อ และ Coding",
-    tint: "bg-purple-100",
-    // 📚 ห้องสมุด รวมอยู่ในเมนู "การเรียนรู้" ไม่แยกเป็นเมนูบนอีกเมนูหนึ่ง
-    children: [
-      ...MENU_ITEMS.map(({ href, emoji, label }) => ({ href, emoji, label, image: NAV_MENU_ICONS[href] })),
-      { href: "/library", emoji: "📚", label: "ห้องสมุด (ทั้งหมด)" },
-      ...LIBRARY_NAV,
-    ],
+    href: "/kids", emoji: "🧸", label: "สำหรับเด็ก",
+    description: "เกม ใบงาน แฟลชการ์ด นิทาน และกระดาษวาดรูป — เด็กเปิดเล่นเองได้",
+    tint: "bg-pink-soft", children: KIDS_ZONE,
+  },
+  {
+    href: "/teacher", emoji: "👩‍🏫", label: "ห้องครู",
+    description: "แผนการสอน กำหนดการ หลักสูตร Garden Studio และคลังสื่อ — เครื่องมือทำงานของครู",
+    tint: "bg-purple-100", children: TEACHER_ZONE, teacherOnly: true,
+  },
+  {
+    href: "/my-child", emoji: "👨‍👩‍👧", label: "ของลูกฉัน",
+    description: "ผลงาน พัฒนาการ และห้องเรียนออนไลน์ของลูก",
+    tint: "bg-sky-soft", children: CHILD_ZONE,
   },
 ];
+
+/**
+ * แถบ Navigation ด้านบน — หน้าแรก · 4 โซน · สมัครเรียน · ติดต่อเรา · เข้าสู่ระบบ
+ * (โซน "ห้องครู" จะขึ้นเมื่อเข้าสู่ระบบเป็นครูแล้วเท่านั้น)
+ */
+export const PRIMARY_NAV: Zone[] = ZONES;
