@@ -12,6 +12,7 @@ import { listDocs } from "@/lib/studio-store";
 import { listResults, players } from "@/lib/game-store";
 import { listPlayers } from "@/lib/players";
 import { GAMES } from "@/data/games";
+import { FLASH_CATEGORIES } from "@/data/flashcards";
 import { WORKSHEETS } from "@/data/worksheets";
 import { PLANS, UNITS, GRADES } from "@/data/plans";
 import { PROJECTS } from "@/data/projects";
@@ -60,6 +61,7 @@ export function AdminPage() {
     { href: "/portfolio", emoji: "🏆", title: "แฟ้มผลงานเด็ก", desc: "หมวดหมู่ · ความคิดเห็นครู · เผยแพร่/ส่วนตัว", stat: `${stats.portfolio} ผลงาน · เผยแพร่ ${stats.published}` },
     { href: "/development", emoji: "📈", title: "ติดตามพัฒนาการ", desc: "บันทึกพัฒนาการ 4 ด้านรายเด็ก", stat: `${stats.dev} บันทึก` },
     { href: "/canvas", emoji: "🎨", title: "Garden Canvas", desc: "กระดาษวาดรูป · ห้องวาดร่วมกัน", stat: `${stats.canvases} กระดาษ` },
+    { href: "/admin/flashcards", emoji: "🃏", title: "จัดการแฟลชการ์ด", desc: "เพิ่ม/แก้/ลบ หมวด ชุดบัตร และคำศัพท์ไทย–อังกฤษ", stat: `${FLASH_CATEGORIES.length} หมวด · ${FLASH_CATEGORIES.reduce((n, c) => n + c.sets.length, 0)} ชุด` },
     { href: "/games/progress", emoji: "🎮", title: "เกม: ระดับ & พัฒนาการ", desc: "กำหนดระดับต่อห้อง/ต่อเด็ก · ดูผลการเล่น", stat: `${stats.results} ครั้ง · ${stats.players} ผู้เล่น · โปรไฟล์ ${stats.profiles}` },
   ];
 
@@ -68,6 +70,7 @@ export function AdminPage() {
     { emoji: "🧩", title: "หน่วยการเรียนรู้", n: UNITS.length, file: "src/data/plans.ts", href: "/plans" },
     { emoji: "🎓", title: "ระดับชั้น", n: GRADES.length, file: "src/data/plans.ts", href: "/about" },
     { emoji: "🎮", title: "เกมการศึกษา", n: GAMES.length, file: "src/data/games.ts · games-coding.ts", href: "/games" },
+    { emoji: "🃏", title: "แฟลชการ์ด (ไทย–อังกฤษ)", n: FLASH_CATEGORIES.reduce((n, c) => n + c.sets.reduce((m, x) => m + x.cards.length, 0), 0), file: "src/data/flashcards.ts", href: "/flashcards" },
     { emoji: "📝", title: "ใบงาน", n: WORKSHEETS.length, file: "src/data/worksheets.ts · worksheets-coding.ts", href: "/worksheets" },
     { emoji: "🌱", title: "โครงการ", n: PROJECTS.length, file: "src/data/projects.ts", href: "/projects" },
     { emoji: "📣", title: "ประชาสัมพันธ์", n: NEWS.length, file: "src/data/news.ts", href: "/news" },
