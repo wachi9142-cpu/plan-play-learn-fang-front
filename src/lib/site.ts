@@ -195,6 +195,7 @@ const link = (href: string): NavLink => {
 /** 🏫 โรงเรียน — เปิดดูได้ทุกคน */
 export const SCHOOL_ZONE: NavLink[] = [
   ...ABOUT_ITEMS,
+  { href: "/lunch", emoji: "🍚", label: "เมนูอาหารประจำสัปดาห์" },
   { href: "/calendar", emoji: "📅", label: "ปฏิทินโรงเรียน" },
   { href: "/school-events", emoji: "🎈", label: "กิจกรรมโรงเรียน" },
   { href: "/news", emoji: "📢", label: "ประชาสัมพันธ์" },
@@ -230,12 +231,18 @@ export const TEACHER_ZONE: NavLink[] = [
   { href: "/library/media", emoji: "🗂️", label: "คลังสื่อรวม (ไฟล์จากทุกระบบ)" },
   link("/classroom"),
   link("/notes"),
+  { href: "/teacher/daily", emoji: "📔", label: "สมุดสื่อสารประจำวัน" },
+  { href: "/teacher/lunch", emoji: "🍚", label: "เมนูอาหารและของแพ้" },
+  { href: "/teacher/leave", emoji: "🏠", label: "แจ้งลาและคนมารับเด็ก" },
   { href: "/teacher/todo", emoji: "📋", label: "สิ่งที่รอครูเติม" },
   { href: "/admin", emoji: "👑", label: "ผู้ดูแลระบบ" },
 ];
 
 /** 👨‍👩‍👧 ของลูกฉัน — ข้อมูลรายคน ผู้ปกครองดูของลูกตัวเอง */
 export const CHILD_ZONE: NavLink[] = [
+  { href: "/my-child/daily", emoji: "📔", label: "สมุดสื่อสารประจำวัน" },
+  { href: "/my-child/leave", emoji: "🏠", label: "แจ้งลาและคนมารับเด็ก" },
+  { href: "/lunch", emoji: "🍚", label: "เมนูอาหารประจำสัปดาห์" },
   link("/portfolio"),
   link("/development"),
   link("/online-classroom"),

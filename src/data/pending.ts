@@ -79,6 +79,18 @@ export const PENDING_GROUPS: PendingGroup[] = [
     ],
   },
   {
+    id: "care",
+    emoji: "🧸",
+    label: "การดูแลรายวัน",
+    hint: "สมุดสื่อสาร · เมนูอาหาร · แจ้งลา · คนมารับเด็ก — โครงเสร็จแล้ว รอเริ่มใช้จริง",
+    items: [
+      { id: "rooms", title: "สร้างห้องเรียนและใส่รายชื่อเด็ก", detail: "ทุกระบบการดูแลรายวันผูกกับรายชื่อเด็กในห้องเรียน — ต้องทำข้อนี้ก่อนถึงจะใช้ได้", status: "waiting", priority: true, href: "/online-classroom", file: "src/lib/classroom-store.ts" },
+      { id: "lunch-menu", title: "เมนูอาหารประจำสัปดาห์", detail: "ยังไม่มีเมนูในระบบ — ใส่ทีเดียวได้ทั้งสัปดาห์", status: "waiting", href: "/teacher/lunch", file: "src/lib/care-store.ts" },
+      { id: "allergy", title: "ของแพ้ของเด็กแต่ละคน", detail: "เรื่องความปลอดภัย — ใส่แล้วจะขึ้นเตือนในสมุดสื่อสารและหน้าเมนูอาหารอัตโนมัติ", status: "waiting", priority: true, href: "/teacher/lunch", file: "src/lib/care-store.ts" },
+      { id: "pickup", title: "รายชื่อคนที่มารับเด็กได้", detail: "ผู้ปกครองใส่เองได้ที่หน้าแจ้งลา — ครูตรวจก่อนส่งเด็กทุกครั้ง", status: "waiting", href: "/teacher/leave", file: "src/lib/care-store.ts" },
+    ],
+  },
+  {
     id: "media",
     emoji: "🖼️",
     label: "ภาพและไฟล์",
