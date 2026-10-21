@@ -132,7 +132,7 @@ export function WhackGame({
       {pickMode && (
         <div className="mb-4 text-center">
           <p className="text-[15px] text-ink-soft">{prompt}</p>
-          <p className="font-display text-[clamp(2.4rem,14vw,4rem)] leading-none text-purple-700">{target}</p>
+          <p className="font-display text-[clamp(3rem,16vw,5rem)] leading-none text-purple-700">{target}</p>
         </div>
       )}
 
@@ -150,18 +150,19 @@ export function WhackGame({
               onClick={() => whack(i)}
               disabled={done}
               aria-label={m ? `รูที่ ${i + 1} มี ${m.label}` : `รูที่ ${i + 1} ว่าง`}
+              style={{ containerType: "inline-size" }}
               className={cn(
-                "tap relative grid aspect-square cursor-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22><text y=%2232%22 font-size=%2232%22>🔨</text></svg>')_8_8,pointer] items-end justify-items-center overflow-hidden rounded-3xl border-4 border-[#caa86f] bg-gradient-to-b from-[#f0dcb4] to-[#d8b982] pb-[8%] transition",
+                "tap relative grid aspect-square cursor-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2256%22 height=%2256%22><text y=%2244%22 font-size=%2244%22>🔨</text></svg>')_12_12,pointer] items-end justify-items-center overflow-hidden rounded-3xl border-4 border-[#caa86f] bg-gradient-to-b from-[#f0dcb4] to-[#d8b982] pb-[8%] transition",
                 b?.ok && "border-mint-soft!",
                 b && !b.ok && "border-pink-accent!",
               )}
             >
               {/* ปากรู */}
-              <span className="absolute inset-x-[12%] bottom-[8%] h-[22%] rounded-[50%] bg-[#8a6a3d]/70" aria-hidden />
+              <span className="absolute inset-x-[10%] bottom-[7%] h-[26%] rounded-[50%] bg-[#8a6a3d]/70" aria-hidden />
               {/* ตัวตุ่น */}
               <span
                 className={cn(
-                  "relative z-10 block text-[clamp(2.2rem,13vw,3.4rem)] leading-none transition-all duration-150",
+                  "relative z-10 block text-[58cqw] leading-none transition-all duration-150",
                   m ? "translate-y-0 opacity-100" : "translate-y-full opacity-0",
                 )}
               >
@@ -169,8 +170,8 @@ export function WhackGame({
               </span>
               {b && (
                 <span className="absolute inset-0 z-20 grid place-items-center">
-                  <span className="whack-hammer text-[clamp(2rem,11vw,3rem)]" aria-hidden>🔨</span>
-                  <span className="absolute text-[clamp(1.6rem,9vw,2.4rem)]">{b.ok ? "💥" : "❌"}</span>
+                  <span className="whack-hammer text-[40cqw]" aria-hidden>🔨</span>
+                  <span className="absolute text-[34cqw]">{b.ok ? "💥" : "❌"}</span>
                 </span>
               )}
             </button>
