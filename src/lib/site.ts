@@ -74,14 +74,14 @@ export const NAV_ITEMS: NavItem[] = [
   {
     href: "/play",
     emoji: "🎮",
-    label: "เกม",
+    label: "เกม — เล่นสนุก",
     description: "เกมและกิจกรรมออนไลน์ เล่นสนุก สำรวจ และสร้างสรรค์",
     tint: "bg-pink-soft",
   },
   {
     href: "/games",
     emoji: "🧩",
-    label: "เกมการศึกษา",
+    label: "เกมการศึกษา — ฝึกทักษะ",
     description: "เกมฝึกทักษะ เรียนรู้ผ่านการเล่น และพัฒนาการคิด",
     tint: "bg-mint-soft",
     image: "/games/edu.webp",
@@ -89,8 +89,8 @@ export const NAV_ITEMS: NavItem[] = [
   {
     href: "/flashcards",
     emoji: "🃏",
-    label: "สื่อประกอบการเรียนรู้",
-    description: "แฟลชการ์ดคำศัพท์สองภาษา ไทย–อังกฤษ พลิกบัตร ฟังเสียง และเล่นเกมจับคู่",
+    label: "แฟลชการ์ด ไทย–อังกฤษ",
+    description: "บัตรภาพคำศัพท์สองภาษา พลิกบัตร ฟังเสียง และเล่นเกมจับคู่",
     tint: "bg-purple-100",
     children: FLASH_CATEGORIES.map((c) => ({ href: `/flashcards/${c.id}`, emoji: c.emoji, label: c.label })),
   },

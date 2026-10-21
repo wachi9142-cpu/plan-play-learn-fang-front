@@ -10,6 +10,8 @@ import { ABOUT_SECTIONS } from "@/data/about";
 import { SITE } from "@/lib/site";
 import { PageHeader } from "@/components/ui";
 import { cn } from "@/lib/cn";
+import { SCHOOL_ZONE } from "@/lib/site";
+import { NavIcon } from "@/components/ui/NavIcon";
 import { GRADE_GROUPS } from "@/data/plans";
 
 export const metadata: Metadata = { title: "เกี่ยวกับ" };
@@ -81,6 +83,20 @@ export default function AboutPage() {
       <div className="mt-10 grid gap-4 md:grid-cols-2">
         {after.map((s, i) => <SectionCard key={s.id} s={s} i={i} wide={s.id === "facilities"} />)}
       </div>
+
+      {/* 🏫 ทางไปต่อในโซนโรงเรียน — ปฏิทิน กิจกรรม ประชาสัมพันธ์ สมัครเรียน ติดต่อเรา */}
+      <section className="mt-12">
+        <h2 className="mb-1 text-xl sm:text-2xl">🏫 เรื่องอื่นของโรงเรียน</h2>
+        <p className="mb-4 text-[15px] text-ink-soft">สิ่งที่ผู้ปกครองใช้บ่อย — กดไปได้เลยไม่ต้องย้อนไปที่เมนู</p>
+        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4">
+          {SCHOOL_ZONE.filter((x) => !x.href.startsWith("/about")).map((item) => (
+            <Link key={item.href} href={item.href} className="card card-hover flex items-center gap-2.5 p-3">
+              <NavIcon emoji={item.emoji ?? "•"} image={item.image} label={item.label} tint="bg-mint-soft" className="size-10 rounded-xl! text-xl" />
+              <span className="min-w-0 font-display text-[14px] leading-snug text-purple-800">{item.label}</span>
+            </Link>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

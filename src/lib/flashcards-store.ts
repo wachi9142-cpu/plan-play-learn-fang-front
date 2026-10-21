@@ -139,3 +139,39 @@ export function moveCard(catId: string, setId: string, cardId: string, dir: -1 |
 /** รหัสสั้น ๆ สำหรับของที่ครูสร้างใหม่ */
 export const newId = (prefix: string) =>
   `${prefix}-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 5)}`;
+
+/* ---------- 💾 สำรอง / นำกลับเข้ามา ---------- */
+
+/**
+ * ครูเพิ่มบัตรเองแล้วข้อมูลอยู่ในเครื่องนี้เครื่องเดียว
+ * ปุ่มสำรองจะโหลดไฟล์ .json เก็บไว้ แล้วนำกลับเข้ามาได้ทุกเมื่อ (หรือเอาไปเปิดที่เครื่องอื่น)
+ */
+export function exportJSON(): string {
+  return JSON.stringify({ version: 1, savedAt: new Date().toISOString(), patch: readPatch() }, null, 2);
+}
+
+export function downloadBackup() {
+  const name = `flashcards-${new Date().toISOString().slice(0, 10)}.json`;
+  const url = URL.createObjectURL(new Blob([exportJSON()], { type: "application/json" }));
+  const a = document.createElement("a");
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  return name;
+}
+
+/** นำไฟล์สำรองกลับเข้ามา — คืนค่าเป็นข้อความบอกผล */
+export function importJSON(text: string): { ok: boolean; message: string } {
+  try {
+    const v = JSON.parse(text);
+    const p = v?.patch ?? v;
+    if (!p || typeof p !== "object" || !Array.isArray(p.added)) {
+      return { ok: false, message: "ไฟล์นี้ไม่ใช่ไฟล์สำรองแฟลชการ์ดค่ะ" };
+    }
+    writePatch({ added: p.added ?? [], edited: p.edited ?? {}, removed: p.removed ?? [] });
+    const sets = (p.added as FlashCategory[]).reduce((n, c) => n + c.sets.length, 0);
+    return { ok: true, message: `นำเข้าสำเร็จ — หมวดที่ครูสร้างเอง ${p.added.length} หมวด (${sets} ชุด)` };
+  } catch {
+    return { ok: false, message: "อ่านไฟล์ไม่ได้ ลองเลือกไฟล์ .json ที่กดสำรองไว้อีกครั้งนะคะ" };
+  }
+}

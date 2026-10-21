@@ -3,7 +3,8 @@ import { NewsIcon } from "@/components/ui/NewsIcon";
 import Image from "next/image";
 import { NavIcon } from "@/components/ui/NavIcon";
 import { ArrowRight, Mail, MapPin, Phone } from "lucide-react";
-import { MENU_ITEMS, SITE } from "@/lib/site";
+import { SITE } from "@/lib/site";
+import { ZoneCards } from "@/components/layout/ZoneCards";
 import { NEWS_CATEGORIES, sortedNews } from "@/data/news";
 import { Tag } from "@/components/ui";
 import { GRADES } from "@/data/plans";
@@ -21,8 +22,6 @@ import { cn } from "@/lib/cn";
 const thaiDate = (iso: string) => `${Number(iso.slice(8, 10))} ${THAI_MONTHS_SHORT[Number(iso.slice(5, 7)) - 1]} ${Number(iso.slice(0, 4)) + 543 - 2500}`;
 
 export default function HomePage() {
-  // การ์ดแผนเล่นเรียน 6 ใบ (ไม่รวม 6 กิจกรรมหลัก ตามบรีฟหน้าแรก)
-  const PLAN_MENU = MENU_ITEMS.filter((m) => m.href !== "/core-activities");
   const latestNews = sortedNews().slice(0, 4);
 
   // กิจกรรมที่กำลังจะมาถึง (ตั้งแต่วันนี้) 3 รายการ — ถ้าไม่มี แสดง 3 รายการแรก
@@ -240,28 +239,17 @@ export default function HomePage() {
           <div className="bg-dots pointer-events-none absolute inset-0" aria-hidden />
           <div className="relative">
             <div className="text-center">
-              <span className="inline-flex items-center gap-2 rounded-full bg-purple-600 px-4 py-1.5 text-[14px] font-medium text-white shadow-soft">📚 จุดเด่นของเว็บไซต์</span>
-              <h2 className="mt-4 font-display text-3xl text-purple-800 sm:text-4xl lg:text-5xl">แผนเล่นเรียน</h2>
+              <span className="inline-flex items-center gap-2 rounded-full bg-purple-600 px-4 py-1.5 text-[14px] font-medium text-white shadow-soft">🧭 แผนผังเว็บไซต์</span>
+              <h2 className="mt-4 font-display text-3xl text-purple-800 sm:text-4xl lg:text-5xl">เว็บนี้มีอะไรบ้าง</h2>
               <p className="mt-1 font-display text-lg text-purple-500 sm:text-xl">🌱 Play • Learn • Grow</p>
-              <p className="mx-auto mt-3 max-w-2xl text-[15px] text-ink-soft sm:text-base">รวมทุกอย่างที่ครูและผู้ปกครองใช้จัดประสบการณ์ให้เด็ก ๆ — เชื่อมโยงกันตั้งแต่กำหนดการสอน → แผน → กิจกรรม → เกม → ใบงาน</p>
+              <p className="mx-auto mt-3 max-w-2xl text-[15px] text-ink-soft sm:text-base">แบ่งเป็นโซนตามว่าใครใช้ — เปิดโซนที่ตรงกับคุณได้เลย ไม่ต้องหาผ่านเมนูทั้งหมด</p>
             </div>
 
-            <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
-              {PLAN_MENU.map((item, i) => (
-                <Link key={item.href} href={item.href} className="card card-hover animate-rise group flex flex-col items-center p-4 text-center sm:flex-row sm:items-center sm:gap-4 sm:p-5 sm:text-left" style={{ animationDelay: `${i * 70}ms` }}>
-                  <NavIcon emoji={item.emoji} image={item.image} label={item.label} tint={item.tint} className="size-14 text-3xl transition-transform group-hover:-rotate-6 group-hover:scale-105 sm:size-16 sm:text-4xl" />
-                  <span className="mt-2 min-w-0 flex-1 sm:mt-0">
-                    <span className="block font-display text-[16px] leading-snug text-purple-800 sm:text-lg">{item.label}</span>
-                    <span className="mt-0.5 hidden text-[14px] text-ink-soft sm:block">{item.description}</span>
-                  </span>
-                  <ArrowRight size={18} className="hidden shrink-0 text-purple-300 transition group-hover:translate-x-1 group-hover:text-purple-600 sm:block" />
-                </Link>
-              ))}
-            </div>
+            <ZoneCards />
 
             <div className="mt-8 text-center">
               <Link href="/menu" className="tap inline-flex items-center gap-2 rounded-full bg-purple-600 px-8 py-3.5 text-base font-medium text-white shadow-lift transition hover:bg-purple-700 sm:text-lg">
-                เข้าสู่แผนเล่นเรียน <ArrowRight size={20} />
+                ดูทุกเมนูในเว็บ <ArrowRight size={20} />
               </Link>
             </div>
           </div>

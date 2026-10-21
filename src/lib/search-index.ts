@@ -6,8 +6,9 @@ import { NEWS, NEWS_CATEGORIES } from "@/data/news";
 import { SCHOOL_EVENTS, EVENT_CATEGORIES } from "@/data/school-events";
 import { TEACHING_MEDIA, LEARNING_ACTIVITIES } from "@/data/content";
 import { SCHEDULES } from "@/data/schedules";
+import { FLASH_CATEGORIES } from "@/data/flashcards";
 
-export type SearchKind = "plan" | "worksheet" | "game" | "project" | "news" | "event" | "media" | "activity" | "schedule";
+export type SearchKind = "plan" | "worksheet" | "game" | "project" | "news" | "event" | "media" | "activity" | "schedule" | "flashcard";
 
 export interface SearchDoc {
   kind: SearchKind;
@@ -28,12 +29,27 @@ export const SEARCH_KINDS: Record<SearchKind, { emoji: string; label: string }> 
   media: { emoji: "🎨", label: "สื่อการเรียนการสอน" },
   activity: { emoji: "🧸", label: "กิจกรรมการเรียนรู้" },
   schedule: { emoji: "📅", label: "กำหนดการสอน" },
+  flashcard: { emoji: "🃏", label: "แฟลชการ์ด (ไทย–อังกฤษ)" },
 };
 
 const j = (...parts: (string | string[] | undefined)[]) => parts.flat().filter(Boolean).join(" ").toLowerCase();
 
 /** ดัชนีค้นหาทั้งเว็บ — สร้างครั้งเดียวตอนโหลด */
 export const SEARCH_INDEX: SearchDoc[] = [
+  // 🃏 แฟลชการ์ด — ค้นได้ทั้งคำไทยและคำอังกฤษ ไปถึงชุดที่บัตรนั้นอยู่
+  ...FLASH_CATEGORIES.flatMap((c) =>
+    c.sets.flatMap((set) =>
+      set.cards.map((card) => ({
+        kind: "flashcard" as const,
+        href: `/flashcards/${c.id}/${set.id}`,
+        emoji: card.emoji,
+        title: `${card.th} · ${card.en}`,
+        subtitle: `${c.label} — ${set.title}`,
+        text: j(card.th, card.en, card.read, card.note, c.label, c.hint, set.title),
+      })),
+    ),
+  ),
+
   ...PLANS.map((p) => ({ kind: "plan" as const, href: `/plans/${p.id}`, emoji: p.emoji, title: `เรื่อง ${p.title}`, subtitle: `หน่วย ${getUnit(p.unitId)?.name ?? ""}${p.strand ? ` · ${p.strand}` : ""}`, text: j(p.title, getUnit(p.unitId)?.name, p.strand, p.description, p.keywords, p.weeks.map((w) => w.title), p.weeks.flatMap((w) => w.days.flatMap((d) => d.activities.map((a) => a.title)))) })),
   ...WORKSHEETS.map((w) => ({ kind: "worksheet" as const, href: `/worksheets/${w.id}`, emoji: w.emoji, title: w.title, subtitle: WORKSHEET_CATEGORIES[w.category].label, text: j(w.title, w.description, w.skills, w.tags, WORKSHEET_CATEGORIES[w.category].label) })),
   ...GAMES.map((g) => ({ kind: "game" as const, href: `/games/${g.id}`, emoji: g.emoji, title: g.title, subtitle: GAME_CATEGORIES[g.category].label, text: j(g.title, g.description, g.skills, GAME_CATEGORIES[g.category].label) })),

@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ChevronDown, ChevronUp, Plus, RotateCcw, Save, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronUp, Download, Plus, RotateCcw, Save, Trash2, Upload } from "lucide-react";
 import type { FlashCard, FlashCategory, FlashSet } from "@/types/flashcard";
 import { PageHeader, Tag } from "@/components/ui";
 import { BackButton } from "@/components/ui/BackButton";
 import { NavIcon } from "@/components/ui/NavIcon";
 import {
-  addSet, hasChanges, moveCard, newId, removeCard, removeCategory, removeSet,
-  resetAll, saveCard, saveCategory,
+  addSet, downloadBackup, hasChanges, importJSON, moveCard, newId, removeCard, removeCategory,
+  removeSet, resetAll, saveCard, saveCategory,
 } from "@/lib/flashcards-store";
 import { useFlashCategories } from "./useFlashcards";
 
@@ -60,6 +60,27 @@ export function FlashAdmin() {
         <Link href="/flashcards" className="tap inline-flex items-center gap-1.5 rounded-full bg-cream-dark px-5 py-2.5 text-[15px] font-medium text-purple-700 hover:brightness-95">
           👀 ดูหน้าแฟลชการ์ด
         </Link>
+        <button type="button" onClick={() => { const n = downloadBackup(); alert(`สำรองไว้แล้ว: ${n}
+เก็บไฟล์นี้ไว้นะคะ ถ้าเครื่องมีปัญหาจะนำกลับเข้ามาได้`); }}
+          className="tap inline-flex items-center gap-1.5 rounded-full bg-cream-dark px-5 py-2.5 text-[15px] font-medium text-purple-700 hover:brightness-95">
+          <Download size={16} /> สำรองเป็นไฟล์
+        </button>
+        <label className="tap inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-cream-dark px-5 py-2.5 text-[15px] font-medium text-purple-700 hover:brightness-95">
+          <Upload size={16} /> นำไฟล์สำรองกลับเข้ามา
+          <input
+            type="file"
+            accept="application/json,.json"
+            className="hidden"
+            onChange={async (e) => {
+              const f = e.target.files?.[0];
+              e.target.value = "";
+              if (!f) return;
+              if (!confirm("นำไฟล์สำรองกลับเข้ามา? ข้อมูลที่แก้ไว้ในเครื่องนี้ตอนนี้จะถูกแทนที่ทั้งหมด")) return;
+              const r = importJSON(await f.text());
+              alert(r.message);
+            }}
+          />
+        </label>
         {dirty && (
           <button type="button" onClick={() => { if (confirm("คืนค่าหมวดและบัตรทั้งหมดกลับเป็นของเดิม? สิ่งที่ครูเพิ่มเองจะหายไป")) resetAll(); }}
             className="tap inline-flex items-center gap-1.5 rounded-full bg-cream-dark px-5 py-2.5 text-[15px] font-medium text-[#a8456c] hover:brightness-95">
@@ -69,8 +90,9 @@ export function FlashAdmin() {
       </div>
 
       <p className="card mb-5 p-4 text-[14px] leading-relaxed text-ink-soft">
-        💾 สิ่งที่แก้ที่นี่จะเก็บไว้ใน <b>เครื่องนี้เครื่องเดียว</b> (ยังไม่ข้ามเครื่อง) — ถ้าต้องการให้ทุกคนเห็นเหมือนกัน
-        ต้องย้ายข้อมูลขึ้นเซิร์ฟเวอร์ก่อน (อยู่ในรายการรอทำข้อ 6.2)
+        💾 สิ่งที่แก้ที่นี่จะเก็บไว้ใน <b>เครื่องนี้เครื่องเดียว</b> (ยังไม่ข้ามเครื่อง)
+        — ถ้าทำบัตรเพิ่มเยอะแล้ว <b>กด &ldquo;สำรองเป็นไฟล์&rdquo; เก็บไว้ด้วยนะคะ</b> เผื่อเครื่องมีปัญหาหรือเบราว์เซอร์ถูกล้างข้อมูล
+        จะได้นำกลับเข้ามาได้ และเอาไปเปิดที่เครื่องอื่นได้ด้วย (การย้ายขึ้นเซิร์ฟเวอร์อยู่ในรายการรอทำข้อ 6.2)
       </p>
 
       <div className="grid gap-3">
