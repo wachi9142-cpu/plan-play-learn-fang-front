@@ -4,3 +4,4 @@ export * from "./Tag";
 export * from "./EmptyState";
 export * from "./Section";
 export * from "./BackButton";
+export * from "./SpeakButton";

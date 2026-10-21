@@ -59,6 +59,8 @@ export type GameConfig =
   | { engine: "whack"; items?: string[]; prompt?: string }
   | { engine: "block-journey"; cols?: number; rows?: number }
   | { engine: "dominoes"; max?: number }
+  | { engine: "snakes-ladders" }
+  | { engine: "color-paint"; size?: number; colors?: number; task?: boolean }
   | {
       engine: "trace-line";
       actor: string;

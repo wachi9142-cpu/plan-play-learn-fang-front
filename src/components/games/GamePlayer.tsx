@@ -15,6 +15,8 @@ import { FlashMemoryGame } from "./engines/FlashMemoryGame";
 import { WhackGame } from "./engines/WhackGame";
 import { BlockJourneyGame } from "./engines/BlockJourneyGame";
 import { DominoesGame } from "./engines/DominoesGame";
+import { SnakesLaddersGame } from "./engines/SnakesLaddersGame";
+import { ColorPaintGame } from "./engines/ColorPaintGame";
 import { IQGame } from "./engines/IQGame";
 import { TraceLineGame } from "./engines/TraceLineGame";
 import { SpellGame } from "./engines/SpellGame";
@@ -47,6 +49,8 @@ export function GamePlayer({ config, extras = {} }: { config: GameConfig; extras
     case "math-quiz": return <MathQuizGame mode={config.mode} count={config.count} {...x} />;
     case "spell": return <SpellGame count={config.count} maxLen={config.maxLen} {...x} />;
     case "iq": return <IQGame rounds={config.rounds} {...x} />;
+    case "color-paint": return <ColorPaintGame size={config.size} colors={config.colors} task={config.task} {...x} />;
+    case "snakes-ladders": return <SnakesLaddersGame onDone={x.onDone} />;
     case "dominoes": return <DominoesGame max={config.max ?? 6} onDone={x.onDone} />;
     case "whack": return <WhackGame items={config.items} prompt={config.prompt} holes={extras.holes} lifeMs={extras.lifeMs} gapMs={extras.gapMs} rounds={extras.rounds} {...x} />;
     case "quiz": return <QuizGame title={config.title} rounds={config.rounds} {...x} />;

@@ -253,6 +253,41 @@ export const GAMES: Game[] = [
     config: { engine: "math-quiz", mode: "add5", count: 8 },
   },
 
+  {
+    id: "snakes-ladders",
+    title: "บันไดงู",
+    emoji: "🎲",
+    cover: "bg-mint-soft",
+    description: "ทอยลูกเต๋าแล้วเดินตามแต้ม เจอ 🪜 บันไดได้ขึ้น เจอ 🐍 งูต้องเลื่อนลง ใครถึงช่อง 30 ก่อนชนะ — ฝึกนับเลขและรอคอยตามตา",
+    skills: ["นับเลข 1–30", "นับแต้มลูกเต๋า", "รอคอยตามตา", "ยอมรับการแพ้ชนะ"],
+    gradeId: "k1",
+    ages: "3–6 ปี",
+    players: [1, 2],
+    noLevels: true,
+    category: "board",
+    zone: "fun",
+    planIds: [],
+    activityType: "game",
+    config: { engine: "snakes-ladders" },
+  },
+
+  {
+    id: "color-paint",
+    title: "ระบายสีรูปทรงน่ารัก",
+    emoji: "🎨",
+    cover: "bg-pink-soft",
+    description: "จุ่มสีจากแถบด้านข้างแล้วแตะรูปเพื่อระบาย มีโจทย์ให้ทำ เช่น ระบายดาวทุกดวงเป็นสีเหลือง หรือจะเลือกโหมดระบายอิสระก็ได้ ระบายผิดใช้ยางลบลบออกได้",
+    skills: ["จำแนกสี", "จำแนกรูปทรง", "ทำตามคำสั่ง", "ความคิดสร้างสรรค์"],
+    gradeId: "k0",
+    ages: "2–6 ปี",
+    players: [1],
+    category: "color",
+    zone: "edu",
+    planIds: [],
+    activityType: "game",
+    config: { engine: "color-paint", size: 4, colors: 4, task: true },
+  },
+
   /* 🔨 เกมตีตุ่น — ฝึกการตอบสนอง สมาธิ และการยับยั้งใจ */
   {
     id: "whack-mole",

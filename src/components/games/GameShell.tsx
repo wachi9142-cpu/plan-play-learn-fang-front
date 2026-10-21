@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { RotateCcw } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { SpeakButton } from "@/components/ui/SpeakButton";
 import { PRAISE, starsFor } from "@/lib/game-levels";
 
 const mmss = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
@@ -59,6 +60,8 @@ export function GameShell({ instruction, progress, done, onRestart, children, st
     <div className="card overflow-hidden">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-line bg-purple-50 px-4 py-3 sm:px-5">
         <p className="min-w-0 basis-full font-display text-base text-purple-800 sm:flex-1 sm:basis-auto sm:text-lg">👉 {instruction}</p>
+        {/* 🔊 อ่านคำสั่งให้ฟัง — ทุกเกมได้ปุ่มนี้อัตโนมัติ เด็กอ่านไม่ออกก็เล่นเองได้ */}
+        <SpeakButton text={instruction} label="" size="sm" className="shrink-0" />
         {progress && (
           <div className="flex items-center gap-1" aria-label={`ด่านที่ ${progress.current} จาก ${progress.total}`}>
             {Array.from({ length: Math.min(progress.total, 12) }, (_, i) => <span key={i} className={cn("text-lg transition", i < progress.current ? "" : "opacity-25 grayscale")}>⭐</span>)}

@@ -150,6 +150,15 @@ export function applyDifficulty(config: GameConfig, level: Difficulty): { config
         },
       };
     }
+    case "color-paint": {
+      const cfg = level === "easy" ? { size: 4, colors: 4 } : level === "medium" ? { size: 5, colors: 6 } : { size: 6, colors: 8 };
+      return {
+        config: { ...config, ...cfg },
+        info: { questions: cfg.size * cfg.size, timeLimit: level === "hard" ? 180 : undefined, note: `ตาราง ${cfg.size}×${cfg.size} · ${cfg.colors} สี${level === "hard" ? " · จับเวลา" : ""}` },
+      };
+    }
+    case "snakes-ladders":
+      return { config, info: { questions: 1, note: "กระดาน 30 ช่อง · มีบันได 4 จุด งู 4 จุด — เล่นคนเดียวหรือ 2 คนก็ได้" } };
     case "dominoes":
       return { config, info: { questions: 1, note: "มีโหมดเดียว — ต่อเลขให้ตรงกันจนหมดมือก่อนอีกฝ่าย" } };
     case "whack": {

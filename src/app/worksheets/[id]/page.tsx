@@ -4,7 +4,7 @@ import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { WORKSHEETS, WORKSHEET_CATEGORIES, getWorksheet } from "@/data/worksheets";
 import { getGame } from "@/data/games";
 import { getGrade, getPlan, getUnit } from "@/data/plans";
-import { Breadcrumb, PageHeader, Tag } from "@/components/ui";
+import { Breadcrumb, PageHeader, SpeakButton, Tag } from "@/components/ui";
 import { SheetScaler, WorksheetActions, WorksheetSheet } from "@/components/worksheets";
 import { WorksheetCard } from "@/components/worksheets/WorksheetLibrary";
 
@@ -38,6 +38,7 @@ export default async function WorksheetDetailPage({ params }: { params: Promise<
       <Breadcrumb items={[{ label: "ใบงาน", href: "/worksheets" }, { label: w.title }]} />
 
       <PageHeader emoji={w.emoji} title={w.title} description={w.description}>
+        <SpeakButton text={[w.title, w.description]} label="อ่านชื่อใบงานให้เด็กฟัง" className="mb-2" />
         <WorksheetActions worksheet={w} />
       </PageHeader>
 
@@ -73,10 +74,17 @@ export default async function WorksheetDetailPage({ params }: { params: Promise<
           </div>
 
           <div className="card p-5">
-            <h2 className="mb-2 text-lg">👩‍🏫 วิธีใช้สำหรับครู</h2>
+            <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+              <h2 className="text-lg">👩‍🏫 วิธีใช้สำหรับครู</h2>
+              <SpeakButton text={w.instructions} size="sm" label="อ่านวิธีใช้" />
+            </div>
             <ol className="space-y-1.5">
               {w.instructions.map((s, i) => (
-                <li key={i} className="flex gap-2 text-[15px]"><span className="font-medium text-purple-500">{i + 1}.</span>{s}</li>
+                <li key={i} className="flex items-start gap-2 text-[15px]">
+                  <span className="font-medium text-purple-500">{i + 1}.</span>
+                  <span className="min-w-0 flex-1">{s}</span>
+                  <SpeakButton text={s} size="sm" label="" className="shrink-0" />
+                </li>
               ))}
             </ol>
           </div>
