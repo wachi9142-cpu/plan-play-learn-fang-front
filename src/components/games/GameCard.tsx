@@ -23,6 +23,7 @@ export function GameCard({ game, className, style }: { game: Game; className?: s
           <span className="rounded-full bg-cream-dark px-2 py-0.5 text-purple-700">{players.emoji} {players.label}</span>
         </div>
         <h2 className="text-lg sm:text-xl">{game.title}</h2>
+        {game.titleEn && <p className="text-[13px] font-medium text-purple-500">{game.titleEn}</p>}
         <p className="mt-1 flex-1 text-[15px] text-ink-soft">{game.description}</p>
         <p className="mt-3 text-[13px] font-medium text-purple-700">🎯 ทักษะที่ได้ฝึก</p>
         <div className="mt-1 flex flex-wrap gap-1.5">{game.skills.map((s) => <Tag key={s} tone="mint">{s}</Tag>)}</div>

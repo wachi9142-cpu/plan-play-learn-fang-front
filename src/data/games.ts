@@ -1,3 +1,5 @@
+import { SPOT_CATEGORIES } from "@/data/spot-diff";
+import { SHADOW_CATEGORIES } from "@/data/shadow-quiz";
 import { playableCategories } from "@/data/jigsaw";
 import { CODING_GAMES } from "./games-coding";
 import type { Game, GameCategory } from "@/types";
@@ -77,7 +79,7 @@ export function playersLabel(g: { players?: number[] }): { emoji: string; label:
 export const GAMES: Game[] = [
   {
     id: "gray-match",
-    title: "จับคู่ภาพสีกับภาพขาวดำ",
+    title: "จับคู่ภาพสีกับภาพขาวดำ", titleEn: "Color & Black-and-White Match",
     emoji: "🖤",
     cover: "bg-cream-dark",
     description: "ฝั่งซ้ายเป็นภาพสี ฝั่งขวาเป็นภาพขาวดำของสิ่งเดียวกัน จับคู่ให้ถูก — ฝึกมองรูปทรงและรายละเอียด ไม่พึ่งสีอย่างเดียว",
@@ -104,10 +106,49 @@ export const GAMES: Game[] = [
     },
   },
 
+  /* 👀 จับผิดภาพ — แยกเป็นเกมตามหมวด กดแล้วเล่นเฉพาะหมวดนั้น */
+  ...SPOT_CATEGORIES.map((c): Game => ({
+    id: `spot-${c.id}`,
+    title: `จับผิดภาพ · ${c.label}`,
+    titleEn: `Spot the Difference: ${c.labelEn}`,
+    emoji: "👀",
+    cover: c.tint,
+    description: `${c.hint} — คลิกจุดที่ต่างกันบนภาพซ้ายหรือขวาก็ได้ มี ${c.scenes.length} ด่าน และ 3 ระดับ`,
+    skills: ["การสังเกต", "เปรียบเทียบความต่าง", "สมาธิ", "ความละเอียดรอบคอบ"],
+    gradeId: "k1",
+    ages: "3–6 ปี",
+    players: [1],
+    category: "observe",
+    zone: "edu",
+    planIds: [],
+    activityType: "game",
+    config: { engine: "spot-diff", categoryId: c.id, diffs: 3 },
+  })),
+
+  /* 🌑 จับคู่ภาพกับเงา — แยกเป็นเกมตามหมวด เด็กใช้เมาส์คลิกเงาที่ตรงกับภาพ */
+  ...SHADOW_CATEGORIES.map((c): Game => ({
+    id: `shadow-quiz-${c.id}`,
+    title: `จับคู่ภาพกับเงา · ${c.label}`,
+    titleEn: `Shadow Matching: ${c.labelEn}`,
+    emoji: "🌑",
+    cover: c.tint,
+    description: `${c.hint} — ดูภาพสีด้านบน แล้วคลิกเงาที่รูปร่างตรงกัน มี ${c.items.length} ภาพ และ 3 ระดับ`,
+    skills: ["การสังเกต", "จำแนกรูปร่าง", "มิติสัมพันธ์", "สมาธิ"],
+    gradeId: "k1",
+    ages: "4–6 ปี",
+    players: [1],
+    category: "shadow",
+    zone: "edu",
+    planIds: [],
+    activityType: "game",
+    config: { engine: "shadow-quiz", categoryId: c.id, choices: 3, count: 8 },
+  })),
+
   /* 🧩 จิ๊กซอว์ — แต่ละหมวดเป็นเกมหนึ่งเกม กดแล้วไปหน้าต่อภาพของหมวดนั้น */
   ...playableCategories().map((c): Game => ({
     id: `jigsaw-${c.id}`,
     title: `ต่อภาพ ${c.label}`,
+    titleEn: `Jigsaw: ${c.labelEn}`,
     emoji: "🧩",
     cover: c.tint,
     description: `${c.hint} — ภาพมีช่องว่าง ลากชิ้นจากด้านข้างมาวางให้ตรงช่อง มี ${c.pictures.length} ภาพ และ 3 ระดับ`,
@@ -125,7 +166,7 @@ export const GAMES: Game[] = [
 
   {
     id: "block-journey",
-    title: "Block Journey — เกมต่อบล็อก",
+    title: "Block Journey — เกมต่อบล็อก", titleEn: "Block Journey",
     emoji: "🧱",
     cover: "bg-sky-soft",
     description: "บล็อกหล่นลงมาเรื่อย ๆ หมุนและเลื่อนให้ต่อเต็มแถว แถวที่เต็มจะหายไป — ไม่ต้องเลือกระดับ เกมจะเร็วขึ้นเองทุก 5 แถวที่เคลียร์ได้",
@@ -142,7 +183,7 @@ export const GAMES: Game[] = [
   },
   {
     id: "dominoes",
-    title: "โดมิโน",
+    title: "โดมิโน", titleEn: "Dominoes",
     emoji: "🀄",
     cover: "bg-cream-dark",
     description: "ต่อเลขให้ตรงกับปลายแถว ใครหมดมือก่อนชนะ ต่อไม่ได้ให้จั่วจากกอง — ฝึกนับจุดและจับคู่จำนวน มีโหมดเดียว ไม่ต้องเลือกระดับ",
@@ -160,7 +201,7 @@ export const GAMES: Game[] = [
 
   {
     id: "trace-line",
-    title: "พาพี่หมีกลับบ้าน — ลากเส้นในเขาวงกต",
+    title: "พาพี่หมีกลับบ้าน — ลากเส้นในเขาวงกต", titleEn: "Help Bear Get Home — Maze Tracing",
     emoji: "✏️",
     cover: "bg-mint-soft",
     description: "กดค้างแล้วลากดินสอไปตามถนนในเขาวงกตจนถึงบ้าน ระวังทางตัน! — ฝึกกล้ามเนื้อมือ การควบคุมดินสอ และการวางแผนเส้นทาง",
@@ -185,7 +226,7 @@ export const GAMES: Game[] = [
   },
   {
     id: "iq-quiz",
-    title: "เกมฝึกเชาว์ปัญญา",
+    title: "เกมฝึกเชาว์ปัญญา", titleEn: "Thinking & Reasoning Quiz",
     emoji: "🧠",
     cover: "bg-purple-100",
     description: "อ่านโจทย์แล้วเลือก ก ข ค — ฝึกการให้เหตุผล จัดกลุ่ม และมองความสัมพันธ์ของสิ่งรอบตัว",
@@ -221,7 +262,7 @@ export const GAMES: Game[] = [
 
   {
     id: "spell-word",
-    title: "สะกดคำจากภาพ — ไทย & อังกฤษ",
+    title: "สะกดคำจากภาพ — ไทย & อังกฤษ", titleEn: "Spell the Picture — Thai & English",
     emoji: "🔤",
     cover: "bg-yellow-soft",
     description: "ดูภาพแล้วเลือกตัวอักษรมาใส่เอง เลือกเล่นได้ทั้ง ก–ฮ และ A–Z มีสระให้เลือกครบ หยิบผิดลบออกได้ — คำศัพท์ดึงจากคลังแฟลชการ์ด",
@@ -238,7 +279,7 @@ export const GAMES: Game[] = [
 
   {
     id: "math-quiz",
-    title: "คิดเลขเร็ว — เลือก ก ข ค",
+    title: "คิดเลขเร็ว — เลือก ก ข ค", titleEn: "Quick Maths Quiz",
     emoji: "➕",
     cover: "bg-sky-soft",
     description: "ขึ้นโจทย์แล้วเลือกคำตอบจาก 6 ข้อ · ง่ายมีภาพผลไม้ช่วยนับ · ยากมีทั้งบวกและลบ พร้อมจับเวลา",
@@ -255,7 +296,7 @@ export const GAMES: Game[] = [
 
   {
     id: "snakes-ladders",
-    title: "บันไดงู",
+    title: "บันไดงู", titleEn: "Snakes and Ladders",
     emoji: "🎲",
     cover: "bg-mint-soft",
     description: "ทอยลูกเต๋าแล้วเดินตามแต้ม เจอ 🪜 บันไดได้ขึ้น เจอ 🐍 งูต้องเลื่อนลง ใครถึงช่อง 30 ก่อนชนะ — ฝึกนับเลขและรอคอยตามตา",
@@ -273,7 +314,7 @@ export const GAMES: Game[] = [
 
   {
     id: "color-paint",
-    title: "ระบายสีรูปทรงน่ารัก",
+    title: "ระบายสีรูปทรงน่ารัก", titleEn: "Colour the Cute Shapes",
     emoji: "🎨",
     cover: "bg-pink-soft",
     description: "จุ่มสีจากแถบด้านข้างแล้วแตะรูปเพื่อระบาย มีโจทย์ให้ทำ เช่น ระบายดาวทุกดวงเป็นสีเหลือง หรือจะเลือกโหมดระบายอิสระก็ได้ ระบายผิดใช้ยางลบลบออกได้",
@@ -288,10 +329,194 @@ export const GAMES: Game[] = [
     config: { engine: "color-paint", size: 4, colors: 4, task: true },
   },
 
+  {
+    id: "cake-decor",
+    title: "แต่งหน้าเค้ก", titleEn: "Decorate the Cake",
+    emoji: "🎂",
+    cover: "bg-pink-soft",
+    description: "เลือกของแต่งจากถาดแล้วแตะบนเค้กเพื่อวาง จะวางตรงไหนก็ได้ ไม่มีผิดถูก — ของแต่ง 12 อย่างและสีเค้กสุ่มใหม่ทุกรอบ เล่นกี่ครั้งก็ไม่เหมือนเดิม",
+    skills: ["ความคิดสร้างสรรค์", "การตัดสินใจ", "ประสานมือกับตา", "การจัดวาง"],
+    gradeId: "k0",
+    ages: "2–6 ปี",
+    players: [1],
+    noLevels: true,
+    category: "creative",
+    zone: "fun",
+    planIds: [],
+    activityType: "game",
+    config: { engine: "cake-decor" },
+  },
+
+  {
+    id: "sort-basket",
+    title: "คัดแยกใส่ตะกร้า", titleEn: "Sorting into Baskets",
+    emoji: "🧺",
+    cover: "bg-yellow-soft",
+    description: "แตะของแล้วแตะตะกร้าที่ใช่ เช่น แยกแอปเปิลแดงกับเขียว แยกผลไม้กับผัก — เวอร์ชันออนไลน์ของใบงานตัดแล้วแปะ ไม่ต้องพิมพ์ ไม่ต้องตัด เล่นซ้ำได้ไม่จำกัด",
+    skills: ["จำแนกประเภท", "สังเกตความต่าง", "ทำตามเกณฑ์", "สมาธิ"],
+    gradeId: "k0",
+    ages: "2–6 ปี",
+    players: [1],
+    category: "matching",
+    zone: "edu",
+    planIds: [],
+    activityType: "game",
+    config: {
+      engine: "sort-basket",
+      pick: 10,
+      rounds: [
+        { title: "แยกแอปเปิลตามสี — แดงใส่ตะกร้าแดง เขียวใส่ตะกร้าเขียว",
+          baskets: [{ emoji: "🍎", label: "แอปเปิลแดง", accept: ["🍎"] }, { emoji: "🍏", label: "แอปเปิลเขียว", accept: ["🍏"] }] },
+        { title: "แยกผลไม้กับผัก",
+          baskets: [{ emoji: "🍓", label: "ผลไม้", accept: ["🍓", "🍌", "🍇", "🍊", "🍉"] }, { emoji: "🥦", label: "ผัก", accept: ["🥦", "🥕", "🌽", "🥬", "🍆"] }] },
+        { title: "แยกสัตว์กับยานพาหนะ",
+          baskets: [{ emoji: "🐶", label: "สัตว์", accept: ["🐶", "🐱", "🐰", "🐥", "🐸"] }, { emoji: "🚗", label: "ยานพาหนะ", accept: ["🚗", "🚌", "🚲", "✈️", "🚂"] }] },
+        { title: "แยกของที่อยู่บนฟ้า บนดิน และในน้ำ",
+          baskets: [
+            { emoji: "☁️", label: "บนฟ้า", accept: ["☁️", "🌙", "⭐", "🦅"] },
+            { emoji: "🌳", label: "บนดิน", accept: ["🌳", "🐘", "🏠", "🚗"] },
+            { emoji: "🌊", label: "ในน้ำ", accept: ["🐟", "🐙", "🦀", "🐳"] },
+          ] },
+        { title: "แยกรูปทรง",
+          baskets: [
+            { emoji: "🔴", label: "วงกลม", accept: ["🔴", "🟡", "🟢", "🔵"] },
+            { emoji: "🟥", label: "สี่เหลี่ยม", accept: ["🟥", "🟨", "🟩", "🟦"] },
+            { emoji: "🔺", label: "สามเหลี่ยม", accept: ["🔺", "🔻", "⚠️", "📐"] },
+          ] },
+      ],
+    },
+  },
+
+  {
+    id: "color-pair",
+    title: "จับคู่สี",
+    titleEn: "Colour Matching",
+    emoji: "🌈",
+    cover: "bg-pink-soft",
+    description: "แตะสีทางซ้าย แล้วหาของที่มีสีนั้นทางขวา เช่น สีแดงคู่กับแอปเปิล สีเหลืองคู่กับกล้วย — ฝึกจำแนกสีและเชื่อมโยงสีกับของจริงรอบตัว",
+    skills: ["จำแนกสี", "เชื่อมโยงสีกับของจริง", "การสังเกต", "คำศัพท์เรื่องสี"],
+    gradeId: "k0",
+    ages: "2–6 ปี",
+    players: [1],
+    category: "color",
+    zone: "edu",
+    planIds: [],
+    activityType: "game",
+    config: {
+      engine: "color-pair",
+      pairs: [
+        { left: "🔴", right: "🍎", label: "สีแดง" },
+        { left: "🟡", right: "🍌", label: "สีเหลือง" },
+        { left: "🟢", right: "🥦", label: "สีเขียว" },
+        { left: "🔵", right: "🫐", label: "สีน้ำเงิน" },
+        { left: "🟠", right: "🍊", label: "สีส้ม" },
+        { left: "🟣", right: "🍇", label: "สีม่วง" },
+        { left: "⚪", right: "🥛", label: "สีขาว" },
+        { left: "🟤", right: "🍫", label: "สีน้ำตาล" },
+      ],
+    },
+  },
+
+  {
+    id: "dress-up-jobs",
+    title: "แต่งตัวตามอาชีพ",
+    titleEn: "Dress Up by Job",
+    emoji: "👩‍⚕️",
+    cover: "bg-sky-soft",
+    description: "โจทย์บอกอาชีพ เช่น นักดับเพลิง แล้วเลือกของที่อาชีพนั้นต้องใช้ ของอาชีพอื่นจะปนมาด้วย ต้องคิดก่อนหยิบ — รู้จักอาชีพรอบตัวและของที่ใช้ทำงาน",
+    skills: ["รู้จักอาชีพ", "จำแนกของใช้", "ให้เหตุผล", "คำศัพท์อาชีพ"],
+    gradeId: "k2",
+    ages: "4–6 ปี",
+    players: [1],
+    category: "logic",
+    zone: "edu",
+    planIds: [],
+    activityType: "game",
+    config: {
+      engine: "dress-up",
+      pickCount: 3,
+      decoys: 5,
+      jobs: [
+        { emoji: "🧑‍🚒", name: "นักดับเพลิง", nameEn: "Firefighter", about: "นักดับเพลิงใส่หมวกกันไฟ ใช้สายฉีดน้ำดับไฟ และขึ้นรถดับเพลิงไปช่วยคน",
+          items: [{ emoji: "⛑️", label: "หมวกกันไฟ" }, { emoji: "🧯", label: "ถังดับเพลิง" }, { emoji: "🚒", label: "รถดับเพลิง" }] },
+        { emoji: "👨‍⚕️", name: "คุณหมอ", nameEn: "Doctor", about: "คุณหมอใส่เสื้อกาวน์ ใช้หูฟังตรวจคนไข้ และจ่ายยาให้เราหายป่วย",
+          items: [{ emoji: "🥼", label: "เสื้อกาวน์" }, { emoji: "🩺", label: "หูฟังแพทย์" }, { emoji: "💊", label: "ยา" }] },
+        { emoji: "👮", name: "ตำรวจ", nameEn: "Police Officer", about: "ตำรวจใส่หมวกตำรวจ มีนกหวีดและรถตำรวจไว้ดูแลความปลอดภัย",
+          items: [{ emoji: "🎩", label: "หมวกตำรวจ" }, { emoji: "📣", label: "นกหวีด" }, { emoji: "🚓", label: "รถตำรวจ" }] },
+        { emoji: "👨‍🍳", name: "พ่อครัว", nameEn: "Chef", about: "พ่อครัวใส่หมวกเชฟ ใช้กระทะและมีดทำอาหารอร่อย ๆ ให้เรากิน",
+          items: [{ emoji: "👨‍🍳", label: "หมวกเชฟ" }, { emoji: "🍳", label: "กระทะ" }, { emoji: "🔪", label: "มีดทำครัว" }] },
+        { emoji: "🧑‍🌾", name: "ชาวนา", nameEn: "Farmer", about: "ชาวนาใส่หมวกฟาง ใช้จอบและรถไถทำนาปลูกข้าวให้เรากิน",
+          items: [{ emoji: "👒", label: "หมวกฟาง" }, { emoji: "🌾", label: "ต้นข้าว" }, { emoji: "🚜", label: "รถไถ" }] },
+        { emoji: "👩‍🏫", name: "ครู", nameEn: "Teacher", about: "ครูใช้หนังสือ ชอล์ก และกระดานสอนเด็ก ๆ ให้เก่งและดี",
+          items: [{ emoji: "📚", label: "หนังสือ" }, { emoji: "✏️", label: "ดินสอ" }, { emoji: "🪧", label: "กระดาน" }] },
+        { emoji: "🧑‍✈️", name: "นักบิน", nameEn: "Pilot", about: "นักบินใส่หมวกนักบิน ขับเครื่องบินพาคนเดินทางไกล",
+          items: [{ emoji: "🧢", label: "หมวกนักบิน" }, { emoji: "✈️", label: "เครื่องบิน" }, { emoji: "🧳", label: "กระเป๋าเดินทาง" }] },
+        { emoji: "🧑‍🔧", name: "ช่างซ่อม", nameEn: "Mechanic", about: "ช่างซ่อมใช้ประแจ ค้อน และไขควงซ่อมของที่เสียให้กลับมาใช้ได้",
+          items: [{ emoji: "🔧", label: "ประแจ" }, { emoji: "🔨", label: "ค้อน" }, { emoji: "🪛", label: "ไขควง" }] },
+      ],
+    },
+  },
+
+  {
+    id: "tycoon",
+    title: "เกมเศรษฐีจิ๋ว",
+    titleEn: "Little Tycoon",
+    emoji: "💰",
+    cover: "bg-yellow-soft",
+    description: "ทอยลูกเต๋าเดินรอบกระดาน ซื้อร้านไว้เก็บค่าเช่า ผ่านจุดเริ่มได้เงินเพิ่ม จบเกมใครมีเงินมากกว่าชนะ — ฝึกนับเงิน บวกและลบ แบบเด็กอนุบาล",
+    skills: ["นับเงิน", "บวกและลบ", "ตัดสินใจใช้เงิน", "รอคอยตามตา"],
+    gradeId: "k3",
+    ages: "5–6 ปี",
+    players: [1, 2],
+    noLevels: true,
+    category: "board",
+    zone: "edu",
+    planIds: [],
+    activityType: "game",
+    config: { engine: "tycoon", level: "easy", rounds: 8 },
+  },
+
+  {
+    id: "spot-diff",
+    title: "จับผิดภาพ",
+    titleEn: "Spot the Difference",
+    emoji: "👀",
+    cover: "bg-sky-soft",
+    description: "ภาพ 2 ภาพวางคู่กัน คลิกตรงจุดที่ต่างกัน จะคลิกภาพซ้ายหรือขวาก็ได้ เจอแล้วขึ้นวงกลมให้เห็นชัด คลิกผิดไม่หักคะแนน มีหลายหมวดและหลายด่าน",
+    skills: ["การสังเกต", "เปรียบเทียบความต่าง", "สมาธิ", "ความละเอียดรอบคอบ"],
+    gradeId: "k1",
+    ages: "3–6 ปี",
+    players: [1],
+    category: "observe",
+    zone: "edu",
+    planIds: [],
+    activityType: "game",
+    config: { engine: "spot-diff", diffs: 3 },
+  },
+
+  /* 🌑 จับคู่ภาพกับเงา — รวมทุกหมวด */
+  {
+    id: "shadow-quiz",
+    title: "จับคู่ภาพกับเงา",
+    titleEn: "Shadow Matching",
+    emoji: "🌑",
+    cover: "bg-purple-100",
+    description: "ด้านบนมีภาพสี 1 ภาพ ด้านล่างมีเงาดำให้เลือก คลิกเงาที่รูปร่างตรงกับภาพ มีคำใบ้ช่วยตัดตัวเลือก ฟังชื่อภาพได้ทั้งไทยและอังกฤษ รวมภาพจากทุกหมวด",
+    skills: ["การสังเกต", "จำแนกรูปร่าง", "มิติสัมพันธ์", "คำศัพท์สองภาษา"],
+    gradeId: "k1",
+    ages: "4–6 ปี",
+    players: [1],
+    category: "shadow",
+    zone: "edu",
+    planIds: [],
+    activityType: "game",
+    config: { engine: "shadow-quiz", choices: 3, count: 8 },
+  },
+
   /* 🔨 เกมตีตุ่น — ฝึกการตอบสนอง สมาธิ และการยับยั้งใจ */
   {
     id: "whack-mole",
-    title: "ตีตุ่น",
+    title: "ตีตุ่น", titleEn: "Whack-a-Mole",
     emoji: "🔨",
     cover: "bg-yellow-soft",
     description: "ตุ่นโผล่ขึ้นมาจากรู แตะให้ทันก่อนมันมุดลงไป ฝึกสายตา มือ และสมาธิให้ไว",
@@ -307,7 +532,7 @@ export const GAMES: Game[] = [
   },
   {
     id: "whack-thai",
-    title: "ตีตุ่นตัวอักษรไทย",
+    title: "ตีตุ่นตัวอักษรไทย", titleEn: "Whack-a-Mole: Thai Letters",
     emoji: "🔤",
     cover: "bg-mint-soft",
     description: "ครูบอกตัวอักษรที่ต้องตี แล้วตีเฉพาะตัวนั้น ตัวอื่นห้ามตี — ฝึกจำพยัญชนะและฝึกยับยั้งใจไปพร้อมกัน",
@@ -327,7 +552,7 @@ export const GAMES: Game[] = [
   },
   {
     id: "whack-number",
-    title: "ตีตุ่นตัวเลข",
+    title: "ตีตุ่นตัวเลข", titleEn: "Whack-a-Mole: Numbers",
     emoji: "🔢",
     cover: "bg-sky-soft",
     description: "ตีเฉพาะตัวเลขที่กำหนด ตัวอื่นปล่อยไป — ฝึกจำตัวเลขและความไวในการสังเกต",
@@ -349,7 +574,7 @@ export const GAMES: Game[] = [
   /* ♟️ เกมกระดาน & วางแผน — ฝึกคิดล่วงหน้า วางแผน และยอมรับการแพ้ชนะ */
   {
     id: "flash-memory",
-    title: "จับคู่ความจำ ไทย–อังกฤษ",
+    title: "จับคู่ความจำ ไทย–อังกฤษ", titleEn: "Memory Match — Thai & English",
     emoji: "🃏",
     cover: "bg-purple-100",
     description: "เปิดการ์ด 2 ใบให้เป็นของสิ่งเดียวกัน ใบหนึ่งคำไทย อีกใบคำอังกฤษ — คำศัพท์ดึงมาจากคลังแฟลชการ์ดโดยตรง ครูเพิ่มบัตรเอง เกมก็มีคำใหม่ให้เล่นทันที",
@@ -365,7 +590,7 @@ export const GAMES: Game[] = [
   },
   {
     id: "tic-tac-toe",
-    title: "โอเอ็กซ์",
+    title: "โอเอ็กซ์", titleEn: "Tic-Tac-Toe",
     emoji: "⭕",
     cover: "bg-mint-soft",
     description: "วางเครื่องหมายให้เรียงกัน 3 ช่องก่อนอีกฝ่าย เล่นกับเครื่องหรือเล่นกับเพื่อนก็ได้ — เกมแรกที่สอนให้เด็กคิดล่วงหน้าว่าอีกฝ่ายจะทำอะไร",
@@ -381,7 +606,7 @@ export const GAMES: Game[] = [
   },
   {
     id: "connect-four",
-    title: "เรียงสี่",
+    title: "เรียงสี่", titleEn: "Connect Four",
     emoji: "🔴",
     cover: "bg-sky-soft",
     description: "หย่อนเม็ดลงหลักให้เรียงกัน 4 เม็ด ทั้งแนวนอน แนวตั้ง หรือแนวทแยง ต้องมองให้ออกว่าอีกฝ่ายกำลังจะเรียงตรงไหน",
@@ -397,7 +622,7 @@ export const GAMES: Game[] = [
   },
   {
     id: "checkers-mini",
-    title: "หมากฮอสจิ๋ว",
+    title: "หมากฮอสจิ๋ว", titleEn: "Mini Checkers",
     emoji: "⚫",
     cover: "bg-yellow-soft",
     description: "หมากฮอสกระดาน 6×6 ย่อขนาดให้เด็กเล่นไหว เดินทแยงไปข้างหน้า กระโดดข้ามเพื่อกิน ไปถึงแถวสุดท้ายได้เป็นคิง",
@@ -413,7 +638,7 @@ export const GAMES: Game[] = [
   },
   {
     id: "hanoi-tower",
-    title: "หอคอยฮานอย",
+    title: "หอคอยฮานอย", titleEn: "Tower of Hanoi",
     emoji: "🗼",
     cover: "bg-pink-soft",
     description: "ย้ายจานทั้งหมดไปหอขวาสุด ทีละจาน ห้ามวางจานใหญ่ทับจานเล็ก — ฝึกแก้ปัญหาเป็นขั้นตอน พื้นฐานของการเขียนโปรแกรม",
@@ -429,7 +654,7 @@ export const GAMES: Game[] = [
   },
   {
     id: "fruit-match",
-    title: "จับคู่ผลไม้",
+    title: "จับคู่ผลไม้", titleEn: "Fruit Memory Match",
     emoji: "🍎",
     cover: "bg-pink-soft",
     description: "เปิดการ์ดทีละ 2 ใบ หาผลไม้ที่เหมือนกันให้ครบทุกคู่",
@@ -448,7 +673,7 @@ export const GAMES: Game[] = [
   },
   {
     id: "animal-match",
-    title: "จับคู่สัตว์น่ารัก",
+    title: "จับคู่สัตว์น่ารัก", titleEn: "Cute Animal Match",
     emoji: "🐶",
     cover: "bg-yellow-soft",
     description: "หาสัตว์ตัวเหมือนกันให้เจอ เปิดการ์ดได้ทีละ 2 ใบ",
@@ -467,7 +692,7 @@ export const GAMES: Game[] = [
   },
   {
     id: "color-hunt",
-    title: "หาสีให้ถูก",
+    title: "หาสีให้ถูก", titleEn: "Find the Right Colour",
     emoji: "🎨",
     cover: "bg-purple-100",
     description: "ครูบอกสี หนูช่วยแตะสิ่งของที่มีสีนั้นให้ถูกนะ",
@@ -489,7 +714,7 @@ export const GAMES: Game[] = [
   },
   {
     id: "count-order",
-    title: "เรียงตัวเลข 1–5",
+    title: "เรียงตัวเลข 1–5", titleEn: "Order the Numbers 1–5",
     emoji: "🔢",
     cover: "bg-sky-soft",
     description: "แตะกลุ่มผลไม้จากน้อยไปหามาก 1 2 3 4 5",
@@ -509,7 +734,7 @@ export const GAMES: Game[] = [
   },
   {
     id: "odd-one-out",
-    title: "ตัวไหนไม่เข้าพวก",
+    title: "ตัวไหนไม่เข้าพวก", titleEn: "Odd One Out",
     emoji: "🔍",
     cover: "bg-mint-soft",
     description: "สังเกตดี ๆ แล้วแตะสิ่งที่ไม่เข้าพวกกับเพื่อน",
@@ -533,7 +758,7 @@ export const GAMES: Game[] = [
   },
   {
     id: "tile-puzzle-farm",
-    title: "ภาพตัดต่อ ฟาร์มแสนสุข",
+    title: "ภาพตัดต่อ ฟาร์มแสนสุข", titleEn: "Happy Farm Tile Puzzle",
     emoji: "🖼️",
     cover: "bg-yellow-soft",
     description: "แตะช่อง 2 ช่องเพื่อสลับที่ ต่อภาพให้เหมือนต้นแบบ",
@@ -550,7 +775,7 @@ export const GAMES: Game[] = [
   },
   {
     id: "letter-match",
-    title: "จับคู่ ก ไก่ กับภาพ",
+    title: "จับคู่ ก ไก่ กับภาพ", titleEn: "Match Thai Letters to Pictures",
     emoji: "🔤",
     cover: "bg-purple-100",
     description: "แตะตัวอักษร แล้วแตะภาพที่ขึ้นต้นด้วยตัวอักษรนั้น",
@@ -572,7 +797,7 @@ export const GAMES: Game[] = [
   },
   {
     id: "shadow-animals",
-    title: "จับคู่กับเงา",
+    title: "จับคู่กับเงา", titleEn: "Shadow Match",
     emoji: "🌑",
     cover: "bg-sky-soft",
     description: "แตะสัตว์ แล้วแตะเงาที่มีรูปร่างเหมือนกัน",
@@ -591,7 +816,7 @@ export const GAMES: Game[] = [
   },
   {
     id: "shadow-things",
-    title: "เงาของฉันคืออะไร",
+    title: "เงาของฉันคืออะไร", titleEn: "Whose Shadow Is It?",
     emoji: "🌓",
     cover: "bg-mint-soft",
     description: "ของใช้และผลไม้รอบตัว จับคู่กับเงาให้ถูกนะ",
@@ -610,7 +835,7 @@ export const GAMES: Game[] = [
   },
   {
     id: "body-match",
-    title: "จับคู่อวัยวะ",
+    title: "จับคู่อวัยวะ", titleEn: "Match the Body Parts",
     emoji: "🧒",
     cover: "bg-pink-soft",
     description: "หาคู่อวัยวะที่เหมือนกัน ตา หู จมูก ปาก มือ เท้า",
@@ -629,37 +854,37 @@ export const GAMES: Game[] = [
   },
   /* 🧠 ตรรกะและการคิด — เกมเลื่อน (Sliding Puzzle) ใช้กลไกเดียวกันกับตัวเลข ตัวอักษร รูปภาพ สี รูปทรง */
   {
-    id: "slide-numbers", title: "เกมเลื่อนตัวเลข 1–8", emoji: "🔢", cover: "bg-purple-100",
+    id: "slide-numbers", title: "เกมเลื่อนตัวเลข 1–8", titleEn: "Sliding Puzzle: Numbers 1–8", emoji: "🔢", cover: "bg-purple-100",
     description: "แตะตัวเลขที่อยู่ติดช่องว่างเพื่อเลื่อน เรียงให้เป็น 1 → 8 ฝึกการคิด สังเกต และวางแผน",
     skills: ["เรียงลำดับตัวเลข", "การวางแผน", "การสังเกต", "สมาธิ"], gradeId: "k2", ages: "4–6 ปี", category: "logic", planIds: ["myself"], activityType: "game",
     config: { engine: "sliding", items: ["1", "2", "3", "4", "5", "6", "7", "8"], size: 3, theme: "purple" },
   },
   {
-    id: "slide-thai", title: "เกมเลื่อนตัวอักษร ก–ซ", emoji: "🔤", cover: "bg-pink-soft",
+    id: "slide-thai", title: "เกมเลื่อนตัวอักษร ก–ซ", titleEn: "Sliding Puzzle: Thai Letters", emoji: "🔤", cover: "bg-pink-soft",
     description: "เลื่อนตัวอักษรไทยให้เรียงตามลำดับ ก ข ฃ ค ฅ ฆ ง จ",
     skills: ["ลำดับตัวอักษร", "การวางแผน", "การสังเกต"], gradeId: "k2", ages: "4–6 ปี", category: "logic", planIds: ["myself"], activityType: "game",
     config: { engine: "sliding", items: ["ก", "ข", "ฃ", "ค", "ฅ", "ฆ", "ง", "จ"], size: 3, theme: "pink" },
   },
   {
-    id: "slide-abc", title: "เกมเลื่อนตัวอักษร A–H", emoji: "🅰️", cover: "bg-sky-soft",
+    id: "slide-abc", title: "เกมเลื่อนตัวอักษร A–H", titleEn: "Sliding Puzzle: Letters A–H", emoji: "🅰️", cover: "bg-sky-soft",
     description: "เลื่อนตัวอักษรอังกฤษให้เรียง A → H",
     skills: ["ลำดับตัวอักษร A–Z", "การวางแผน"], gradeId: "k2", ages: "4–6 ปี", category: "logic", planIds: ["myself"], activityType: "game",
     config: { engine: "sliding", items: ["A", "B", "C", "D", "E", "F", "G", "H"], size: 3, theme: "yellow" },
   },
   {
-    id: "slide-animals", title: "เกมเลื่อนภาพสัตว์", emoji: "🐾", cover: "bg-mint-soft",
+    id: "slide-animals", title: "เกมเลื่อนภาพสัตว์", titleEn: "Sliding Puzzle: Animals", emoji: "🐾", cover: "bg-mint-soft",
     description: "เลื่อนชิ้นภาพสัตว์ให้เรียงตามภาพเป้าหมาย (ดูภาพเป้าหมายด้านข้าง)",
     skills: ["การสังเกต", "การจำตำแหน่ง", "การวางแผน"], gradeId: "k1", ages: "3–5 ปี", category: "logic", planIds: ["animals"], activityType: "game",
     config: { engine: "sliding", items: ["🐶", "🐱", "🐰", "🐻", "🐼", "🐸", "🐥", "🐷"], size: 3, theme: "green" },
   },
   {
-    id: "slide-colors", title: "เกมเลื่อนสี", emoji: "🎨", cover: "bg-yellow-soft",
+    id: "slide-colors", title: "เกมเลื่อนสี", titleEn: "Sliding Puzzle: Colours", emoji: "🎨", cover: "bg-yellow-soft",
     description: "เลื่อนช่องสีให้เรียงตามสายรุ้ง 🔴 🟠 🟡 🟢 🔵 🟣 🟤 ⚫",
     skills: ["จำแนกสี", "ลำดับ", "การวางแผน"], gradeId: "k1", ages: "3–5 ปี", category: "logic", planIds: ["myself"], activityType: "game",
     config: { engine: "sliding", items: ["🔴", "🟠", "🟡", "🟢", "🔵", "🟣", "🟤", "⚫"], size: 3, theme: "pink" },
   },
   {
-    id: "slide-shapes", title: "เกมเลื่อนรูปทรง", emoji: "🔷", cover: "bg-purple-100",
+    id: "slide-shapes", title: "เกมเลื่อนรูปทรง", titleEn: "Sliding Puzzle: Shapes", emoji: "🔷", cover: "bg-purple-100",
     description: "เลื่อนรูปทรงให้เรียงตามภาพเป้าหมาย ฝึกจำแนกรูปทรงเรขาคณิต",
     skills: ["รูปทรงเรขาคณิต", "การสังเกต", "การวางแผน"], gradeId: "k2", ages: "4–6 ปี", category: "logic", planIds: ["myself"], activityType: "game",
     config: { engine: "sliding", items: ["🔺", "🟦", "🟢", "⭐", "💜", "🔶", "🟥", "🔵"], size: 3, theme: "purple" },

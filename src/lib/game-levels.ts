@@ -61,6 +61,10 @@ export function applyDifficulty(config: GameConfig, level: Difficulty): { config
     case "tile-puzzle": {
       return { config, info: { questions: config.scene.length, timeLimit: level === "hard" ? 120 : undefined, hints: level === "easy", note: level === "easy" ? "มีเลขบอกตำแหน่งช่วย" : level === "hard" ? "ไม่มีตัวช่วย · จับเวลา" : "ต่อภาพ 3×3" } };
     }
+    case "color-pair": {
+      const pairs = take(config.pairs, level === "easy" ? 3 : level === "medium" ? 5 : config.pairs.length);
+      return { config: { ...config, pairs }, info: { questions: pairs.length, timeLimit: level === "hard" ? 15 * pairs.length : undefined, note: `จับคู่สี ${pairs.length} คู่${level === "hard" ? " · จับเวลา" : ""}` } };
+    }
     case "pair-columns": {
       const pairs = take(config.pairs, level === "easy" ? 3 : level === "medium" ? 5 : config.pairs.length);
       return { config: { ...config, pairs }, info: { questions: pairs.length, timeLimit: level === "hard" ? 15 * pairs.length : undefined, note: `จับคู่ ${pairs.length} คู่${level === "hard" ? " · จับเวลา" : ""}` } };
@@ -150,11 +154,67 @@ export function applyDifficulty(config: GameConfig, level: Difficulty): { config
         },
       };
     }
+    case "sort-basket": {
+      const two = config.rounds.filter((r) => r.baskets.length === 2);
+      const rounds = level === "easy" ? two.slice(0, 2) : level === "medium" ? config.rounds.slice(0, 4) : config.rounds;
+      const pick = level === "easy" ? 6 : level === "medium" ? 10 : 14;
+      return {
+        config: { ...config, rounds: rounds.length ? rounds : config.rounds, pick },
+        info: { questions: (rounds.length || config.rounds.length) * pick, timeLimit: level === "hard" ? 40 * (rounds.length || 1) : undefined, note: `${rounds.length || config.rounds.length} ชุด · ชุดละ ${pick} ชิ้น${level === "easy" ? " · ตะกร้า 2 ใบ" : level === "hard" ? " · มีตะกร้า 3 ใบ · จับเวลา" : ""}` },
+      };
+    }
+    case "dress-up": {
+      const cfg = level === "easy" ? { jobs: config.jobs.slice(0, 3), pickCount: 2, decoys: 3 }
+        : level === "medium" ? { jobs: config.jobs.slice(0, 5), pickCount: 3, decoys: 5 }
+        : { jobs: config.jobs, pickCount: 3, decoys: 7 };
+      return {
+        config: { ...config, ...cfg },
+        info: { questions: cfg.jobs.length * cfg.pickCount, timeLimit: level === "hard" ? 30 * cfg.jobs.length : undefined, note: `${cfg.jobs.length} อาชีพ · เลือก ${cfg.pickCount} อย่าง · ของหลอก ${cfg.decoys} ชิ้น${level === "hard" ? " · จับเวลา" : ""}` },
+      };
+    }
+    case "spot-diff": {
+      const diffs = level === "easy" ? 3 : level === "medium" ? 4 : 5;
+      return {
+        config: { ...config, diffs },
+        info: { questions: diffs, timeLimit: level === "hard" ? 180 : undefined, note: `หาจุดต่าง ${diffs} จุดต่อด่าน${level === "hard" ? " · จับเวลา" : ""}` },
+      };
+    }
+    case "shadow-quiz": {
+      // ระดับ 1 (4–6 ปี) = 3 เงา รูปร่างต่างกันชัด · ระดับ 2 (6 ปีขึ้นไป) = 4–6 เงา และเงาเอียงด้วย
+      const cfg = level === "easy" ? { choices: 3, count: 8, tricky: false }
+        : level === "medium" ? { choices: 4, count: 10, tricky: false }
+        : { choices: 6, count: 12, tricky: true };
+      return {
+        config: { ...config, ...cfg },
+        info: {
+          questions: cfg.count,
+          timeLimit: level === "hard" ? 15 * cfg.count : undefined,
+          note: `${cfg.count} ข้อ · เลือกจากเงา ${cfg.choices} อัน${level === "hard" ? " · เงาเอียงและคล้ายกันมาก · จับเวลา" : ""}`,
+        },
+      };
+    }
+    case "cake-decor":
+      return { config, info: { questions: 1, note: "ไม่มีระดับ ไม่มีผิดถูก — ของแต่งและสีเค้กสุ่มใหม่ทุกรอบ" } };
     case "color-paint": {
       const cfg = level === "easy" ? { size: 4, colors: 4 } : level === "medium" ? { size: 5, colors: 6 } : { size: 6, colors: 8 };
       return {
         config: { ...config, ...cfg },
         info: { questions: cfg.size * cfg.size, timeLimit: level === "hard" ? 180 : undefined, note: `ตาราง ${cfg.size}×${cfg.size} · ${cfg.colors} สี${level === "hard" ? " · จับเวลา" : ""}` },
+      };
+    }
+    case "tycoon": {
+      // ระดับ 1 = อายุ 4–6 ปี (กระดาน 16 ช่อง ช่วยคำนวณ) · ระดับ 2 = 6 ปีขึ้นไป (24 ช่อง สร้างบ้าน/โรงแรมได้)
+      const cfg = level === "easy" ? { level: "easy" as const, rounds: 8 }
+        : level === "medium" ? { level: "easy" as const, rounds: 12 }
+        : { level: "hard" as const, rounds: 14 };
+      return {
+        config: { ...config, ...cfg },
+        info: {
+          questions: cfg.rounds,
+          note: cfg.level === "easy"
+            ? `อายุ 4–6 ปี · กระดาน 16 ช่อง · เล่นคนละ ${cfg.rounds} ตา · ระบบช่วยคำนวณให้`
+            : `อายุ 6 ปีขึ้นไป · กระดาน 24 ช่อง · สร้างบ้านและโรงแรมได้ · เล่นคนละ ${cfg.rounds} ตา`,
+        },
       };
     }
     case "snakes-ladders":

@@ -16,7 +16,14 @@ import { WhackGame } from "./engines/WhackGame";
 import { BlockJourneyGame } from "./engines/BlockJourneyGame";
 import { DominoesGame } from "./engines/DominoesGame";
 import { SnakesLaddersGame } from "./engines/SnakesLaddersGame";
+import { TycoonGame } from "./engines/TycoonGame";
 import { ColorPaintGame } from "./engines/ColorPaintGame";
+import { CakeDecorGame } from "./engines/CakeDecorGame";
+import { SortBasketGame } from "./engines/SortBasketGame";
+import { DressUpGame } from "./engines/DressUpGame";
+import { SpotDiffGame } from "./engines/SpotDiffGame";
+import { ShadowQuizGame } from "./engines/ShadowQuizGame";
+import { scenesFor } from "@/data/spot-diff-helpers";
 import { IQGame } from "./engines/IQGame";
 import { TraceLineGame } from "./engines/TraceLineGame";
 import { SpellGame } from "./engines/SpellGame";
@@ -49,12 +56,26 @@ export function GamePlayer({ config, extras = {} }: { config: GameConfig; extras
     case "math-quiz": return <MathQuizGame mode={config.mode} count={config.count} {...x} />;
     case "spell": return <SpellGame count={config.count} maxLen={config.maxLen} {...x} />;
     case "iq": return <IQGame rounds={config.rounds} {...x} />;
+    case "sort-basket": return <SortBasketGame rounds={config.rounds} pick={config.pick} {...x} />;
+    case "dress-up": return <DressUpGame jobs={config.jobs} pickCount={config.pickCount} decoys={config.decoys} {...x} />;
+    case "spot-diff": return <SpotDiffGame scenes={scenesFor(config.categoryId, config.diffs)} {...x} />;
+    case "shadow-quiz": return <ShadowQuizGame categoryId={config.categoryId} choices={config.choices} count={config.count} tricky={config.tricky} {...x} />;
+    case "cake-decor": return <CakeDecorGame onDone={x.onDone} />;
     case "color-paint": return <ColorPaintGame size={config.size} colors={config.colors} task={config.task} {...x} />;
+    case "tycoon": return <TycoonGame level={config.level} rounds={config.rounds} onDone={x.onDone} />;
     case "snakes-ladders": return <SnakesLaddersGame onDone={x.onDone} />;
     case "dominoes": return <DominoesGame max={config.max ?? 6} onDone={x.onDone} />;
     case "whack": return <WhackGame items={config.items} prompt={config.prompt} holes={extras.holes} lifeMs={extras.lifeMs} gapMs={extras.gapMs} rounds={extras.rounds} {...x} />;
     case "quiz": return <QuizGame title={config.title} rounds={config.rounds} {...x} />;
     case "sliding": return <SlidingGame items={config.items} size={config.size ?? 3} theme={config.theme} scramble={extras.scramble ?? 6} {...x} />;
+    case "color-pair":
+      return (
+        <PairColumnsGame
+          pairs={config.pairs}
+          instruction={{ idle: "แตะสีทางซ้ายก่อน แล้วแตะของที่มีสีนั้น", picked: (l) => `เลือก ${l} แล้ว → หาของที่มีสีนี้` }}
+          {...x}
+        />
+      );
     case "gray-match":
       return (
         <PairColumnsGame

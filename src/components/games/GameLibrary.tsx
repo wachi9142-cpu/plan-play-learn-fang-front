@@ -49,7 +49,7 @@ function GameLibraryInner({ games }: { games: Game[] }) {
     if (!t) return () => true;
     return (g: Game) => {
       const cl = GAME_CATEGORIES[g.category];
-      const hay = [g.title, g.description, ...g.skills, cl.label, ...(CATEGORY_KEYWORDS[g.category] ?? []), g.ages ?? "", g.id].join(" ").toLowerCase();
+      const hay = [g.title, g.titleEn ?? "", g.description, ...g.skills, cl.label, ...(CATEGORY_KEYWORDS[g.category] ?? []), g.ages ?? "", g.id].join(" ").toLowerCase();
       return t.split(/\s+/).every((w) => hay.includes(w));
     };
   }, [q]);

@@ -17,6 +17,8 @@ export interface JigsawCategory {
   id: string;
   emoji: string;
   label: string;
+  /** ชื่อหมวดภาษาอังกฤษ */
+  labelEn: string;
   hint: string;
   tint: string;
   pictures: JigsawPicture[];
@@ -41,6 +43,7 @@ export const JIGSAW_CATEGORIES: JigsawCategory[] = [
     id: "zoo",
     emoji: "🦁",
     label: "สวนสัตว์",
+    labelEn: "Zoo Animals",
     hint: "สิงโต ช้าง ยีราฟ ม้าลาย และเพื่อน ๆ ในสวนสัตว์",
     tint: "bg-yellow-soft",
     pictures: [],
@@ -51,6 +54,7 @@ export const JIGSAW_CATEGORIES: JigsawCategory[] = [
     id: "sea",
     emoji: "🐠",
     label: "สัตว์น้ำในทะเล",
+    labelEn: "Under the Sea",
     hint: "ปลาการ์ตูน เต่าทะเล ปะการัง และโลกใต้ทะเล",
     tint: "bg-sky-soft",
     pictures: [],
@@ -61,6 +65,7 @@ export const JIGSAW_CATEGORIES: JigsawCategory[] = [
     id: "temple",
     emoji: "🛕",
     label: "วัดและวันสำคัญ",
+    labelEn: "Temples & Festivals",
     hint: "วัด โบสถ์ เจดีย์ และบรรยากาศวันสำคัญทางศาสนา",
     tint: "bg-purple-100",
     pictures: [],
@@ -71,6 +76,7 @@ export const JIGSAW_CATEGORIES: JigsawCategory[] = [
     id: "nature",
     emoji: "🏞️",
     label: "น้ำตกและธรรมชาติ",
+    labelEn: "Waterfalls & Nature",
     hint: "น้ำตก ภูเขา ทุ่งดอกไม้ และธรรมชาติรอบตัว",
     tint: "bg-mint-soft",
     pictures: [],
@@ -81,6 +87,7 @@ export const JIGSAW_CATEGORIES: JigsawCategory[] = [
     id: "cartoon",
     emoji: "🎨",
     label: "การ์ตูนน่ารัก",
+    labelEn: "Cute Cartoons",
     hint: "ตัวการ์ตูนสีสันสดใสที่เด็ก ๆ ชอบ",
     tint: "bg-pink-soft",
     pictures: [],
@@ -91,6 +98,7 @@ export const JIGSAW_CATEGORIES: JigsawCategory[] = [
     id: "school",
     emoji: "🏫",
     label: "โรงเรียนของเรา",
+    labelEn: "Our School",
     hint: "บ้านโรงเรียน มุมหนังสือ และกิจกรรมในห้องเรียน",
     tint: "bg-mint-soft",
     pictures: [
@@ -106,6 +114,7 @@ export const JIGSAW_CATEGORIES: JigsawCategory[] = [
     id: "activities",
     emoji: "🎈",
     label: "6 กิจกรรมหลัก",
+    labelEn: "Six Core Activities",
     hint: "กิจกรรมที่เด็ก ๆ ทำทุกวันที่โรงเรียน",
     tint: "bg-pink-soft",
     pictures: [
@@ -121,6 +130,7 @@ export const JIGSAW_CATEGORIES: JigsawCategory[] = [
     id: "projects",
     emoji: "🌱",
     label: "โครงการของเด็ก ๆ",
+    labelEn: "Children’s Projects",
     hint: "มะพร้าว มะม่วง และไข่ — เรื่องที่เด็กเคยเรียน",
     tint: "bg-yellow-soft",
     pictures: [
@@ -135,6 +145,7 @@ export const JIGSAW_CATEGORIES: JigsawCategory[] = [
     id: "events",
     emoji: "🎉",
     label: "กิจกรรมและเทศกาล",
+    labelEn: "Events & Festivals",
     hint: "วันกีฬาสี ลอยกระทง และวันพิเศษของโรงเรียน",
     tint: "bg-sky-soft",
     pictures: [
@@ -150,6 +161,7 @@ export const JIGSAW_CATEGORIES: JigsawCategory[] = [
     id: "art",
     emoji: "🎨",
     label: "ผลงานและศิลปะ",
+    labelEn: "Artwork & Crafts",
     hint: "ผลงานของเด็ก ๆ และมุมศิลปะ",
     tint: "bg-purple-100",
     pictures: [
@@ -164,6 +176,7 @@ export const JIGSAW_CATEGORIES: JigsawCategory[] = [
     id: "grades",
     emoji: "👧",
     label: "พี่ ๆ น้อง ๆ ในโรงเรียน",
+    labelEn: "Our Classes",
     hint: "ภาพประจำระดับชั้น ตั้งแต่เนอสเซอรี่ถึงอนุบาล 3",
     tint: "bg-mint-soft",
     pictures: [

@@ -13,6 +13,7 @@ import { listResults, players } from "@/lib/game-store";
 import { listPlayers } from "@/lib/players";
 import { GAMES } from "@/data/games";
 import { FLASH_CATEGORIES } from "@/data/flashcards";
+import { SPOT_CATEGORIES } from "@/data/spot-diff";
 import { WORKSHEETS } from "@/data/worksheets";
 import { PLANS, UNITS, GRADES } from "@/data/plans";
 import { PROJECTS } from "@/data/projects";
@@ -61,6 +62,7 @@ export function AdminPage() {
     { href: "/portfolio", emoji: "🏆", title: "แฟ้มผลงานเด็ก", desc: "หมวดหมู่ · ความคิดเห็นครู · เผยแพร่/ส่วนตัว", stat: `${stats.portfolio} ผลงาน · เผยแพร่ ${stats.published}` },
     { href: "/development", emoji: "📈", title: "ติดตามพัฒนาการ", desc: "บันทึกพัฒนาการ 4 ด้านรายเด็ก", stat: `${stats.dev} บันทึก` },
     { href: "/canvas", emoji: "🎨", title: "Garden Canvas", desc: "กระดาษวาดรูป · ห้องวาดร่วมกัน", stat: `${stats.canvases} กระดาษ` },
+    { href: "/admin/spot-diff", emoji: "👀", title: "สร้างฉากจับผิดภาพ", desc: "วางของบนภาพ แล้วเลือกว่าชิ้นไหนให้ต่างกัน — ไม่ต้องแก้โค้ด", stat: `${SPOT_CATEGORIES.length} หมวด` },
     { href: "/admin/flashcards", emoji: "🃏", title: "จัดการแฟลชการ์ด", desc: "เพิ่ม/แก้/ลบ หมวด ชุดบัตร และคำศัพท์ไทย–อังกฤษ", stat: `${FLASH_CATEGORIES.length} หมวด · ${FLASH_CATEGORIES.reduce((n, c) => n + c.sets.length, 0)} ชุด` },
     { href: "/games/progress", emoji: "🎮", title: "เกม: ระดับ & พัฒนาการ", desc: "กำหนดระดับต่อห้อง/ต่อเด็ก · ดูผลการเล่น", stat: `${stats.results} ครั้ง · ${stats.players} ผู้เล่น · โปรไฟล์ ${stats.profiles}` },
   ];

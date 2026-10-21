@@ -44,6 +44,7 @@ export default async function GamePage({ params }: { params: Promise<Params> }) 
         <span className={`grid size-14 shrink-0 place-items-center rounded-2xl text-3xl shadow-soft sm:size-16 sm:text-4xl ${game.cover}`}>{game.emoji}</span>
         <div className="min-w-0 flex-1">
           <h1 className="text-2xl sm:text-3xl">{game.title}</h1>
+          {game.titleEn && <p className="text-[15px] font-medium text-purple-500 sm:text-base">{game.titleEn}</p>}
           <p className="text-[15px] text-ink-soft sm:text-base">{game.description}</p>
         </div>
       </div>

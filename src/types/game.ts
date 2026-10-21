@@ -42,6 +42,7 @@ export type GameConfig =
   | { engine: "color-match"; rounds: { color: string; name: string; items: { emoji: string; color: string }[] }[] }
   | { engine: "tile-puzzle"; scene: string[]; size: 3 }
   | { engine: "pair-columns"; pairs: { left: string; right: string; label: string }[] }
+  | { engine: "color-pair"; pairs: { left: string; right: string; label: string }[] }
   | { engine: "shadow-match"; items: { emoji: string; label: string }[] }
   | { engine: "gray-match"; items: { emoji: string; label: string }[] }
   | { engine: "sliding"; items: string[]; size?: 3 | 4; theme?: "purple" | "pink" | "green" | "yellow" }
@@ -60,7 +61,18 @@ export type GameConfig =
   | { engine: "block-journey"; cols?: number; rows?: number }
   | { engine: "dominoes"; max?: number }
   | { engine: "snakes-ladders" }
+  | { engine: "tycoon"; level?: "easy" | "hard"; rounds?: number }
   | { engine: "color-paint"; size?: number; colors?: number; task?: boolean }
+  | { engine: "cake-decor" }
+  | { engine: "spot-diff"; categoryId?: string; diffs?: number }
+  | { engine: "shadow-quiz"; categoryId?: string; choices?: number; count?: number; tricky?: boolean }
+  | {
+      engine: "dress-up";
+      pickCount?: number;
+      decoys?: number;
+      jobs: { emoji: string; name: string; nameEn: string; about: string; items: { emoji: string; label: string }[] }[];
+    }
+  | { engine: "sort-basket"; pick?: number; rounds: { title: string; baskets: { emoji: string; label: string; accept: string[] }[]; pick?: number }[] }
   | {
       engine: "trace-line";
       actor: string;
@@ -81,6 +93,8 @@ export interface EngineExtras { timeLimit?: number; hints?: boolean; scramble?: 
 export interface Game {
   id: string;
   title: string;
+  /** ชื่อเกมภาษาอังกฤษ — แสดงคู่กับชื่อไทยทุกที่ และค้นหาได้ทั้งสองภาษา */
+  titleEn?: string;
   emoji: string;
   cover: string;            // tailwind bg class สำหรับพื้นการ์ด
   description: string;

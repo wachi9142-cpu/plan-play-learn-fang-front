@@ -235,6 +235,7 @@ export const TEACHER_ZONE: NavLink[] = [
   { href: "/teacher/lunch", emoji: "🍚", label: "เมนูอาหารและของแพ้" },
   { href: "/teacher/leave", emoji: "🏠", label: "แจ้งลาและคนมารับเด็ก" },
   { href: "/teacher/todo", emoji: "📋", label: "สิ่งที่รอครูเติม" },
+  { href: "/admin/spot-diff", emoji: "👀", label: "สร้างฉากจับผิดภาพ" },
   { href: "/admin", emoji: "👑", label: "ผู้ดูแลระบบ" },
 ];
 
