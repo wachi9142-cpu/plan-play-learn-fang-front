@@ -56,6 +56,26 @@ export function GridPathGame({ actor, goal, level, hint, timeLimit, onDone }: { 
   })();
   const tracePath = (() => { const cells = [level.start.join(",")]; let [c, r] = level.start; for (const d of solution) { c += DELTA[d][0]; r += DELTA[d][1]; cells.push(`${c},${r}`); } return cells; })();
 
+  /**
+   * 🧭 เส้นทางที่จะเดินตามคำสั่งปัจจุบัน — เอาไปวาดลูกศรบนกระดานให้เด็กเห็นก่อนกด ▶️
+   * ถ้าคำสั่งพาไปชนต้นไม้หรือออกนอกกระดาน จะทำเครื่องหมายช่องที่ชนไว้ให้เห็น
+   */
+  const preview = (() => {
+    const steps: { key: string; dir: Dir; n: number }[] = [];
+    let [c, r] = level.start;
+    let crashAt: string | null = null;
+    for (let i = 0; i < expanded.length; i++) {
+      const d = expanded[i];
+      const nc = c + DELTA[d][0], nr = r + DELTA[d][1];
+      if (blocked(nc, nr)) { crashAt = `${nc},${nr}`; break; }
+      c = nc; r = nr;
+      steps.push({ key: `${c},${r}`, dir: d, n: i + 1 });
+    }
+    const reaches = !crashAt && c === level.target[0] && r === level.target[1];
+    return { steps, crashAt, reaches, endKey: `${c},${r}` };
+  })();
+  const previewAt = (key: string) => preview.steps.find((s) => s.key === key);
+
   const run = () => {
     if (running || expanded.length === 0) return;
     setRunning(true); setMsg(null); setVisited([]); let [c, r] = level.start; setPos([c, r]);
@@ -69,7 +89,26 @@ export function GridPathGame({ actor, goal, level, hint, timeLimit, onDone }: { 
       }, 450 * (i + 1)));
     });
   };
-  const add = (dir: Dir) => { if (running || done) return; setCmds((cs) => { if (cs.length >= maxCmds) { setMsg(`ช่องคำสั่งเต็มแล้ว (${maxCmds}) ลองใช้ 🔁 ทำซ้ำ หรือลบคำสั่งที่ไม่จำเป็นออก`); return cs; } const last = cs[cs.length - 1]; if (level.repeat && last && last.dir === dir && last.times < 3) return [...cs.slice(0, -1), { dir, times: last.times + 1 }]; return [...cs, { dir, times: 1 }]; }); };
+  /**
+   * เพิ่มคำสั่ง — ถ้าเป็นทิศเดิมและยังทำซ้ำได้ ให้รวมเป็นก้อนเดิม (🔁 ทำซ้ำ)
+   * จำนวนที่จำกัดคือ "จำนวนช่องคำสั่ง" ไม่ใช่จำนวนก้าว จึงห้ามเฉพาะตอนจะเปิดช่องใหม่
+   */
+  const add = (dir: Dir) => {
+    if (running || done) return;
+    setCmds((cs) => {
+      const last = cs[cs.length - 1];
+      const canMerge = !!level.repeat && !!last && last.dir === dir && last.times < 3;
+      if (!canMerge && cs.length >= maxCmds) {
+        setMsg(level.repeat
+          ? `ช่องคำสั่งเต็มแล้ว (${maxCmds} ช่อง) ลองกดทิศเดิมซ้ำเพื่อทำเป็น 🔁 ทำซ้ำ หรือลบช่องที่ไม่จำเป็นออก`
+          : `ช่องคำสั่งเต็มแล้ว (${maxCmds} ช่อง) ลบคำสั่งที่ไม่จำเป็นออกก่อนนะ`);
+        return cs;
+      }
+      setMsg(null);
+      if (canMerge) return [...cs.slice(0, -1), { dir, times: last!.times + 1 }];
+      return [...cs, { dir, times: 1 }];
+    });
+  };
   const removeAt = (i: number) => !running && setCmds((cs) => cs.filter((_, j) => j !== i));
   const rotateAt = (i: number) => { if (running) return; const order: Dir[] = ["up", "right", "down", "left"]; setCmds((cs) => cs.map((c, j) => (j === i ? { ...c, dir: order[(order.indexOf(c.dir) + 1) % 4] } : c))); };
   const instruction = mode === "debug" ? `มีคำสั่ง 1 อันที่ทำให้ ${actor} ไปไม่ถึง ${goal} — แตะคำสั่งเพื่อเปลี่ยนทิศ แล้วกด ▶️` : mode === "trace" ? `ดูเส้นทางจุด ๆ แล้วเรียงคำสั่งให้ ${actor} เดินตามไปหา ${goal}` : hint ?? `คิดลำดับคำสั่งให้ ${actor} ไปหา ${goal} แล้วกด ▶️ เริ่ม`;
@@ -87,6 +126,19 @@ export function GridPathGame({ actor, goal, level, hint, timeLimit, onDone }: { 
               <div key={i} className={cn("relative flex aspect-square items-center justify-center rounded-xl text-2xl sm:text-3xl", ob ? "bg-ink/80" : TILE[(c + r) % TILE.length], visited.includes(key) && !isActor && "ring-2 ring-inset ring-purple-300")}>
                 {ob && "🌳"}{isGoal && !isActor && goal}
                 {onTrace && !isActor && <span className="absolute size-2.5 rounded-full bg-purple-400/70" />}
+
+                {/* 🧭 ลูกศรบอกเส้นทางที่วางคำสั่งไว้ — เห็นบนกระดานเลย ไม่ต้องจินตนาการ */}
+                {!running && !done && step < 0 && previewAt(key) && !isActor && (
+                  <span className="pointer-events-none absolute inset-0 grid place-items-center">
+                    <span className={cn("text-[clamp(1rem,4.5vw,1.6rem)] leading-none drop-shadow",
+                      preview.reaches ? "text-[#1f6b4d]" : "text-purple-600")}>{ARROW[previewAt(key)!.dir]}</span>
+                    <span className="absolute right-0.5 top-0.5 text-[10px] font-medium text-ink-soft">{previewAt(key)!.n}</span>
+                  </span>
+                )}
+                {!running && !done && step < 0 && preview.crashAt === key && (
+                  <span className="pointer-events-none absolute inset-0 grid place-items-center text-[clamp(1rem,4.5vw,1.6rem)]">💥</span>
+                )}
+
                 {isActor && <span className="animate-rise drop-shadow">{actor}</span>}
               </div>
             );
@@ -95,7 +147,7 @@ export function GridPathGame({ actor, goal, level, hint, timeLimit, onDone }: { 
 
         {/* คำสั่ง */}
         <div className="w-full max-w-sm">
-          <p className="text-[13px] text-ink-soft">คำสั่ง ({expanded.length}/{maxCmds}){level.repeat && " · กดทิศเดิมซ้ำ = 🔁 ทำซ้ำ"}</p>
+          <p className="text-[13px] text-ink-soft">ช่องคำสั่ง ({cmds.length}/{maxCmds}) · รวม {expanded.length} ก้าว{level.repeat && " · กดทิศเดิมซ้ำ = 🔁 ทำซ้ำ"}</p>
           <div className="mt-1 flex min-h-14 flex-wrap items-center gap-1.5 rounded-2xl border-2 border-dashed border-purple-200 bg-cream p-2">
             {cmds.length === 0 && <span className="px-1 text-[13px] text-ink-soft">แตะลูกศรด้านล่างเพื่อเพิ่มคำสั่ง →</span>}
             {cmds.map((c, i) => { const startIdx = cmds.slice(0, i).reduce((a, x) => a + x.times, 0); const active = step >= startIdx && step < startIdx + c.times; return (

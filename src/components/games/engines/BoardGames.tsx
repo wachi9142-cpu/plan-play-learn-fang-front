@@ -80,35 +80,45 @@ export function TicTacToeGame({ marks, timeLimit, onDone }: { marks?: [string, s
   const [board, setBoard] = useState<Mark[]>(Array(9).fill(null));
   const [turn, setTurn] = useState<"x" | "o">("x");
   const [losses, setLosses] = useState(0);
+  /** รอบนี้หนูเล่นเป็นอะไร — สุ่มใหม่ทุกรอบ ❌ หรือ ⭕ (X เดินก่อนเสมอตามกติกา) */
+  const [myMark, setMyMark] = useState<"x" | "o">("x");
+
+  const cpuMark: "x" | "o" = myMark === "x" ? "o" : "x";
+  const mySymbol = myMark === "x" ? A : B;
+  const cpuSymbol = myMark === "x" ? B : A;
 
   const win = winnerOf(board);
   const full = board.every(Boolean);
   const done = !!win || full;
   const vsCpu = opp !== "friend";
 
-  const restart = useCallback(() => { setBoard(Array(9).fill(null)); setTurn("x"); }, []);
+  const restart = useCallback(() => {
+    setBoard(Array(9).fill(null));
+    setTurn("x");
+    setMyMark(Math.random() < 0.5 ? "x" : "o");
+  }, []);
   useEffect(() => { restart(); }, [opp, restart]);
 
-  // เครื่องเดินหลังเด็กเดิน
+  // เครื่องเดินเมื่อถึงตาของมัน (ถ้าหนูได้ ⭕ เครื่องจะเป็น ❌ และเดินก่อน)
   useEffect(() => {
-    if (!vsCpu || turn !== "o" || done) return;
+    if (!vsCpu || turn !== cpuMark || done) return;
     const t = setTimeout(() => {
       setBoard((b) => {
         if (winnerOf(b) || b.every(Boolean)) return b;
-        const i = cpuMoveTTT(b, "o", opp === "cpu-hard");
-        const n = [...b]; n[i] = "o";
+        const i = cpuMoveTTT(b, cpuMark, opp === "cpu-hard");
+        const n = [...b]; n[i] = cpuMark;
         return n;
       });
-      setTurn("x");
+      setTurn(myMark);
     }, 550);
     return () => clearTimeout(t);
-  }, [turn, vsCpu, opp, done]);
+  }, [turn, vsCpu, opp, done, cpuMark, myMark]);
 
-  useEffect(() => { if (win?.mark === "o" && vsCpu) setLosses((n) => n + 1); }, [win, vsCpu]);
+  useEffect(() => { if (win?.mark === cpuMark && vsCpu) setLosses((n) => n + 1); }, [win, vsCpu, cpuMark]);
 
   const play = (i: number) => {
     if (board[i] || done) return;
-    if (vsCpu && turn !== "x") return;
+    if (vsCpu && turn !== myMark) return;
     const n = [...board]; n[i] = turn;
     setBoard(n);
     setTurn(turn === "x" ? "o" : "x");
@@ -116,10 +126,10 @@ export function TicTacToeGame({ marks, timeLimit, onDone }: { marks?: [string, s
 
   const msg = win
     ? vsCpu
-      ? win.mark === "x" ? "🎉 เก่งมาก! หนูชนะแล้ว" : "เครื่องชนะรอบนี้ ลองใหม่อีกครั้งนะ 💪"
+      ? win.mark === myMark ? "🎉 เก่งมาก! หนูชนะแล้ว" : "เครื่องชนะรอบนี้ ลองใหม่อีกครั้งนะ 💪"
       : `🎉 ผู้เล่น ${win.mark === "x" ? A : B} ชนะ!`
     : full ? "เสมอกันพอดี 🤝 ลองใหม่อีกรอบ"
-    : vsCpu ? (turn === "x" ? `ตาหนูแล้ว — แตะช่องว่างเพื่อวาง ${A}` : "เครื่องกำลังคิด…")
+    : vsCpu ? (turn === myMark ? `ตาหนูแล้ว — แตะช่องว่างเพื่อวาง ${mySymbol}` : "เครื่องกำลังคิด…")
     : `ตาของ ${turn === "x" ? A : B}`;
 
   return (
@@ -127,13 +137,23 @@ export function TicTacToeGame({ marks, timeLimit, onDone }: { marks?: [string, s
       instruction={msg}
       done={done}
       onRestart={restart}
-      stats={vsCpu ? `แพ้ไป ${losses} ครั้ง` : undefined}
-      mistakes={win?.mark === "o" ? 1 : 0}
+      stats={vsCpu ? `รอบนี้หนูเป็น ${mySymbol} · แพ้ไป ${losses} ครั้ง` : undefined}
+      mistakes={win?.mark === cpuMark ? 1 : 0}
       total={1}
       timeLimit={timeLimit}
       onDone={onDone}
     >
       <OpponentPicker value={opp} onChange={setOpp} />
+
+      {/* รอบนี้ใครเป็นอะไร — สุ่มใหม่ทุกรอบ */}
+      {vsCpu && (
+        <p className="mb-3 text-center text-[15px] text-ink-soft">
+          รอบนี้หนูเป็น <b className="text-[22px] align-middle text-purple-700">{mySymbol}</b>
+          {"  "}· เครื่องเป็น <b className="text-[22px] align-middle text-ink-soft">{cpuSymbol}</b>
+          {myMark === "o" && <span className="block text-[13px]">({A} เดินก่อนเสมอ เครื่องจึงเริ่มก่อนรอบนี้)</span>}
+        </p>
+      )}
+
       <div className="mx-auto grid w-full max-w-[22rem] grid-cols-3 gap-2">
         {board.map((v, i) => (
           <button
@@ -424,34 +444,55 @@ export function CheckersGame({ timeLimit, onDone }: { timeLimit?: number; onDone
 /* ══════════════════ 🗼 หอคอยฮานอย ══════════════════ */
 
 export function HanoiGame({ discs = 3, timeLimit, onDone }: { discs?: number; timeLimit?: number; onDone?: Cb }) {
-  const COLORS = ["bg-pink-accent", "bg-yellow-accent", "bg-mint-soft", "bg-sky-soft", "bg-purple-300"];
+  const COLORS = ["bg-pink-accent", "bg-yellow-accent", "bg-[#7bd1a8]", "bg-[#8fc4ef]", "bg-purple-300"];
+  const NAMES = ["ชมพู", "เหลือง", "เขียว", "ฟ้า", "ม่วง"];
   const init = useCallback(() => [Array.from({ length: discs }, (_, i) => discs - i), [], []] as number[][], [discs]);
   const [towers, setTowers] = useState<number[][]>(init);
   const [from, setFrom] = useState<number | null>(null);
   const [moves, setMoves] = useState(0);
   const [bad, setBad] = useState(0);
+  const [shake, setShake] = useState<number | null>(null);
 
-  const restart = useCallback(() => { setTowers(init()); setFrom(null); setMoves(0); setBad(0); }, [init]);
+  const restart = useCallback(() => { setTowers(init()); setFrom(null); setMoves(0); setBad(0); setShake(null); }, [init]);
   useEffect(() => { restart(); }, [discs, restart]);
 
   const best = Math.pow(2, discs) - 1;
   const done = towers[2].length === discs;
 
+  /** จานที่กำลังถืออยู่ (ยกลอยขึ้นมาจากหอ) */
+  const held = from === null ? null : towers[from][towers[from].length - 1] ?? null;
+
+  /** วางลงหอนี้ได้ไหม */
+  const canDrop = (i: number) => {
+    if (held === null || from === null || i === from) return false;
+    const top = towers[i][towers[i].length - 1];
+    return top === undefined || top > held;
+  };
+
   const tap = (i: number) => {
     if (done) return;
     if (from === null) { if (towers[i].length) setFrom(i); return; }
     if (from === i) { setFrom(null); return; }
-    const a = towers[from], b = towers[i];
-    const top = a[a.length - 1];
-    if (b.length && b[b.length - 1] < top) { setBad((n) => n + 1); setFrom(null); return; }
+    if (!canDrop(i)) {
+      setBad((n) => n + 1);
+      setShake(i);
+      setTimeout(() => setShake(null), 500);
+      return;
+    }
     const n = towers.map((t) => [...t]);
     n[i].push(n[from].pop()!);
     setTowers(n); setFrom(null); setMoves((m) => m + 1);
   };
 
+  const discWidth = (d: number) => `${34 + (d / discs) * 58}%`;
+
   return (
     <GameShell
-      instruction={done ? `🎉 สำเร็จ! ย้ายครบใน ${moves} ครั้ง (น้อยที่สุดคือ ${best} ครั้ง)` : from === null ? "แตะหอที่จะหยิบจานบนสุด" : "แตะหอที่จะวางจาน"}
+      instruction={
+        done ? `🎉 สำเร็จ! ย้ายครบใน ${moves} ครั้ง (น้อยที่สุดคือ ${best} ครั้ง)`
+          : held === null ? "แตะหอที่จะหยิบจานบนสุด"
+          : `✋ กำลังถือจาน${NAMES[(held - 1) % NAMES.length]}อยู่ — แตะหอที่เรืองแสงเพื่อวาง`
+      }
       done={done}
       onRestart={restart}
       stats={`ย้ายแล้ว ${moves} ครั้ง · น้อยที่สุด ${best}`}
@@ -461,31 +502,56 @@ export function HanoiGame({ discs = 3, timeLimit, onDone }: { discs?: number; ti
       onDone={onDone}
     >
       <div className="mx-auto grid w-full max-w-[34rem] grid-cols-3 gap-2">
-        {towers.map((t, i) => (
-          <button
-            key={i}
-            type="button"
-            onClick={() => tap(i)}
-            aria-label={`หอที่ ${i + 1} มี ${t.length} จาน`}
-            className={cn(
-              "tap relative flex h-44 flex-col-reverse items-center justify-start gap-1 rounded-2xl border-2 p-2 transition sm:h-56",
-              from === i ? "border-purple-500! bg-purple-50" : "border-line bg-cream hover:brightness-95",
-            )}
-          >
-            <span className="absolute inset-x-0 bottom-1 mx-auto h-1.5 w-[86%] rounded-full bg-purple-200" aria-hidden />
-            <span className="absolute bottom-1 h-[78%] w-2 rounded-full bg-purple-200" aria-hidden />
-            {t.map((d) => (
-              <span
-                key={d}
-                className={cn("relative z-10 h-6 rounded-full shadow-soft sm:h-7", COLORS[(d - 1) % COLORS.length])}
-                style={{ width: `${30 + (d / discs) * 62}%` }}
-              />
-            ))}
-          </button>
-        ))}
+        {towers.map((t, i) => {
+          const picked = from === i;
+          const visible = picked ? t.slice(0, -1) : t;      // จานบนสุดถูกยกขึ้นไปลอยอยู่
+          const ok = canDrop(i);
+          return (
+            <button
+              key={i}
+              type="button"
+              onClick={() => tap(i)}
+              aria-label={`หอที่ ${i + 1} มี ${t.length} จาน${ok ? " (วางได้)" : ""}`}
+              className={cn(
+                "tap relative flex h-52 flex-col-reverse items-center justify-start gap-1 rounded-2xl border-2 p-2 pt-12 transition sm:h-64",
+                ok ? "border-[#3fae7a]! bg-mint-soft ring-4 ring-[#7bd1a8]"
+                  : picked ? "border-purple-500! bg-purple-50 ring-4 ring-purple-300"
+                  : "border-line bg-cream hover:brightness-95",
+                shake === i && "border-pink-accent! bg-pink-soft",
+              )}
+            >
+              {/* ฐานและเสา */}
+              <span className="absolute inset-x-0 bottom-1 mx-auto h-1.5 w-[86%] rounded-full bg-purple-200" aria-hidden />
+              <span className="absolute bottom-1 h-[62%] w-2 rounded-full bg-purple-200" aria-hidden />
+
+              {/* จานที่อยู่ในหอ */}
+              {visible.map((d) => (
+                <span
+                  key={d}
+                  className={cn("relative z-10 h-6 rounded-full shadow-soft sm:h-7", COLORS[(d - 1) % COLORS.length])}
+                  style={{ width: discWidth(d) }}
+                />
+              ))}
+
+              {/* ✋ จานที่ถืออยู่ — ลอยเหนือหอให้เห็นชัดว่าหยิบติดมือแล้ว */}
+              {picked && held !== null && (
+                <span className="pointer-events-none absolute inset-x-2 top-2 z-20 flex flex-col items-center gap-1">
+                  <span
+                    className={cn("hanoi-lift h-6 rounded-full shadow-lift ring-2 ring-white sm:h-7", COLORS[(held - 1) % COLORS.length])}
+                    style={{ width: discWidth(held) }}
+                  />
+                  <span className="text-[12px] font-medium text-purple-700">✋ ถืออยู่</span>
+                </span>
+              )}
+
+              {ok && <span className="absolute inset-x-0 top-3 z-20 text-center text-[13px] font-medium text-[#1f6b4d]">⬇️ วางตรงนี้ได้</span>}
+              {shake === i && <span className="absolute inset-x-0 top-3 z-20 text-center text-[13px] font-medium text-[#a8456c]">วางไม่ได้นะ</span>}
+            </button>
+          );
+        })}
       </div>
       <p className="mt-2 text-center text-[13px] text-ink-soft">
-        ย้ายจานทั้งหมดไปหอขวาสุด · หยิบได้ทีละจาน · ห้ามวางจานใหญ่ทับจานเล็ก
+        ย้ายจานทั้งหมดไปหอขวาสุด · หยิบได้ทีละจาน · ห้ามวางจานใหญ่ทับจานเล็ก · แตะหอเดิมซ้ำเพื่อวางคืน
       </p>
     </GameShell>
   );

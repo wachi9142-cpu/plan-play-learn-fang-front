@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Game, GameCategory } from "@/types";
 import { GAME_CATEGORIES } from "@/data/games";
 import { GameCard } from "@/components/games/GameCard";
@@ -9,17 +10,35 @@ import { cn } from "@/lib/cn";
 import { AGE_BANDS, bandsForRange, type AgeBandId } from "@/lib/age-bands";
 import { getGrade } from "@/data/plans";
 
-/** คลังเกม + กรองตามประเภท */
+/** จำนวนเกมต่อหน้า */
+const PER_PAGE = 9;
+
+/** คลังเกม + กรองตามประเภท + แบ่งหน้า */
 export function GameLibrary({ games }: { games: Game[] }) {
   const [cat, setCat] = useState<GameCategory | null>(null);
   const [band, setBand] = useState<AgeBandId | null>(null);
   /** 👥 กรองตามจำนวนผู้เล่น — null = ไม่กรอง */
   const [people, setPeople] = useState<number | null>(null);
+  /** 📄 หน้าที่กำลังดู — เกมแต่ละหน้าไม่ซ้ำกัน */
+  const [page, setPage] = useState(1);
+  const topRef = useRef<HTMLDivElement>(null);
   const agesOf = (g: Game) => g.ages ?? getGrade(g.gradeId)?.ages;
   const inBand = (g: Game) => !band || bandsForRange(agesOf(g)).includes(band);
   const fitsPeople = (g: Game) => !people || (g.players ?? [1]).includes(people);
   const cats = (Object.keys(GAME_CATEGORIES) as GameCategory[]).filter((c) => games.some((g) => g.category === c));
   const list = games.filter((g) => (!cat || g.category === cat) && inBand(g) && fitsPeople(g));
+
+  const pages = Math.max(1, Math.ceil(list.length / PER_PAGE));
+  const current = Math.min(page, pages);
+  const shown = list.slice((current - 1) * PER_PAGE, current * PER_PAGE);
+
+  // เปลี่ยนตัวกรองแล้วกลับไปหน้าแรกเสมอ จะได้ไม่ไปค้างอยู่หน้าที่ไม่มีเกม
+  useEffect(() => { setPage(1); }, [cat, band, people]);
+
+  const goPage = (p: number) => {
+    setPage(p);
+    topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   return (
     <div>
@@ -45,12 +64,62 @@ export function GameLibrary({ games }: { games: Game[] }) {
         ))}
       </div>
 
+      <div ref={topRef} className="scroll-mt-24" />
+
       {list.length === 0 ? (
         <EmptyState emoji="🎮" title="ยังไม่มีเกมในหมวดนี้" hint="เกมใหม่กำลังจะมาเร็ว ๆ นี้" />
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {list.map((g, i) => <GameCard key={g.id} game={g} className="animate-rise" style={{ animationDelay: `${i * 60}ms` }} />)}
-        </div>
+        <>
+          <p className="mb-3 text-[14px] text-ink-soft">
+            พบ <b className="text-purple-700">{list.length}</b> เกม
+            {pages > 1 && <> · กำลังดูหน้า <b className="text-purple-700">{current}</b> จาก {pages} (เกมที่ {(current - 1) * PER_PAGE + 1}–{Math.min(current * PER_PAGE, list.length)})</>}
+          </p>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {shown.map((g, i) => <GameCard key={g.id} game={g} className="animate-rise" style={{ animationDelay: `${i * 60}ms` }} />)}
+          </div>
+
+          {/* 📄 เลขหน้า — กดเลขเพื่อไปหน้านั้น เกมไม่ซ้ำกับหน้าอื่น */}
+          {pages > 1 && (
+            <nav className="mt-8 flex flex-wrap items-center justify-center gap-2" aria-label="เลือกหน้าเกม">
+              <button
+                type="button"
+                onClick={() => goPage(current - 1)}
+                disabled={current === 1}
+                className="tap inline-flex items-center gap-1 rounded-full bg-cream-dark px-4 py-2 text-[14px] font-medium text-purple-700 hover:brightness-95 disabled:opacity-40"
+              >
+                <ChevronLeft size={16} /> ก่อนหน้า
+              </button>
+
+              {Array.from({ length: pages }, (_, i) => i + 1).map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => goPage(p)}
+                  aria-current={p === current ? "page" : undefined}
+                  aria-label={`หน้า ${p}`}
+                  className={cn(
+                    "tap grid size-11 place-items-center rounded-2xl font-display text-[17px] transition",
+                    p === current
+                      ? "bg-purple-600 text-white! shadow-soft"
+                      : "bg-cream-dark text-purple-700 hover:brightness-95",
+                  )}
+                >
+                  {p}
+                </button>
+              ))}
+
+              <button
+                type="button"
+                onClick={() => goPage(current + 1)}
+                disabled={current === pages}
+                className="tap inline-flex items-center gap-1 rounded-full bg-cream-dark px-4 py-2 text-[14px] font-medium text-purple-700 hover:brightness-95 disabled:opacity-40"
+              >
+                ถัดไป <ChevronRight size={16} />
+              </button>
+            </nav>
+          )}
+        </>
       )}
     </div>
   );

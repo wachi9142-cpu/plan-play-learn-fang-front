@@ -1051,3 +1051,10 @@ html:not([data-effect="none"]) nav[aria-label="ทางลัด"] { background
   animation: whack-swing 320ms ease-out both;
   transform-origin: 80% 80%;
 }
+
+/* 🗼 หอคอยฮานอย — จานที่ถืออยู่ลอยขึ้นเบา ๆ */
+@keyframes hanoi-lift {
+  from { transform: translateY(6px); opacity: 0.6; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+.hanoi-lift { animation: hanoi-lift 180ms ease-out both; }
