@@ -15,7 +15,7 @@ export interface LevelInfo { questions: number; timeLimit?: number; note: string
  * แปลง config ของเกมตามระดับ — เกมทุกตัวได้ 3 ระดับอัตโนมัติจากข้อมูลชุดเดียว
  * (ถ้าต้องการกำหนดเองรายเกม ใส่ game.levels[level] ทับได้)
  */
-export function applyDifficulty(config: GameConfig, level: Difficulty): { config: GameConfig; info: LevelInfo } {
+export function applyDifficulty(config: GameConfig, level: Difficulty): { config: GameConfig; info: LevelInfo; extras?: Record<string, number> } {
   const take = <T>(arr: T[], n: number) => arr.slice(0, Math.max(1, Math.min(n, arr.length)));
   switch (config.engine) {
     case "memory": {
@@ -88,6 +88,16 @@ export function applyDifficulty(config: GameConfig, level: Difficulty): { config
     case "hanoi": {
       const discs = level === "easy" ? 3 : level === "medium" ? 4 : 5;
       return { config: { ...config, discs }, info: { questions: Math.pow(2, discs) - 1, note: `${discs} จาน · ย้ายน้อยที่สุด ${Math.pow(2, discs) - 1} ครั้ง` } };
+    }
+    case "whack": {
+      // ยากขึ้น = รูเยอะขึ้น ตุ่นโผล่ถี่ขึ้น และมุดเร็วขึ้น
+      const cfg = level === "easy" ? { holes: 4, lifeMs: 2000, gapMs: 1100, rounds: 15 }
+        : level === "medium" ? { holes: 6, lifeMs: 1500, gapMs: 800, rounds: 20 }
+        : { holes: 9, lifeMs: 1050, gapMs: 600, rounds: 28 };
+      return {
+        config, extras: cfg,
+        info: { questions: cfg.rounds, note: `${cfg.holes} รู · ตุ่น ${cfg.rounds} ตัว · ${level === "easy" ? "โผล่ช้า จับง่าย" : level === "medium" ? "ความเร็วปกติ" : "โผล่ไว มุดเร็ว"}` },
+      };
     }
     case "flash-memory": {
       const pairs = level === "easy" ? 4 : level === "medium" ? 6 : 8;

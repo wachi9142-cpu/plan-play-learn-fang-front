@@ -2,6 +2,7 @@ import { PROJECTS } from "@/data/projects";
 import { SCHEDULES } from "@/data/schedules";
 import { GRADES } from "@/data/plans";
 import { FLASH_CATEGORIES } from "@/data/flashcards";
+import { JIGSAW_CATEGORIES } from "@/data/jigsaw";
 
 export const SITE = {
   /** แบรนด์ (แถบบน/ฟุตเตอร์) — "สวนสีม่วงเล็ก ๆ" พื้นที่ที่เด็ก ๆ เติบโตผ่านการเล่น */
@@ -95,6 +96,14 @@ export const NAV_ITEMS: NavItem[] = [
     children: FLASH_CATEGORIES.map((c) => ({ href: `/flashcards/${c.id}`, emoji: c.emoji, label: c.label })),
   },
   {
+    href: "/jigsaw",
+    emoji: "🧩",
+    label: "เกมจิ๊กซอว์",
+    description: "ต่อภาพ ลากชิ้นที่หายไปกลับเข้าที่ — หลายหมวด 3 ระดับ",
+    tint: "bg-sky-soft",
+    children: JIGSAW_CATEGORIES.map((c) => ({ href: `/jigsaw/${c.id}`, emoji: c.emoji, label: c.label })),
+  },
+  {
     href: "/worksheets",
     emoji: "📝",
     label: "ใบงาน",
@@ -122,7 +131,7 @@ export const NAV_ITEMS: NavItem[] = [
 export const MAIN_MENU_COUNT = 7;
 
 /** ลำดับ "เมนู" ตามบรีฟ: กำหนดการสอน → แผนฯ → โครงการ → 6 กิจกรรมหลัก → เกม → ใบงาน → แฟลชการ์ด → สื่อการเรียนการสอน */
-const MENU_ORDER = ["/schedules", "/plans", "/projects", "/core-activities", "/games", "/worksheets", "/flashcards", "/media", "/curriculum", "/online-classroom", "/portfolio", "/development", "/studio", "/canvas"];
+const MENU_ORDER = ["/schedules", "/plans", "/projects", "/core-activities", "/games", "/worksheets", "/flashcards", "/jigsaw", "/media", "/curriculum", "/online-classroom", "/portfolio", "/development", "/studio", "/canvas"];
 export const MENU_ITEMS: NavItem[] = MENU_ORDER.map((h) => NAV_ITEMS.find((n) => n.href === h)!);
 export const LIBRARY_ITEMS: NavItem[] = NAV_ITEMS.slice(MAIN_MENU_COUNT).filter((n) => !MENU_ORDER.includes(n.href));
 
@@ -201,6 +210,7 @@ export const KIDS_ZONE: NavLink[] = [
   link("/games"),
   link("/worksheets"),
   link("/flashcards"),
+  link("/jigsaw"),
   { href: "/library/kids", emoji: "🧸", label: "มุมหนังสือ — นิทานสำหรับเด็ก" },
   link("/canvas"),
   link("/core-activities"),
@@ -220,6 +230,7 @@ export const TEACHER_ZONE: NavLink[] = [
   { href: "/library/media", emoji: "🗂️", label: "คลังสื่อรวม (ไฟล์จากทุกระบบ)" },
   link("/classroom"),
   link("/notes"),
+  { href: "/teacher/todo", emoji: "📋", label: "สิ่งที่รอครูเติม" },
   { href: "/admin", emoji: "👑", label: "ผู้ดูแลระบบ" },
 ];
 

@@ -32,6 +32,7 @@ const ACTIVITY_ROUTES: { test: RegExp; mode: PageMode; why: string }[] = [
   { test: /^\/games\/(?!progress$)[^/]+/, mode: "interactive", why: "🎮 กำลังเล่นเกม — ต้องใช้สมาธิและการตอบสนอง" },
   { test: /^\/worksheets\/[^/]+/,       mode: "activity",    why: "📝 ทำใบงาน — เขียน ลากเส้น จับคู่ ระบายสี" },
   { test: /^\/flashcards\/[^/]+\/[^/]+/, mode: "interactive", why: "🃏 เล่นแฟลชการ์ด — พลิกบัตร จับคู่ ทายคำ" },
+  { test: /^\/jigsaw\/[^/]+/,          mode: "activity",    why: "🧩 ต่อจิ๊กซอว์ — ลากชิ้นส่วนไปวาง" },
   { test: /^\/curriculum\/[^/]+/,       mode: "editor",      why: "📚 อ่าน PDF และจัดโครงสร้างหลักสูตร" },
   { test: /^\/development(\/|$)/,       mode: "editor",      why: "📈 บันทึกพัฒนาการเด็กรายคน" },
   { test: /^\/admin(\/|$)/,             mode: "editor",      why: "👑 จัดการระบบและข้อมูล" },

@@ -11,6 +11,7 @@ export const GAME_CATEGORIES: Record<GameCategory, { emoji: string; label: strin
   shadow: { emoji: "🌑", label: "เกมจับคู่กับเงา" },
   logic: { emoji: "🧠", label: "ตรรกะและการคิด" },
   board: { emoji: "♟️", label: "เกมกระดาน & วางแผน" },
+  reflex: { emoji: "🔨", label: "เกมไว ตอบสนองเร็ว" },
   coding: { emoji: "💻", label: "Coding & Logic" },
   math: { emoji: "➕", label: "คณิตศาสตร์" },
   language: { emoji: "🔤", label: "ภาษา" },
@@ -51,6 +52,64 @@ export function playersLabel(g: { players?: number[] }): { emoji: string; label:
 }
 
 export const GAMES: Game[] = [
+  /* 🔨 เกมตีตุ่น — ฝึกการตอบสนอง สมาธิ และการยับยั้งใจ */
+  {
+    id: "whack-mole",
+    title: "ตีตุ่น",
+    emoji: "🔨",
+    cover: "bg-yellow-soft",
+    description: "ตุ่นโผล่ขึ้นมาจากรู แตะให้ทันก่อนมันมุดลงไป ฝึกสายตา มือ และสมาธิให้ไว",
+    skills: ["การตอบสนองเร็ว", "สมาธิ", "ประสานมือกับตา", "การสังเกต"],
+    gradeId: "k0",
+    ages: "2–6 ปี",
+    players: [1],
+    category: "reflex",
+    zone: "fun",
+    planIds: [],
+    activityType: "game",
+    config: { engine: "whack" },
+  },
+  {
+    id: "whack-thai",
+    title: "ตีตุ่นตัวอักษรไทย",
+    emoji: "🔤",
+    cover: "bg-mint-soft",
+    description: "ครูบอกตัวอักษรที่ต้องตี แล้วตีเฉพาะตัวนั้น ตัวอื่นห้ามตี — ฝึกจำพยัญชนะและฝึกยับยั้งใจไปพร้อมกัน",
+    skills: ["จำพยัญชนะไทย", "การยับยั้งใจ", "สมาธิ", "การตอบสนองเร็ว"],
+    gradeId: "k2",
+    ages: "4–6 ปี",
+    players: [1],
+    category: "reflex",
+    zone: "edu",
+    planIds: [],
+    activityType: "game",
+    config: {
+      engine: "whack",
+      prompt: "ตีเฉพาะตัวอักษร",
+      items: ["ก", "ข", "ค", "ง", "จ", "ฉ", "ช", "ด", "ต", "น", "บ", "ป", "ม", "ย", "ร", "ล", "ว", "ส", "ห", "อ"],
+    },
+  },
+  {
+    id: "whack-number",
+    title: "ตีตุ่นตัวเลข",
+    emoji: "🔢",
+    cover: "bg-sky-soft",
+    description: "ตีเฉพาะตัวเลขที่กำหนด ตัวอื่นปล่อยไป — ฝึกจำตัวเลขและความไวในการสังเกต",
+    skills: ["จำตัวเลข 1–10", "การยับยั้งใจ", "สมาธิ", "การตอบสนองเร็ว"],
+    gradeId: "k1",
+    ages: "3–6 ปี",
+    players: [1],
+    category: "reflex",
+    zone: "edu",
+    planIds: [],
+    activityType: "game",
+    config: {
+      engine: "whack",
+      prompt: "ตีเฉพาะตัวเลข",
+      items: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+    },
+  },
+
   /* ♟️ เกมกระดาน & วางแผน — ฝึกคิดล่วงหน้า วางแผน และยอมรับการแพ้ชนะ */
   {
     id: "flash-memory",

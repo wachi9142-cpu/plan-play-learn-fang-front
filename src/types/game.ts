@@ -11,6 +11,7 @@ export type GameCategory =
   | "shadow"      // 🌑 เกมจับคู่กับเงา
   | "logic"       // 🧠 ตรรกะและการคิด (เกมเลื่อน)
   | "board"       // ♟️ เกมกระดานและการวางแผน
+  | "reflex"      // 🔨 เกมไว ตอบสนองเร็ว
   | "coding"      // 💻 Coding & Logic — โค้ดดิ้งและการคิดเชิงตรรกะ
   | "math"        // ➕ คณิตศาสตร์
   | "language"    // 🔤 ภาษา
@@ -41,12 +42,13 @@ export type GameConfig =
   | { engine: "checkers" }
   | { engine: "hanoi"; discs?: number }
   | { engine: "flash-memory"; pairs?: number }
+  | { engine: "whack"; items?: string[]; prompt?: string }
   | { engine: "quiz"; title: string; rounds: { q: string; code?: string; options: string[]; answer: number; explain?: string; level?: "easy" | "medium" | "hard" }[] };
 
 export interface GridLevelCfg { size: number; start: [number, number]; target: [number, number]; obstacles?: [number, number][]; maxCmds?: number; repeat?: boolean; mode?: "free" | "trace" | "debug"; preset?: { dir: "up" | "down" | "left" | "right"; times: number }[] }
 
 /** ตัวเลือกร่วมที่ทุก engine รับจากระบบระดับความยาก */
-export interface EngineExtras { timeLimit?: number; hints?: boolean; scramble?: number; level?: "easy" | "medium" | "hard"; onDone?: (o: { mistakes: number; total: number; seconds: number; timeUp: boolean; stars: number }) => void }
+export interface EngineExtras { timeLimit?: number; hints?: boolean; scramble?: number; level?: "easy" | "medium" | "hard"; holes?: number; lifeMs?: number; gapMs?: number; rounds?: number; onDone?: (o: { mistakes: number; total: number; seconds: number; timeUp: boolean; stars: number }) => void }
 
 export interface Game {
   id: string;
