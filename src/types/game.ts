@@ -10,6 +10,7 @@ export type GameCategory =
   | "letter"      // 🔤 เกมจับคู่ภาพ/ตัวอักษร
   | "shadow"      // 🌑 เกมจับคู่กับเงา
   | "logic"       // 🧠 ตรรกะและการคิด (เกมเลื่อน)
+  | "board"       // ♟️ เกมกระดานและการวางแผน
   | "coding"      // 💻 Coding & Logic — โค้ดดิ้งและการคิดเชิงตรรกะ
   | "math"        // ➕ คณิตศาสตร์
   | "language"    // 🔤 ภาษา
@@ -34,6 +35,12 @@ export type GameConfig =
   | { engine: "direction"; rounds: { actor: string; goal: string; dir: "up" | "down" | "left" | "right" }[] }
   | { engine: "pattern"; rounds: { seq: string[]; options: string[]; answer: string; level?: "easy" | "medium" | "hard" }[] }
   | { engine: "condition"; rounds: { rule: string; item: string; branches: { label: string; emoji: string }[]; answer: number }[] }
+  /* ♟️ เกมกระดาน — ฝึกคิดล่วงหน้าและวางแผน */
+  | { engine: "tic-tac-toe"; marks?: [string, string] }
+  | { engine: "connect-four" }
+  | { engine: "checkers" }
+  | { engine: "hanoi"; discs?: number }
+  | { engine: "flash-memory"; pairs?: number }
   | { engine: "quiz"; title: string; rounds: { q: string; code?: string; options: string[]; answer: number; explain?: string; level?: "easy" | "medium" | "hard" }[] };
 
 export interface GridLevelCfg { size: number; start: [number, number]; target: [number, number]; obstacles?: [number, number][]; maxCmds?: number; repeat?: boolean; mode?: "free" | "trace" | "debug"; preset?: { dir: "up" | "down" | "left" | "right"; times: number }[] }
@@ -55,6 +62,11 @@ export interface Game {
   planIds: string[];        // 📖 หน่วย/เรื่องที่เกี่ยวข้อง
   activityType: ActivityType; // 🎈 กิจกรรมหลัก (ปกติ "game")
   ages?: string;              // 👶 อายุที่เหมาะสม (ถ้าไม่ใส่ใช้ของระดับชั้น)
+  /**
+   * 👥 เล่นได้กี่คน — ใส่จำนวนที่รองรับ เช่น [1] เล่นคนเดียว · [1, 2] เล่นคนเดียวหรือสองคน
+   * ไม่ใส่ = [1] (เล่นคนเดียว)
+   */
+  players?: number[];
   points?: number;            // ⭐ คะแนนเต็ม (ค่าเริ่มต้น 5 ดาว)
   config: GameConfig;
 }

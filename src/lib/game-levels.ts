@@ -77,6 +77,22 @@ export function applyDifficulty(config: GameConfig, level: Difficulty): { config
       const items = take(config.items, level === "easy" ? 3 : level === "medium" ? 5 : config.items.length);
       return { config: { ...config, items }, info: { questions: items.length, timeLimit: level === "hard" ? 15 * items.length : undefined, note: `จับคู่เงา ${items.length} คู่${level === "hard" ? " · จับเวลา" : ""}` } };
     }
+
+    /* ♟️ เกมกระดาน — ระดับความยากอยู่ที่ "คู่แข่ง" ซึ่งเด็กเลือกเองในเกม จึงไม่ตัดข้อ */
+    case "tic-tac-toe":
+      return { config, info: { questions: 1, note: "เลือกเล่นกับเครื่อง (ง่าย/เก่ง) หรือเล่นกับเพื่อนได้ในเกม" } };
+    case "connect-four":
+      return { config, info: { questions: 1, note: "เรียงให้ครบ 4 เม็ด — เลือกคู่แข่งได้ในเกม" } };
+    case "checkers":
+      return { config, info: { questions: 1, note: "กระดาน 6×6 สำหรับเด็ก — เลือกคู่แข่งได้ในเกม" } };
+    case "hanoi": {
+      const discs = level === "easy" ? 3 : level === "medium" ? 4 : 5;
+      return { config: { ...config, discs }, info: { questions: Math.pow(2, discs) - 1, note: `${discs} จาน · ย้ายน้อยที่สุด ${Math.pow(2, discs) - 1} ครั้ง` } };
+    }
+    case "flash-memory": {
+      const pairs = level === "easy" ? 4 : level === "medium" ? 6 : 8;
+      return { config: { ...config, pairs }, info: { questions: pairs, timeLimit: level === "hard" ? 20 * pairs : undefined, note: `จับคู่ ${pairs} คู่ จากคลังแฟลชการ์ด${level === "hard" ? " · จับเวลา" : ""}` } };
+    }
   }
 }
 

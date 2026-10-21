@@ -10,6 +10,8 @@ import { PairColumnsGame } from "./engines/PairColumnsGame";
 import { SlidingGame } from "./engines/SlidingGame";
 import { GridPathGame } from "./engines/GridPathGame";
 import { ConditionGame, DirectionGame, PatternGame, QuizGame } from "./engines/LogicGames";
+import { CheckersGame, ConnectFourGame, HanoiGame, TicTacToeGame } from "./engines/BoardGames";
+import { FlashMemoryGame } from "./engines/FlashMemoryGame";
 
 /** ตัวเลือก engine จาก config — เพิ่ม engine ใหม่ที่นี่ที่เดียว · extras มาจากระดับความยาก (เวลา/ตัวช่วย/ผลลัพธ์) */
 export function GamePlayer({ config, extras = {} }: { config: GameConfig; extras?: EngineExtras }) {
@@ -25,6 +27,11 @@ export function GamePlayer({ config, extras = {} }: { config: GameConfig; extras
     case "direction": return <DirectionGame rounds={config.rounds} {...x} />;
     case "pattern": return <PatternGame rounds={config.rounds} {...x} />;
     case "condition": return <ConditionGame rounds={config.rounds} {...x} />;
+    case "tic-tac-toe": return <TicTacToeGame marks={config.marks} {...x} />;
+    case "connect-four": return <ConnectFourGame {...x} />;
+    case "checkers": return <CheckersGame {...x} />;
+    case "hanoi": return <HanoiGame discs={config.discs ?? 3} {...x} />;
+    case "flash-memory": return <FlashMemoryGame pairs={config.pairs ?? 6} {...x} />;
     case "quiz": return <QuizGame title={config.title} rounds={config.rounds} {...x} />;
     case "sliding": return <SlidingGame items={config.items} size={config.size ?? 3} theme={config.theme} scramble={extras.scramble ?? 6} {...x} />;
     case "shadow-match":

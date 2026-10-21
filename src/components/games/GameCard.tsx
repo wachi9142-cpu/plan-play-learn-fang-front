@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Play } from "lucide-react";
 import type { Game } from "@/types";
-import { GAME_CATEGORIES } from "@/data/games";
+import { GAME_CATEGORIES, playersLabel } from "@/data/games";
 import { getPlan } from "@/data/plans";
 import { Tag } from "@/components/ui";
 import { cn } from "@/lib/cn";
@@ -10,13 +10,17 @@ import { cn } from "@/lib/cn";
 export function GameCard({ game, className, style }: { game: Game; className?: string; style?: React.CSSProperties }) {
   const cat = GAME_CATEGORIES[game.category];
   const plans = game.planIds.map(getPlan).filter((p) => p !== undefined);
+  const players = playersLabel(game);
   return (
     <article className={cn("card card-hover group flex flex-col overflow-hidden", className)} style={style}>
       <Link href={`/games/${game.id}`} className={cn("grid h-36 place-items-center text-7xl transition-transform group-hover:scale-105 sm:h-40", game.cover)} aria-label={`เล่น ${game.title}`}>
         <span className="drop-shadow-sm">{game.emoji}</span>
       </Link>
       <div className="flex flex-1 flex-col p-4 sm:p-5">
-        <p className="text-[13px] font-medium text-purple-500">{cat.emoji} {cat.label}</p>
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] font-medium text-purple-500">
+          <span>{cat.emoji} {cat.label}</span>
+          <span className="rounded-full bg-cream-dark px-2 py-0.5 text-purple-700">{players.emoji} {players.label}</span>
+        </div>
         <h2 className="text-lg sm:text-xl">{game.title}</h2>
         <p className="mt-1 flex-1 text-[15px] text-ink-soft">{game.description}</p>
         <p className="mt-3 text-[13px] font-medium text-purple-700">🎯 ทักษะที่ได้ฝึก</p>

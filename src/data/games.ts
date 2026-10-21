@@ -10,6 +10,7 @@ export const GAME_CATEGORIES: Record<GameCategory, { emoji: string; label: strin
   letter: { emoji: "🔤", label: "เกมจับคู่ภาพ/ตัวอักษร" },
   shadow: { emoji: "🌑", label: "เกมจับคู่กับเงา" },
   logic: { emoji: "🧠", label: "ตรรกะและการคิด" },
+  board: { emoji: "♟️", label: "เกมกระดาน & วางแผน" },
   coding: { emoji: "💻", label: "Coding & Logic" },
   math: { emoji: "➕", label: "คณิตศาสตร์" },
   language: { emoji: "🔤", label: "ภาษา" },
@@ -40,7 +41,97 @@ export const ZONES = {
  * คลังเกมออนไลน์ — เพิ่มเกมใหม่ = เพิ่ม object ใหม่ (เลือก engine ที่มีอยู่ + ใส่ config)
  * ทุกเกมเชื่อมกับแผน (planIds) และกิจกรรมหลัก (activityType)
  */
+/** 👥 ป้ายบอกว่าเกมนี้เล่นได้กี่คน */
+export function playersLabel(g: { players?: number[] }): { emoji: string; label: string } {
+  const p = g.players ?? [1];
+  if (p.length === 1 && p[0] === 1) return { emoji: "👤", label: "เล่นคนเดียว" };
+  if (p.includes(1) && p.includes(2)) return { emoji: "👬", label: "เล่นคนเดียว หรือ 2 คน" };
+  if (p.includes(2) && !p.includes(1)) return { emoji: "👬", label: "เล่น 2 คน" };
+  return { emoji: "👨‍👩‍👧", label: `เล่น ${Math.min(...p)}–${Math.max(...p)} คน` };
+}
+
 export const GAMES: Game[] = [
+  /* ♟️ เกมกระดาน & วางแผน — ฝึกคิดล่วงหน้า วางแผน และยอมรับการแพ้ชนะ */
+  {
+    id: "flash-memory",
+    title: "จับคู่ความจำ ไทย–อังกฤษ",
+    emoji: "🃏",
+    cover: "bg-purple-100",
+    description: "เปิดการ์ด 2 ใบให้เป็นของสิ่งเดียวกัน ใบหนึ่งคำไทย อีกใบคำอังกฤษ — คำศัพท์ดึงมาจากคลังแฟลชการ์ดโดยตรง ครูเพิ่มบัตรเอง เกมก็มีคำใหม่ให้เล่นทันที",
+    skills: ["ความจำ", "สมาธิ", "คำศัพท์ไทย–อังกฤษ", "การเชื่อมโยงภาพกับคำ"],
+    gradeId: "k1",
+    ages: "3–6 ปี",
+    players: [1],
+    category: "board",
+    zone: "edu",
+    planIds: [],
+    activityType: "game",
+    config: { engine: "flash-memory", pairs: 6 },
+  },
+  {
+    id: "tic-tac-toe",
+    title: "โอเอ็กซ์",
+    emoji: "⭕",
+    cover: "bg-mint-soft",
+    description: "วางเครื่องหมายให้เรียงกัน 3 ช่องก่อนอีกฝ่าย เล่นกับเครื่องหรือเล่นกับเพื่อนก็ได้ — เกมแรกที่สอนให้เด็กคิดล่วงหน้าว่าอีกฝ่ายจะทำอะไร",
+    skills: ["คิดล่วงหน้า", "การวางแผน", "การสังเกตแนวเรียง", "ยอมรับการแพ้ชนะ"],
+    gradeId: "k1",
+    ages: "3–6 ปี",
+    players: [1, 2],
+    category: "board",
+    zone: "edu",
+    planIds: [],
+    activityType: "game",
+    config: { engine: "tic-tac-toe", marks: ["❌", "⭕"] },
+  },
+  {
+    id: "connect-four",
+    title: "เรียงสี่",
+    emoji: "🔴",
+    cover: "bg-sky-soft",
+    description: "หย่อนเม็ดลงหลักให้เรียงกัน 4 เม็ด ทั้งแนวนอน แนวตั้ง หรือแนวทแยง ต้องมองให้ออกว่าอีกฝ่ายกำลังจะเรียงตรงไหน",
+    skills: ["การวางแผน", "มองหาแนวทแยง", "การคาดเดาล่วงหน้า", "สมาธิ"],
+    gradeId: "k2",
+    ages: "4–6 ปี",
+    players: [1, 2],
+    category: "board",
+    zone: "edu",
+    planIds: [],
+    activityType: "game",
+    config: { engine: "connect-four" },
+  },
+  {
+    id: "checkers-mini",
+    title: "หมากฮอสจิ๋ว",
+    emoji: "⚫",
+    cover: "bg-yellow-soft",
+    description: "หมากฮอสกระดาน 6×6 ย่อขนาดให้เด็กเล่นไหว เดินทแยงไปข้างหน้า กระโดดข้ามเพื่อกิน ไปถึงแถวสุดท้ายได้เป็นคิง",
+    skills: ["วางแผนหลายตา", "การตัดสินใจ", "ยอมเสียเพื่อได้เปรียบ", "ความอดทน"],
+    gradeId: "k3",
+    ages: "5–6 ปี",
+    players: [1, 2],
+    category: "board",
+    zone: "edu",
+    planIds: [],
+    activityType: "game",
+    config: { engine: "checkers" },
+  },
+  {
+    id: "hanoi-tower",
+    title: "หอคอยฮานอย",
+    emoji: "🗼",
+    cover: "bg-pink-soft",
+    description: "ย้ายจานทั้งหมดไปหอขวาสุด ทีละจาน ห้ามวางจานใหญ่ทับจานเล็ก — ฝึกแก้ปัญหาเป็นขั้นตอน พื้นฐานของการเขียนโปรแกรม",
+    skills: ["แก้ปัญหาเป็นขั้นตอน", "การวางแผน", "ความอดทน", "คิดย้อนกลับ"],
+    gradeId: "k3",
+    ages: "5–6 ปี",
+    players: [1],
+    category: "board",
+    zone: "edu",
+    planIds: [],
+    activityType: "game",
+    config: { engine: "hanoi", discs: 3 },
+  },
   {
     id: "fruit-match",
     title: "จับคู่ผลไม้",
