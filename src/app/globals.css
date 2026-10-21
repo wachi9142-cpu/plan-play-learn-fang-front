@@ -1039,3 +1039,15 @@ html:not([data-effect="none"]) nav[aria-label="ทางลัด"] {
 }
 html:not([data-effect="none"]) header.sticky { background-color: var(--color-cream); }
 html:not([data-effect="none"]) nav[aria-label="ทางลัด"] { background-color: var(--color-white); }
+
+/* 🔨 เกมตีตุ่น — ค้อนเหวี่ยงลงตอนตีโดน */
+@keyframes whack-swing {
+  0%   { transform: rotate(-55deg) translateY(-30%); opacity: 0; }
+  35%  { transform: rotate(10deg) translateY(0); opacity: 1; }
+  60%  { transform: rotate(0deg) translateY(0); opacity: 1; }
+  100% { transform: rotate(-20deg) translateY(-15%); opacity: 0; }
+}
+.whack-hammer {
+  animation: whack-swing 320ms ease-out both;
+  transform-origin: 80% 80%;
+}

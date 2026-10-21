@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { GameShell, type GameOutcome } from "@/components/games/GameShell";
 import { cn } from "@/lib/cn";
 
@@ -31,7 +31,9 @@ export function WhackGame({
   onDone?: Cb;
 }) {
   const pickMode = !!prompt && !!items?.length;
-  const pool = items?.length ? items : ["🐹"];
+  // ยึดรายการให้คงที่ ไม่งั้นสร้าง array ใหม่ทุกครั้งที่เรนเดอร์ แล้วตัวจับเวลาจะถูกรีเซ็ตจนตุ่นไม่โผล่
+  const pool = useMemo(() => (items?.length ? items : ["🐹"]), [items]);
+  const poolKey = pool.join("|");
 
   const [target, setTarget] = useState<string>(() => pool[0]);
   const [moles, setMoles] = useState<Mole[]>([]);
@@ -42,10 +44,15 @@ export function WhackGame({
   const [ready, setReady] = useState(false);
   const tick = useRef(0);
 
+  /** สำเนาของตุ่นปัจจุบัน ไว้ให้ตัวจับเวลาอ่านโดยไม่ต้องพึ่ง state ใน dependency */
+  const molesRef = useRef<Mole[]>([]);
+  useEffect(() => { molesRef.current = moles; }, [moles]);
+
   const done = shown >= rounds && moles.length === 0;
 
   const restart = useCallback(() => {
-    setMoles([]); setHit(0); setMiss(0); setShown(0); setBonk(null);
+    setMoles([]); molesRef.current = [];
+    setHit(0); setMiss(0); setShown(0); setBonk(null);
     tick.current = 0;
     setTarget(pool[Math.floor(Math.random() * pool.length)]);
   }, [pool]);
@@ -56,47 +63,52 @@ export function WhackGame({
   useEffect(() => {
     if (!ready || done) return;
     const t = setInterval(() => {
-      setMoles((cur) => {
-        if (tick.current >= rounds) return cur;
-        const free = Array.from({ length: holes }, (_, i) => i).filter((i) => !cur.some((m) => m.slot === i));
-        if (free.length === 0) return cur;
-        const slot = free[Math.floor(Math.random() * free.length)];
-        // โหมดเลือก: ให้ตัวที่ถูกโผล่ประมาณ 40% ของรอบ
-        const good = !pickMode || Math.random() < 0.4;
-        const others = pool.filter((p) => p !== target);
-        const label = !pickMode ? "🐹" : good ? target : (others[Math.floor(Math.random() * others.length)] ?? target);
-        tick.current += 1;
-        setShown((n) => n + 1);
-        return [...cur, { slot, label, good, bornAt: Date.now() }];
-      });
+      if (tick.current >= rounds) return;
+      const cur = molesRef.current;
+      const free = Array.from({ length: holes }, (_, i) => i).filter((i) => !cur.some((m) => m.slot === i));
+      if (free.length === 0) return;
+      const slot = free[Math.floor(Math.random() * free.length)];
+      // โหมดเลือก: ให้ตัวที่ถูกโผล่ประมาณ 40% ของรอบ
+      const good = !pickMode || Math.random() < 0.4;
+      const others = pool.filter((p) => p !== target);
+      const label = !pickMode ? "🐹" : good ? target : (others[Math.floor(Math.random() * others.length)] ?? target);
+      tick.current += 1;
+      const next = [...cur, { slot, label, good, bornAt: Date.now() }];
+      molesRef.current = next;
+      setMoles(next);
+      setShown((n) => n + 1);
     }, gapMs);
     return () => clearInterval(t);
-  }, [ready, done, gapMs, holes, rounds, pickMode, pool, target]);
+  }, [ready, done, gapMs, holes, rounds, pickMode, poolKey, target]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  /** ตุ่นมุดกลับเองถ้าไม่โดนตี */
+  /** ตุ่นมุดกลับเองถ้าไม่โดนตี — เช็คจาก ref แล้วค่อยอัปเดต state เฉพาะตอนมีตัวมุดจริง */
   useEffect(() => {
     if (!ready) return;
     const t = setInterval(() => {
       const now = Date.now();
-      setMoles((cur) => {
-        const gone = cur.filter((m) => now - m.bornAt >= lifeMs);
-        // ปล่อยตัวที่ "ควรตี" หลุดไป = พลาด
-        const escaped = gone.filter((m) => m.good).length;
-        if (escaped > 0) setMiss((n) => n + escaped);
-        return cur.filter((m) => now - m.bornAt < lifeMs);
-      });
-    }, 120);
+      const cur = molesRef.current;
+      const gone = cur.filter((m) => now - m.bornAt >= lifeMs);
+      if (gone.length === 0) return;
+      const keep = cur.filter((m) => now - m.bornAt < lifeMs);
+      molesRef.current = keep;
+      setMoles(keep);
+      // ปล่อยตัวที่ "ควรตี" หลุดไป = พลาด
+      const escaped = gone.filter((m) => m.good).length;
+      if (escaped > 0) setMiss((n) => n + escaped);
+    }, 150);
     return () => clearInterval(t);
   }, [ready, lifeMs]);
 
   const whack = (slot: number) => {
-    const m = moles.find((x) => x.slot === slot);
+    const m = molesRef.current.find((x) => x.slot === slot);
     if (!m) return;
     if (m.good) setHit((n) => n + 1);
     else setMiss((n) => n + 1);
     setBonk({ slot, ok: m.good });
     setTimeout(() => setBonk(null), 320);
-    setMoles((cur) => cur.filter((x) => x.slot !== slot));
+    const keep = molesRef.current.filter((x) => x.slot !== slot);
+    molesRef.current = keep;
+    setMoles(keep);
   };
 
   const cols = holes <= 4 ? 2 : 3;
@@ -106,7 +118,7 @@ export function WhackGame({
       instruction={
         done ? `🎉 จบเกม! ตีโดน ${hit} ตัว`
           : pickMode ? `${prompt} “${target}” เท่านั้น — ตัวอื่นอย่าตีนะ`
-          : "ตุ่นโผล่มาเมื่อไหร่ แตะให้ไวเลย!"
+          : "🔨 ตุ่นโผล่มาเมื่อไหร่ เอาค้อนตีให้ไวเลย!"
       }
       progress={{ current: Math.min(shown, rounds), total: rounds }}
       done={done}
@@ -139,7 +151,7 @@ export function WhackGame({
               disabled={done}
               aria-label={m ? `รูที่ ${i + 1} มี ${m.label}` : `รูที่ ${i + 1} ว่าง`}
               className={cn(
-                "tap relative grid aspect-square place-items-end overflow-hidden rounded-3xl border-4 border-[#caa86f] bg-gradient-to-b from-[#f0dcb4] to-[#d8b982] pb-[8%] transition",
+                "tap relative grid aspect-square cursor-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22><text y=%2232%22 font-size=%2232%22>🔨</text></svg>')_8_8,pointer] items-end justify-items-center overflow-hidden rounded-3xl border-4 border-[#caa86f] bg-gradient-to-b from-[#f0dcb4] to-[#d8b982] pb-[8%] transition",
                 b?.ok && "border-mint-soft!",
                 b && !b.ok && "border-pink-accent!",
               )}
@@ -156,8 +168,9 @@ export function WhackGame({
                 {m?.label ?? ""}
               </span>
               {b && (
-                <span className="absolute inset-0 z-20 grid place-items-center text-[clamp(1.8rem,10vw,2.6rem)]">
-                  {b.ok ? "💥" : "❌"}
+                <span className="absolute inset-0 z-20 grid place-items-center">
+                  <span className="whack-hammer text-[clamp(2rem,11vw,3rem)]" aria-hidden>🔨</span>
+                  <span className="absolute text-[clamp(1.6rem,9vw,2.4rem)]">{b.ok ? "💥" : "❌"}</span>
                 </span>
               )}
             </button>
