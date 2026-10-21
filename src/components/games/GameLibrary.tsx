@@ -4,7 +4,7 @@ import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ChevronLeft, ChevronRight, Search, X } from "lucide-react";
 import type { Game, GameCategory } from "@/types";
-import { GAME_CATEGORIES } from "@/data/games";
+import { CATEGORY_KEYWORDS, GAME_CATEGORIES } from "@/data/games";
 import { GameCard } from "@/components/games/GameCard";
 import { EmptyState } from "@/components/ui";
 import { cn } from "@/lib/cn";
@@ -49,7 +49,7 @@ function GameLibraryInner({ games }: { games: Game[] }) {
     if (!t) return () => true;
     return (g: Game) => {
       const cl = GAME_CATEGORIES[g.category];
-      const hay = [g.title, g.description, ...g.skills, cl.label, g.ages ?? "", g.id].join(" ").toLowerCase();
+      const hay = [g.title, g.description, ...g.skills, cl.label, ...(CATEGORY_KEYWORDS[g.category] ?? []), g.ages ?? "", g.id].join(" ").toLowerCase();
       return t.split(/\s+/).every((w) => hay.includes(w));
     };
   }, [q]);

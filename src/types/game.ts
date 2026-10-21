@@ -43,6 +43,7 @@ export type GameConfig =
   | { engine: "tile-puzzle"; scene: string[]; size: 3 }
   | { engine: "pair-columns"; pairs: { left: string; right: string; label: string }[] }
   | { engine: "shadow-match"; items: { emoji: string; label: string }[] }
+  | { engine: "gray-match"; items: { emoji: string; label: string }[] }
   | { engine: "sliding"; items: string[]; size?: 3 | 4; theme?: "purple" | "pink" | "green" | "yellow" }
   /* 💻 Coding & Logic */
   | { engine: "grid-path"; actor: string; goal: string; hint?: string; levels: Record<"easy" | "medium" | "hard", GridLevelCfg> }
@@ -56,6 +57,18 @@ export type GameConfig =
   | { engine: "hanoi"; discs?: number }
   | { engine: "flash-memory"; pairs?: number }
   | { engine: "whack"; items?: string[]; prompt?: string }
+  | { engine: "block-journey"; cols?: number; rows?: number }
+  | { engine: "dominoes"; max?: number }
+  | {
+      engine: "trace-line";
+      actor: string;
+      goal: string;
+      /** แต่ละระดับคือเขาวงกตคนละอัน — ยากขึ้น = ถนนเยอะขึ้นและมีทางตันมากขึ้น */
+      levels: Record<"easy" | "medium" | "hard", { size: number; road: [number, number][]; path: [number, number][] }>;
+    }
+  | { engine: "spell"; count?: number; maxLen?: number }
+  | { engine: "math-quiz"; mode?: "add5" | "add10" | "addsub20"; count?: number }
+  | { engine: "iq"; rounds: { q: string; seq?: string[]; options: string[]; answer: number; explain?: string; level?: "easy" | "medium" | "hard" }[] }
   | { engine: "quiz"; title: string; rounds: { q: string; code?: string; options: string[]; answer: number; explain?: string; level?: "easy" | "medium" | "hard" }[] };
 
 export interface GridLevelCfg { size: number; start: [number, number]; target: [number, number]; obstacles?: [number, number][]; maxCmds?: number; repeat?: boolean; mode?: "free" | "trace" | "debug"; preset?: { dir: "up" | "down" | "left" | "right"; times: number }[] }
@@ -84,6 +97,8 @@ export interface Game {
   players?: number[];
   /** ลิงก์ปลายทางเอง — ใช้กับเกมที่อยู่นอก /games เช่น จิ๊กซอว์ */
   href?: string;
+  /** true = ไม่มีให้เลือก ง่าย/ปานกลาง/ยาก เพราะเกมจะยากขึ้นเองระหว่างเล่น */
+  noLevels?: boolean;
   points?: number;            // ⭐ คะแนนเต็ม (ค่าเริ่มต้น 5 ดาว)
   config: GameConfig;
 }

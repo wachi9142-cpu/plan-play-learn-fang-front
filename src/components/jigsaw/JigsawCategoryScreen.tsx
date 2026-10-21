@@ -38,8 +38,19 @@ export function JigsawCategoryScreen({ categoryId }: { categoryId: string }) {
         </div>
       </PageHeader>
 
+      {cat.pictures.length === 0 && (
+        <div className="card border-yellow-accent! mb-6 p-5">
+          <h2 className="text-lg">🖼️ หมวดนี้กำลังรอภาพจากครู</h2>
+          <p className="mt-1 text-[15px] leading-relaxed text-ink">{cat.need ?? "ส่งภาพมาแล้วเปิดเล่นได้ทันทีค่ะ"}</p>
+          <p className="mt-2 text-[14px] text-ink-soft">ภาพที่เหมาะ: สีสดใส รายละเอียดชัด สัดส่วน 4:3 · หมวดละ 5–6 ภาพ</p>
+          <Link href="/jigsaw" className="tap mt-3 inline-block rounded-full bg-purple-600 px-5 py-2.5 text-[15px] font-medium text-white shadow-soft hover:bg-purple-700">
+            ← ดูหมวดที่เล่นได้ตอนนี้
+          </Link>
+        </div>
+      )}
+
       {/* ระดับความยาก */}
-      <div className="mb-5">
+      {cat.pictures.length > 0 && <div className="mb-5">
         <p className="mb-2 text-[15px] font-medium text-purple-700">🎚️ เลือกระดับ</p>
         <div className="grid gap-2 sm:grid-cols-3">
           {JIGSAW_LEVELS.map((l) => (
@@ -59,7 +70,7 @@ export function JigsawCategoryScreen({ categoryId }: { categoryId: string }) {
             </button>
           ))}
         </div>
-      </div>
+      </div>}
 
       {/* กระดานเล่น */}
       {pic ? (

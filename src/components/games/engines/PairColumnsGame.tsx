@@ -9,13 +9,15 @@ interface Props {
   pairs: Pair[];
   /** แสดงฝั่งขวาเป็นเงาดำ (เกมจับคู่กับเงา) */
   shadowRight?: boolean;
+  /** ฝั่งขวาเป็นภาพขาวดำ (ยังเห็นรายละเอียด ต่างจากเงาที่ดำล้วน) */
+  grayRight?: boolean;
   instruction?: { idle: string; picked: (left: string) => string };
   timeLimit?: number;
   onDone?: (o: GameOutcome) => void;
 }
 
 /** 🔤 เกมจับคู่ 2 คอลัมน์ — แตะฝั่งซ้าย (ตัวอักษร/รูป) แล้วแตะฝั่งขวา (ภาพ/เงา) */
-export function PairColumnsGame({ pairs, shadowRight = false, instruction, timeLimit, onDone }: Props) {
+export function PairColumnsGame({ pairs, shadowRight = false, grayRight = false, instruction, timeLimit, onDone }: Props) {
   const [lefts, setLefts] = useState<Pair[]>([]);
   const [rights, setRights] = useState<Pair[]>([]);
   const [selLeft, setSelLeft] = useState<string | null>(null);
@@ -61,8 +63,8 @@ export function PairColumnsGame({ pairs, shadowRight = false, instruction, timeL
               key={p.left}
               onClick={() => !matched.has(p.left) && setSelLeft(p.left)}
               state={matched.has(p.left) ? "correct" : selLeft === p.left ? "selected" : "idle"}
-              className={shadowRight ? "aspect-auto min-h-16 sm:min-h-20" : "aspect-auto min-h-16 font-display text-3xl sm:min-h-20 sm:text-4xl"}
-              ariaLabel={shadowRight ? p.label : `ตัวอักษร ${p.left}`}
+              className={shadowRight || grayRight ? "aspect-auto min-h-16 sm:min-h-20" : "aspect-auto min-h-16 font-display text-3xl sm:min-h-20 sm:text-4xl"}
+              ariaLabel={shadowRight || grayRight ? p.label : `ตัวอักษร ${p.left}`}
             >
               {p.left}
             </BigTile>
@@ -75,9 +77,11 @@ export function PairColumnsGame({ pairs, shadowRight = false, instruction, timeL
               onClick={() => tapRight(p)}
               state={matched.has(p.left) ? "correct" : wrongRight === p.left ? "wrong" : selLeft ? "idle" : "disabled"}
               className="aspect-auto min-h-16 sm:min-h-20"
-              ariaLabel={shadowRight ? `เงาของ ${p.label}` : p.label}
+              ariaLabel={shadowRight ? `เงาของ ${p.label}` : grayRight ? `ภาพขาวดำของ ${p.label}` : p.label}
             >
-              {shadowRight && !matched.has(p.left) ? <span className="emoji-shadow">{p.right}</span> : p.right}
+              {shadowRight && !matched.has(p.left) ? <span className="emoji-shadow">{p.right}</span>
+                : grayRight && !matched.has(p.left) ? <span className="emoji-gray">{p.right}</span>
+                : p.right}
             </BigTile>
           ))}
         </div>

@@ -20,6 +20,10 @@ export interface JigsawCategory {
   hint: string;
   tint: string;
   pictures: JigsawPicture[];
+  /** ยังไม่มีภาพจริง — หน้าเว็บจะขึ้นว่า "รอภาพจากครู" แทนการเปิดเล่น */
+  waitingImages?: boolean;
+  /** ข้อความบอกว่าต้องการภาพแบบไหน */
+  need?: string;
 }
 
 /** ระดับความยาก — ตัวเลขคือจำนวนชิ้นที่หายไปจากภาพ */
@@ -33,6 +37,56 @@ export type JigsawLevelId = (typeof JIGSAW_LEVELS)[number]["id"];
 export const findLevel = (id: JigsawLevelId) => JIGSAW_LEVELS.find((l) => l.id === id)!;
 
 export const JIGSAW_CATEGORIES: JigsawCategory[] = [
+  {
+    id: "zoo",
+    emoji: "🦁",
+    label: "สวนสัตว์",
+    hint: "สิงโต ช้าง ยีราฟ ม้าลาย และเพื่อน ๆ ในสวนสัตว์",
+    tint: "bg-yellow-soft",
+    pictures: [],
+    waitingImages: true,
+    need: "ภาพสัตว์ในสวนสัตว์ สีสดใส เห็นตัวสัตว์ชัด ๆ 5–6 ภาพ",
+  },
+  {
+    id: "sea",
+    emoji: "🐠",
+    label: "สัตว์น้ำในทะเล",
+    hint: "ปลาการ์ตูน เต่าทะเล ปะการัง และโลกใต้ทะเล",
+    tint: "bg-sky-soft",
+    pictures: [],
+    waitingImages: true,
+    need: "ภาพใต้ทะเล ปลาหลากสี ปะการัง 5–6 ภาพ",
+  },
+  {
+    id: "temple",
+    emoji: "🛕",
+    label: "วัดและวันสำคัญ",
+    hint: "วัด โบสถ์ เจดีย์ และบรรยากาศวันสำคัญทางศาสนา",
+    tint: "bg-purple-100",
+    pictures: [],
+    waitingImages: true,
+    need: "ภาพวัด เจดีย์ ตักบาตร ลอยกระทง 5–6 ภาพ",
+  },
+  {
+    id: "nature",
+    emoji: "🏞️",
+    label: "น้ำตกและธรรมชาติ",
+    hint: "น้ำตก ภูเขา ทุ่งดอกไม้ และธรรมชาติรอบตัว",
+    tint: "bg-mint-soft",
+    pictures: [],
+    waitingImages: true,
+    need: "ภาพน้ำตก ภูเขา ทุ่งดอกไม้ สีเขียวสดใส 5–6 ภาพ",
+  },
+  {
+    id: "cartoon",
+    emoji: "🎨",
+    label: "การ์ตูนน่ารัก",
+    hint: "ตัวการ์ตูนสีสันสดใสที่เด็ก ๆ ชอบ",
+    tint: "bg-pink-soft",
+    pictures: [],
+    waitingImages: true,
+    need: "⚠️ การ์ตูนดัง (เช่น ชินจัง โดราเอมอน) มีลิขสิทธิ์ ใช้ในเว็บสาธารณะไม่ได้ — ใช้ภาพการ์ตูนฟรีลิขสิทธิ์ หรือภาพที่ครู/เด็กวาดเองแทนได้ค่ะ",
+  },
   {
     id: "school",
     emoji: "🏫",
@@ -109,7 +163,7 @@ export const JIGSAW_CATEGORIES: JigsawCategory[] = [
   {
     id: "grades",
     emoji: "👧",
-    label: "พี่ ๆ น้อง ๆ แต่ละชั้น",
+    label: "พี่ ๆ น้อง ๆ ในโรงเรียน",
     hint: "ภาพประจำระดับชั้น ตั้งแต่เนอสเซอรี่ถึงอนุบาล 3",
     tint: "bg-mint-soft",
     pictures: [
@@ -124,3 +178,7 @@ export const JIGSAW_CATEGORIES: JigsawCategory[] = [
 
 export const findJigsawCategory = (id: string) => JIGSAW_CATEGORIES.find((c) => c.id === id);
 export const jigsawPictureCount = () => JIGSAW_CATEGORIES.reduce((n, c) => n + c.pictures.length, 0);
+/** หมวดที่เล่นได้จริงตอนนี้ (มีภาพแล้ว) */
+export const playableCategories = () => JIGSAW_CATEGORIES.filter((c) => c.pictures.length > 0);
+/** หมวดที่รอภาพจากครู */
+export const waitingCategories = () => JIGSAW_CATEGORIES.filter((c) => c.pictures.length === 0);

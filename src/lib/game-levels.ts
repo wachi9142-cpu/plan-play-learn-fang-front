@@ -90,6 +90,10 @@ export function applyDifficulty(config: GameConfig, level: Difficulty): { config
       const pool = config.rounds.filter((r) => !r.level || r.level === level); const rounds = pool.length ? pool : config.rounds;
       return { config: { ...config, rounds }, info: { questions: rounds.length, timeLimit: level === "hard" ? 45 * rounds.length : undefined, note: `${rounds.length} ข้อ${level === "hard" ? " · จับเวลา" : ""}` } };
     }
+    case "gray-match": {
+      const items = take(config.items, level === "easy" ? 3 : level === "medium" ? 5 : config.items.length);
+      return { config: { ...config, items }, info: { questions: items.length, timeLimit: level === "hard" ? 15 * items.length : undefined, note: `จับคู่ภาพสีกับภาพขาวดำ ${items.length} คู่${level === "hard" ? " · จับเวลา" : ""}` } };
+    }
     case "shadow-match": {
       const items = take(config.items, level === "easy" ? 3 : level === "medium" ? 5 : config.items.length);
       return { config: { ...config, items }, info: { questions: items.length, timeLimit: level === "hard" ? 15 * items.length : undefined, note: `จับคู่เงา ${items.length} คู่${level === "hard" ? " · จับเวลา" : ""}` } };
@@ -106,6 +110,48 @@ export function applyDifficulty(config: GameConfig, level: Difficulty): { config
       const discs = level === "easy" ? 3 : level === "medium" ? 4 : 5;
       return { config: { ...config, discs }, info: { questions: Math.pow(2, discs) - 1, note: `${discs} จาน · ย้ายน้อยที่สุด ${Math.pow(2, discs) - 1} ครั้ง` } };
     }
+    case "block-journey":
+      return { config, info: { questions: 1, note: "ไม่มีระดับให้เลือก — เกมจะเร็วขึ้นเองเมื่อเล่นไปเรื่อย ๆ" } };
+    case "trace-line": {
+      const lv = config.levels[level];
+      return { config, info: { questions: lv.path.length, timeLimit: level === "hard" ? 150 : undefined, note: `เขาวงกต ${lv.size}×${lv.size} · ถนน ${lv.road.length} ช่อง · เส้นทางที่ถูก ${lv.path.length} ช่อง${level === "hard" ? " · จับเวลา" : ""}` } };
+    }
+    case "math-quiz": {
+      const cfg = level === "easy" ? { mode: "add5" as const, count: 8 }
+        : level === "medium" ? { mode: "add10" as const, count: 10 }
+        : { mode: "addsub20" as const, count: 12 };
+      return {
+        config: { ...config, ...cfg },
+        info: {
+          questions: cfg.count,
+          timeLimit: level === "hard" ? 15 * cfg.count : undefined,
+          note: level === "easy" ? `${cfg.count} ข้อ · บวกไม่เกิน 5 มีภาพช่วยนับ`
+            : level === "medium" ? `${cfg.count} ข้อ · บวกไม่เกิน 10`
+            : `${cfg.count} ข้อ · บวกและลบ ไม่เกิน 20 · จับเวลา`,
+        },
+      };
+    }
+    case "spell": {
+      const cfg = level === "easy" ? { count: 5, maxLen: 4 } : level === "medium" ? { count: 7, maxLen: 6 } : { count: 10, maxLen: 9 };
+      return {
+        config: { ...config, ...cfg },
+        info: { questions: cfg.count, timeLimit: level === "hard" ? 40 * cfg.count : undefined, note: `${cfg.count} คำ · ไม่เกิน ${cfg.maxLen} ตัวอักษร${level === "hard" ? " · จับเวลา" : ""}` },
+      };
+    }
+    case "iq": {
+      const rounds = config.rounds.filter((r) => (r.level ?? "easy") === level);
+      const use = rounds.length ? rounds : config.rounds;
+      return {
+        config: { ...config, rounds: use },
+        info: {
+          questions: use.length,
+          timeLimit: level === "hard" ? 25 * use.length : undefined,
+          note: `${use.length} ข้อ · ${level === "easy" ? "ของใกล้ตัว เลือก 3 ข้อ" : level === "medium" ? "ต้องคิดเชื่อมโยง" : "แบบแผนและการให้เหตุผล · จับเวลา"}`,
+        },
+      };
+    }
+    case "dominoes":
+      return { config, info: { questions: 1, note: "มีโหมดเดียว — ต่อเลขให้ตรงกันจนหมดมือก่อนอีกฝ่าย" } };
     case "whack": {
       // ยากขึ้น = รูเยอะขึ้น ตุ่นโผล่ถี่ขึ้น และมุดเร็วขึ้น
       const cfg = level === "easy" ? { holes: 4, lifeMs: 2000, gapMs: 1100, rounds: 15 }

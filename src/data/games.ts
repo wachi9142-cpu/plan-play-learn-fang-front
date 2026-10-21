@@ -1,4 +1,4 @@
-import { JIGSAW_CATEGORIES } from "@/data/jigsaw";
+import { playableCategories } from "@/data/jigsaw";
 import { CODING_GAMES } from "./games-coding";
 import type { Game, GameCategory } from "@/types";
 
@@ -43,6 +43,28 @@ export const ZONES = {
  * คลังเกมออนไลน์ — เพิ่มเกมใหม่ = เพิ่ม object ใหม่ (เลือก engine ที่มีอยู่ + ใส่ config)
  * ทุกเกมเชื่อมกับแผน (planIds) และกิจกรรมหลัก (activityType)
  */
+/**
+ * 🔎 คำค้นภาษาไทยของแต่ละหมวด — ครูพิมพ์ "โค้ดดิ้ง" หรือ "จิ๊กซอว์" แล้วต้องเจอ
+ * เพิ่มคำใหม่ได้ตรงนี้ที่เดียว
+ */
+export const CATEGORY_KEYWORDS: Record<GameCategory, string[]> = {
+  matching: ["จับคู่", "เหมือนกัน", "ความจำ", "ขาวดำ", "match", "matching", "memory", "pair", "grayscale"],
+  puzzle: ["จิ๊กซอว์", "ต่อภาพ", "ภาพตัดต่อ", "puzzle", "jigsaw", "tile"],
+  ordering: ["เรียงลำดับ", "เรียง", "ลำดับ", "มากน้อย", "order", "sort", "sequence", "size"],
+  observe: ["สังเกต", "ค้นหา", "ไม่เข้าพวก", "หาตัวแปลก", "จับผิด", "observe", "find", "odd one out", "spot"],
+  color: ["สี", "แยกสี", "color", "colour", "rainbow"],
+  letter: ["ตัวอักษร", "พยัญชนะ", "ก ไก่", "abc", "letter", "alphabet", "phonics"],
+  shadow: ["เงา", "shadow", "silhouette"],
+  logic: ["ตรรกะ", "คิด", "เลื่อน", "สมอง", "logic", "thinking", "brain", "slide", "sliding"],
+  board: ["กระดาน", "วางแผน", "หมากฮอส", "โอเอ็กซ์", "เรียงสี่", "ฮานอย", "board", "strategy", "checkers", "tic tac toe", "connect four", "hanoi", "chess"],
+  reflex: ["ตีตุ่น", "ไว", "เร็ว", "ตอบสนอง", "สมาธิ", "whack", "mole", "reflex", "speed", "focus"],
+  coding: ["โค้ดดิ้ง", "โค้ด", "เขียนโปรแกรม", "คำสั่ง", "ลูป", "coding", "programming", "block"],
+  math: ["คณิตศาสตร์", "คณิต", "เลข", "ตัวเลข", "บวก", "ลบ", "นับ", "math", "maths", "number", "count", "add", "subtract"],
+  language: ["ภาษา", "คำศัพท์", "อ่าน", "คำ", "language", "vocabulary", "word", "english", "reading", "flashcard", "แฟลชการ์ด"],
+  science: ["วิทยาศาสตร์", "ทดลอง", "science", "experiment", "nature"],
+  creative: ["สร้างสรรค์", "ศิลปะ", "วาด", "creative", "art", "draw", "paint"],
+};
+
 /** 👥 ป้ายบอกว่าเกมนี้เล่นได้กี่คน */
 export function playersLabel(g: { players?: number[] }): { emoji: string; label: string } {
   const p = g.players ?? [1];
@@ -53,10 +75,39 @@ export function playersLabel(g: { players?: number[] }): { emoji: string; label:
 }
 
 export const GAMES: Game[] = [
+  {
+    id: "gray-match",
+    title: "จับคู่ภาพสีกับภาพขาวดำ",
+    emoji: "🖤",
+    cover: "bg-cream-dark",
+    description: "ฝั่งซ้ายเป็นภาพสี ฝั่งขวาเป็นภาพขาวดำของสิ่งเดียวกัน จับคู่ให้ถูก — ฝึกมองรูปทรงและรายละเอียด ไม่พึ่งสีอย่างเดียว",
+    skills: ["การสังเกต", "จำแนกรูปทรง", "ไม่พึ่งสีอย่างเดียว", "สมาธิ"],
+    gradeId: "k1",
+    ages: "3–6 ปี",
+    players: [1],
+    category: "matching",
+    zone: "edu",
+    planIds: [],
+    activityType: "game",
+    config: {
+      engine: "gray-match",
+      items: [
+        { emoji: "🍎", label: "แอปเปิล" },
+        { emoji: "🐘", label: "ช้าง" },
+        { emoji: "🚗", label: "รถยนต์" },
+        { emoji: "🌻", label: "ดอกทานตะวัน" },
+        { emoji: "🐟", label: "ปลา" },
+        { emoji: "🦋", label: "ผีเสื้อ" },
+        { emoji: "🏠", label: "บ้าน" },
+        { emoji: "⚽", label: "ลูกฟุตบอล" },
+      ],
+    },
+  },
+
   /* 🧩 จิ๊กซอว์ — แต่ละหมวดเป็นเกมหนึ่งเกม กดแล้วไปหน้าต่อภาพของหมวดนั้น */
-  ...JIGSAW_CATEGORIES.map((c): Game => ({
+  ...playableCategories().map((c): Game => ({
     id: `jigsaw-${c.id}`,
-    title: `จิ๊กซอว์ · ${c.label}`,
+    title: `ต่อภาพ ${c.label}`,
     emoji: "🧩",
     cover: c.tint,
     description: `${c.hint} — ภาพมีช่องว่าง ลากชิ้นจากด้านข้างมาวางให้ตรงช่อง มี ${c.pictures.length} ภาพ และ 3 ระดับ`,
@@ -71,6 +122,136 @@ export const GAMES: Game[] = [
     href: `/jigsaw/${c.id}`,
     config: { engine: "tile-puzzle", scene: ["🧩"], size: 3 },
   })),
+
+  {
+    id: "block-journey",
+    title: "Block Journey — เกมต่อบล็อก",
+    emoji: "🧱",
+    cover: "bg-sky-soft",
+    description: "บล็อกหล่นลงมาเรื่อย ๆ หมุนและเลื่อนให้ต่อเต็มแถว แถวที่เต็มจะหายไป — ไม่ต้องเลือกระดับ เกมจะเร็วขึ้นเองทุก 5 แถวที่เคลียร์ได้",
+    skills: ["การวางแผน", "มองรูปทรง", "การตัดสินใจเร็ว", "สมาธิ"],
+    gradeId: "k3",
+    ages: "5–6 ปี",
+    players: [1],
+    noLevels: true,
+    category: "board",
+    zone: "fun",
+    planIds: [],
+    activityType: "game",
+    config: { engine: "block-journey", cols: 8, rows: 14 },
+  },
+  {
+    id: "dominoes",
+    title: "โดมิโน",
+    emoji: "🀄",
+    cover: "bg-cream-dark",
+    description: "ต่อเลขให้ตรงกับปลายแถว ใครหมดมือก่อนชนะ ต่อไม่ได้ให้จั่วจากกอง — ฝึกนับจุดและจับคู่จำนวน มีโหมดเดียว ไม่ต้องเลือกระดับ",
+    skills: ["นับจำนวน", "จับคู่ตัวเลข", "การวางแผน", "รอคอยตามตา"],
+    gradeId: "k2",
+    ages: "4–6 ปี",
+    players: [1],
+    noLevels: true,
+    category: "board",
+    zone: "edu",
+    planIds: [],
+    activityType: "game",
+    config: { engine: "dominoes", max: 6 },
+  },
+
+  {
+    id: "trace-line",
+    title: "พาพี่หมีกลับบ้าน — ลากเส้นในเขาวงกต",
+    emoji: "✏️",
+    cover: "bg-mint-soft",
+    description: "กดค้างแล้วลากดินสอไปตามถนนในเขาวงกตจนถึงบ้าน ระวังทางตัน! — ฝึกกล้ามเนื้อมือ การควบคุมดินสอ และการวางแผนเส้นทาง",
+    skills: ["กล้ามเนื้อมัดเล็ก", "ควบคุมมือ-ตา", "วางแผนเส้นทาง", "ความอดทน"],
+    gradeId: "k0",
+    ages: "2–6 ปี",
+    players: [1],
+    category: "creative",
+    zone: "edu",
+    planIds: [],
+    activityType: "game",
+    config: {
+      engine: "trace-line",
+      actor: "🐻",
+      goal: "🏠",
+      levels: {
+        easy: { size: 7, road: [[1, 1], [3, 1], [4, 1], [5, 1], [1, 2], [5, 2], [1, 3], [2, 3], [3, 3], [4, 3], [5, 3], [5, 4], [1, 5], [2, 5], [3, 5], [4, 5], [5, 5]], path: [[1, 1], [1, 2], [1, 3], [2, 3], [3, 3], [4, 3], [5, 3], [5, 4], [5, 5]] },
+        medium: { size: 9, road: [[1, 1], [2, 1], [3, 1], [4, 1], [5, 1], [7, 1], [5, 2], [7, 2], [1, 3], [2, 3], [3, 3], [5, 3], [6, 3], [7, 3], [1, 4], [7, 4], [1, 5], [2, 5], [3, 5], [4, 5], [5, 5], [7, 5], [1, 6], [3, 6], [7, 6], [1, 7], [3, 7], [4, 7], [5, 7], [6, 7], [7, 7]], path: [[1, 1], [2, 1], [3, 1], [4, 1], [5, 1], [5, 2], [5, 3], [6, 3], [7, 3], [7, 4], [7, 5], [7, 6], [7, 7]] },
+        hard: { size: 11, road: [[1, 1], [2, 1], [3, 1], [5, 1], [6, 1], [7, 1], [8, 1], [9, 1], [3, 2], [7, 2], [1, 3], [3, 3], [4, 3], [5, 3], [7, 3], [8, 3], [9, 3], [1, 4], [5, 4], [9, 4], [1, 5], [2, 5], [3, 5], [5, 5], [6, 5], [7, 5], [8, 5], [9, 5], [1, 6], [9, 6], [1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [7, 7], [8, 7], [9, 7], [1, 8], [3, 8], [7, 8], [1, 9], [3, 9], [4, 9], [5, 9], [6, 9], [7, 9], [8, 9], [9, 9]], path: [[1, 1], [2, 1], [3, 1], [3, 2], [3, 3], [4, 3], [5, 3], [5, 4], [5, 5], [6, 5], [7, 5], [8, 5], [9, 5], [9, 6], [9, 7], [8, 7], [7, 7], [7, 8], [7, 9], [8, 9], [9, 9]] },
+      },
+    },
+  },
+  {
+    id: "iq-quiz",
+    title: "เกมฝึกเชาว์ปัญญา",
+    emoji: "🧠",
+    cover: "bg-purple-100",
+    description: "อ่านโจทย์แล้วเลือก ก ข ค — ฝึกการให้เหตุผล จัดกลุ่ม และมองความสัมพันธ์ของสิ่งรอบตัว",
+    skills: ["การให้เหตุผล", "จัดกลุ่ม", "สังเกตความสัมพันธ์", "คิดเชื่อมโยง"],
+    gradeId: "k2",
+    ages: "4–6 ปี",
+    players: [1],
+    category: "logic",
+    zone: "edu",
+    planIds: [],
+    activityType: "game",
+    config: {
+      engine: "iq",
+      rounds: [
+        { q: "อันไหนตัวใหญ่ที่สุด?", options: ["🐘", "🐱", "🐭"], answer: 0, explain: "ช้างตัวใหญ่ที่สุดในสามตัวนี้", level: "easy" },
+        { q: "อันไหนกินได้?", options: ["🍎", "🚗", "📚"], answer: 0, explain: "แอปเปิลเป็นผลไม้ กินได้", level: "easy" },
+        { q: "อันไหนลอยน้ำได้?", options: ["🚢", "🪨", "🔨"], answer: 0, explain: "เรือลอยน้ำได้ หินกับค้อนจม", level: "easy" },
+        { q: "อันไหนใช้เขียนหนังสือ?", options: ["✏️", "🥄", "🧦"], answer: 0, explain: "ดินสอใช้เขียน ช้อนใช้กิน ถุงเท้าใช้ใส่", level: "easy" },
+        { q: "อันไหนอยู่บนท้องฟ้า?", options: ["☁️", "🌳", "🐟"], answer: 0, explain: "เมฆอยู่บนฟ้า ต้นไม้อยู่บนดิน ปลาอยู่ในน้ำ", level: "easy" },
+        { q: "ฝนตกต้องใช้อะไร?", options: ["☂️", "🕶️", "🧢"], answer: 0, explain: "ร่มกันฝนได้", level: "medium" },
+        { q: "กลางคืนเราเห็นอะไรบนฟ้า?", options: ["🌙", "☀️", "🌈"], answer: 0, explain: "กลางคืนเห็นดวงจันทร์ กลางวันเห็นดวงอาทิตย์", level: "medium" },
+        { q: "อันไหนไม่ใช่ยานพาหนะ?", options: ["🍌", "🚗", "🚲"], answer: 0, explain: "กล้วยเป็นผลไม้ ไม่ใช่ยานพาหนะ", level: "medium" },
+        { q: "อันไหนหนักที่สุด?", options: ["🐘", "🐕", "🐜"], answer: 0, explain: "ช้างหนักที่สุด มดเบาที่สุด", level: "medium" },
+        { q: "เรียงจากเล็กไปใหญ่ 🐜 → ❓ → 🐘 ตรงกลางคือ?", seq: ["🐜", "❓", "🐘"], options: ["🐱", "🦟", "🐳"], answer: 0, explain: "แมวใหญ่กว่ามด แต่เล็กกว่าช้าง", level: "medium" },
+        { q: "ต่อไปคืออะไร?", seq: ["🔴", "🔵", "🔴", "🔵", "❓"], options: ["🔴", "🔵", "🟢"], answer: 0, explain: "แบบแผนคือ แดง-น้ำเงิน สลับกัน ต่อไปจึงเป็นแดง", level: "hard" },
+        { q: "🐤 โตเป็น 🐔 แล้ว 🐛 โตเป็นอะไร?", seq: ["🐛", "➡️", "❓"], options: ["🦋", "🐝", "🐞"], answer: 0, explain: "หนอนโตเป็นผีเสื้อ", level: "hard" },
+        { q: "อันไหนทำมาจากนม?", options: ["🧀", "🍞", "🥩"], answer: 0, explain: "ชีสทำจากนมวัว", level: "hard" },
+        { q: "อันไหนมี 2 ล้อ?", options: ["🚲", "🚗", "🚚"], answer: 0, explain: "จักรยานมี 2 ล้อ รถยนต์กับรถบรรทุกมี 4 ล้อขึ้นไป", level: "hard" },
+        { q: "ต่อไปคืออะไร?", seq: ["⭐", "⭐", "🌙", "⭐", "⭐", "❓"], options: ["🌙", "⭐", "☀️"], answer: 0, explain: "แบบแผนคือ ดาว-ดาว-จันทร์ ซ้ำกัน", level: "hard" },
+      ],
+    },
+  },
+
+  {
+    id: "spell-word",
+    title: "สะกดคำจากภาพ — ไทย & อังกฤษ",
+    emoji: "🔤",
+    cover: "bg-yellow-soft",
+    description: "ดูภาพแล้วเลือกตัวอักษรมาใส่เอง เลือกเล่นได้ทั้ง ก–ฮ และ A–Z มีสระให้เลือกครบ หยิบผิดลบออกได้ — คำศัพท์ดึงจากคลังแฟลชการ์ด",
+    skills: ["สะกดคำ", "จำตัวอักษร", "คำศัพท์ไทย–อังกฤษ", "เชื่อมโยงภาพกับคำ"],
+    gradeId: "k2",
+    ages: "4–6 ปี",
+    players: [1],
+    category: "language",
+    zone: "edu",
+    planIds: [],
+    activityType: "game",
+    config: { engine: "spell", count: 5, maxLen: 4 },
+  },
+
+  {
+    id: "math-quiz",
+    title: "คิดเลขเร็ว — เลือก ก ข ค",
+    emoji: "➕",
+    cover: "bg-sky-soft",
+    description: "ขึ้นโจทย์แล้วเลือกคำตอบจาก 6 ข้อ · ง่ายมีภาพผลไม้ช่วยนับ · ยากมีทั้งบวกและลบ พร้อมจับเวลา",
+    skills: ["บวกเลข", "ลบเลข", "คิดเร็ว", "สมาธิ"],
+    gradeId: "k2",
+    ages: "4–6 ปี",
+    players: [1],
+    category: "math",
+    zone: "edu",
+    planIds: [],
+    activityType: "game",
+    config: { engine: "math-quiz", mode: "add5", count: 8 },
+  },
 
   /* 🔨 เกมตีตุ่น — ฝึกการตอบสนอง สมาธิ และการยับยั้งใจ */
   {

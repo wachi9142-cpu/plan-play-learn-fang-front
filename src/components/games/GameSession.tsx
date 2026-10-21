@@ -28,7 +28,8 @@ export function GameSession({ game }: { game: Game }) {
 
   useEffect(() => { setProfile(getCurrentPlayer()); const l = () => setTick((t) => t + 1); const pl = () => setProfile(getCurrentPlayer()); window.addEventListener(GAME_EVENT, l); window.addEventListener(PLAYER_EVENT, pl); return () => { window.removeEventListener(GAME_EVENT, l); window.removeEventListener(PLAYER_EVENT, pl); }; }, []);
   const fixed = useMemo(() => (player ? fixedLevel(player, game.id) : null), [player, game.id, tick]); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => { if (level) return; if (fixed) setLevel(fixed.level); else { const o = listOffline().find((g) => g.gameId === game.id); if (o?.level) setLevel(o.level); } }, [fixed, level, game.id]);
+  // เกมที่ยากขึ้นเองระหว่างเล่น ไม่ต้องให้เลือกระดับ — เริ่มเล่นได้เลย
+  useEffect(() => { if (level) return; if (game.noLevels) { setLevel("easy"); return; } if (fixed) setLevel(fixed.level); else { const o = listOffline().find((g) => g.gameId === game.id); if (o?.level) setLevel(o.level); } }, [fixed, level, game.id, game.noLevels]);
 
   const prepared = useMemo(() => (level ? applyDifficulty(game.config, level) : null), [game.config, level]);
   const history = player ? resultsOf(player, game.id) : [];

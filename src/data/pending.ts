@@ -97,7 +97,8 @@ export const PENDING_GROUPS: PendingGroup[] = [
     hint: "ส่งมาเป็นชุดก็ได้ เดี๋ยวแปลงเป็นไฟล์เว็บแล้วใส่ให้",
     items: [
       { id: "flash-img", title: "ภาพแฟลชการ์ด 340 ใบ", detail: "ตอนนี้ใช้อีโมจิแทนทั้งหมด — ส่งมาทีละหมวดก็ได้ (1 ภาพ ต่อ 1 คำ ใช้ทั้งด้านหน้าและหลัง)", status: "waiting", href: "/flashcards", file: "public/flashcards/" },
-      { id: "jigsaw-img", title: "ภาพสำหรับจิ๊กซอว์", detail: "ตอนนี้ใช้ภาพที่มีอยู่แล้วในเว็บ — ภาพที่เหมาะคือสีสด รายละเอียดชัด สัดส่วน 4:3", status: "waiting", href: "/jigsaw", file: "public/jigsaw/" },
+      { id: "jigsaw-img", title: "ภาพจิ๊กซอว์ 5 หมวดใหม่", detail: "🦁 สวนสัตว์ · 🐠 สัตว์น้ำในทะเล · 🛕 วัดและวันสำคัญ · 🏞️ น้ำตกและธรรมชาติ · 🎨 การ์ตูนน่ารัก — เตรียมที่ไว้แล้ว ส่งภาพมาหมวดละ 5–6 ภาพก็เปิดเล่นได้ทันที (สีสด ชัด 4:3)", status: "waiting", priority: true, href: "/jigsaw", file: "public/jigsaw/" },
+      { id: "jigsaw-cartoon", title: "⚠️ การ์ตูนลิขสิทธิ์", detail: "ชินจัง โดราเอมอน และการ์ตูนดังอื่น ๆ มีลิขสิทธิ์ ใช้ในเว็บสาธารณะไม่ได้ — ใช้ภาพการ์ตูนฟรีลิขสิทธิ์ หรือภาพที่ครูกับเด็กวาดเองแทน (จะได้เป็นเอกลักษณ์ของโรงเรียนด้วย)", status: "review", href: "/jigsaw", file: "src/data/jigsaw.ts" },
       { id: "event-img", title: "ภาพกิจกรรมที่ยังใช้อิโมจิ", detail: "🎨 สัปดาห์ศิลปะ · 🌱 วันปลูกต้นไม้ · 🪷 ลอยกระทงน้อย · 👨 วันพ่อ", status: "waiting", href: "/school-events", file: "src/data/school-events.ts" },
       { id: "project-img", title: "ภาพโครงการและผลงาน", detail: "🐛 หนอนไหม · 🌳 ไม้หนึ่งมีเรื่องราว · 🥛 แก้วนมใบนี้ · 🏠 วาดครอบครัวของฉัน", status: "waiting", href: "/projects", file: "src/data/projects.ts" },
       { id: "school-img", title: "ภาพบ้านโรงเรียนสำหรับการ์ดแผน", detail: "ใช้ในการ์ด “เรื่อง โรงเรียนของเรา” (หน่วยโรงเรียน 2 สัปดาห์)", status: "waiting", href: "/plans", file: "src/data/plans.ts" },

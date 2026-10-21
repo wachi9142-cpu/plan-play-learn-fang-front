@@ -1058,3 +1058,7 @@ html:not([data-effect="none"]) nav[aria-label="ทางลัด"] { background
   to   { transform: translateY(0); opacity: 1; }
 }
 .hanoi-lift { animation: hanoi-lift 180ms ease-out both; }
+
+/* 🖤 เกมจับคู่ภาพขาวดำ — ทำให้ภาพเป็นสีเทาแต่ยังเห็นรายละเอียด (ต่างจากเงาที่เป็นสีดำล้วน) */
+.emoji-gray { filter: grayscale(1) contrast(1.15); }
+html[data-theme="dark"] .emoji-gray { filter: grayscale(1) contrast(1.1) brightness(1.1); }

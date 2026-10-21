@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { PageHeader, Tag } from "@/components/ui";
-import { JIGSAW_CATEGORIES, JIGSAW_LEVELS, jigsawPictureCount } from "@/data/jigsaw";
+import { JIGSAW_LEVELS, jigsawPictureCount, playableCategories, waitingCategories } from "@/data/jigsaw";
 
 export const metadata: Metadata = {
   title: "เกมจิ๊กซอว์",
@@ -18,7 +18,7 @@ export default function JigsawPage() {
         description="ภาพมีช่องว่างหายไป — ลากชิ้นจากด้านข้างมาวางให้ตรงช่อง ฝึกการสังเกต การจับคู่รูปทรง และกล้ามเนื้อมือ"
       >
         <div className="flex flex-wrap gap-2">
-          <Tag tone="purple">🗂️ {JIGSAW_CATEGORIES.length} หมวด</Tag>
+          <Tag tone="purple">🗂️ {playableCategories().length} หมวดที่เล่นได้</Tag>
           <Tag tone="sky">🖼️ {jigsawPictureCount()} ภาพ</Tag>
           <Tag tone="mint">🎚️ 3 ระดับทุกภาพ</Tag>
           <Tag tone="yellow">👤 เล่นคนเดียว</Tag>
@@ -39,7 +39,7 @@ export default function JigsawPage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {JIGSAW_CATEGORIES.map((c, i) => (
+        {playableCategories().map((c, i) => (
           <Link
             key={c.id}
             href={`/jigsaw/${c.id}`}
@@ -62,6 +62,28 @@ export default function JigsawPage() {
           </Link>
         ))}
       </div>
+
+      {/* หมวดที่ครูอยากได้ แต่ยังไม่มีภาพ */}
+      {waitingCategories().length > 0 && (
+        <section className="mt-10">
+          <h2 className="mb-1 text-2xl sm:text-3xl">🖼️ หมวดที่กำลังรอภาพ</h2>
+          <p className="mb-4 text-[15px] leading-relaxed text-ink-soft">
+            หมวดเหล่านี้เตรียมที่ไว้ให้แล้ว แค่ส่งภาพมาก็เปิดเล่นได้ทันที —
+            ภาพที่เหมาะคือ <b>สีสดใส รายละเอียดชัด สัดส่วน 4:3</b> หมวดละ 5–6 ภาพ
+          </p>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {waitingCategories().map((c) => (
+              <div key={c.id} className="card border-dashed! p-4 opacity-90">
+                <p className="font-display text-lg text-purple-800">{c.emoji} {c.label}</p>
+                <p className="mt-0.5 text-[14px] leading-snug text-ink-soft">{c.hint}</p>
+                {c.need && (
+                  <p className="mt-2 rounded-2xl bg-yellow-soft px-3 py-2 text-[13px] leading-relaxed text-[#8a6a00]">{c.need}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
