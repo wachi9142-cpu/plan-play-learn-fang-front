@@ -24,7 +24,20 @@ export type GameCategory =
  */
 export type GameConfig =
   | { engine: "memory"; pairs: { emoji: string; label: string }[] }
-  | { engine: "odd-one-out"; rounds: { items: string[]; odd: string; hint: string }[] }
+  | {
+      engine: "odd-one-out";
+      rounds: {
+        hint: string;
+        /** คลังรูปที่ "เข้าพวก" */
+        group: string[];
+        /** คลังรูปที่ "ไม่เข้าพวก" */
+        odds: string[];
+        /** รูปที่ใช้จริงในรอบนี้ (ระบบสร้างให้ตามระดับความยาก) */
+        items?: string[];
+        /** ตัวไม่เข้าพวกของรอบนี้ (ระบบสร้างให้ตามระดับความยาก) */
+        picked?: string[];
+      }[];
+    }
   | { engine: "sort"; rounds: { title: string; items: { emoji: string; value: number; label: string; count?: number }[]; missing?: boolean }[] }
   | { engine: "color-match"; rounds: { color: string; name: string; items: { emoji: string; color: string }[] }[] }
   | { engine: "tile-puzzle"; scene: string[]; size: 3 }
@@ -69,6 +82,8 @@ export interface Game {
    * ไม่ใส่ = [1] (เล่นคนเดียว)
    */
   players?: number[];
+  /** ลิงก์ปลายทางเอง — ใช้กับเกมที่อยู่นอก /games เช่น จิ๊กซอว์ */
+  href?: string;
   points?: number;            // ⭐ คะแนนเต็ม (ค่าเริ่มต้น 5 ดาว)
   config: GameConfig;
 }

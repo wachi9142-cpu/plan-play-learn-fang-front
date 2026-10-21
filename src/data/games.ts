@@ -1,3 +1,4 @@
+import { JIGSAW_CATEGORIES } from "@/data/jigsaw";
 import { CODING_GAMES } from "./games-coding";
 import type { Game, GameCategory } from "@/types";
 
@@ -52,6 +53,25 @@ export function playersLabel(g: { players?: number[] }): { emoji: string; label:
 }
 
 export const GAMES: Game[] = [
+  /* 🧩 จิ๊กซอว์ — แต่ละหมวดเป็นเกมหนึ่งเกม กดแล้วไปหน้าต่อภาพของหมวดนั้น */
+  ...JIGSAW_CATEGORIES.map((c): Game => ({
+    id: `jigsaw-${c.id}`,
+    title: `จิ๊กซอว์ · ${c.label}`,
+    emoji: "🧩",
+    cover: c.tint,
+    description: `${c.hint} — ภาพมีช่องว่าง ลากชิ้นจากด้านข้างมาวางให้ตรงช่อง มี ${c.pictures.length} ภาพ และ 3 ระดับ`,
+    skills: ["การสังเกต", "จับคู่รูปทรง", "กล้ามเนื้อมือ", "ความอดทน"],
+    gradeId: "k1",
+    ages: "2–6 ปี",
+    players: [1],
+    category: "puzzle",
+    zone: "edu",
+    planIds: [],
+    activityType: "game",
+    href: `/jigsaw/${c.id}`,
+    config: { engine: "tile-puzzle", scene: ["🧩"], size: 3 },
+  })),
+
   /* 🔨 เกมตีตุ่น — ฝึกการตอบสนอง สมาธิ และการยับยั้งใจ */
   {
     id: "whack-mole",
@@ -284,12 +304,14 @@ export const GAMES: Game[] = [
     activityType: "game",
     config: {
       engine: "odd-one-out",
+      // คลังรูปของแต่ละรอบ — ระบบหยิบมาใช้ตามระดับ (ง่าย 3 รูป/1 ตัวแปลก · ปานกลาง 6/2 · ยาก 10/3–4)
       rounds: [
-        { items: ["🐶", "🐱", "🍎", "🐰"], odd: "🍎", hint: "อันไหนไม่ใช่สัตว์" },
-        { items: ["🍌", "🍇", "🐸", "🍉"], odd: "🐸", hint: "อันไหนไม่ใช่ผลไม้" },
-        { items: ["🐝", "🦋", "🐞", "🐟"], odd: "🐟", hint: "อันไหนไม่ใช่แมลง" },
-        { items: ["🚗", "🚌", "🍓", "🚲"], odd: "🍓", hint: "อันไหนกินได้" },
-        { items: ["🔴", "🔴", "🔵", "🔴"], odd: "🔵", hint: "สีไหนต่างจากเพื่อน" },
+        { hint: "หาตัวที่ไม่ใช่สัตว์", group: ["🐶", "🐱", "🐰", "🐻", "🐼", "🦊", "🐯", "🐮"], odds: ["🍎", "🚗", "📚", "🌸", "🎈"] },
+        { hint: "หาตัวที่ไม่ใช่ผลไม้", group: ["🍌", "🍇", "🍉", "🍓", "🍎", "🍊", "🍍", "🥭"], odds: ["🐸", "🚲", "📏", "🧢", "⚽"] },
+        { hint: "หาตัวที่ไม่ใช่แมลง", group: ["🐝", "🦋", "🐞", "🐜", "🦗", "🕷️", "🪲", "🐛"], odds: ["🐟", "🐶", "🍰", "🚌", "🌙"] },
+        { hint: "หาตัวที่ไม่ใช่ยานพาหนะ", group: ["🚗", "🚌", "🚲", "🚂", "✈️", "🚢", "🛵", "🚚"], odds: ["🍓", "🐱", "🌳", "📖", "🧦"] },
+        { hint: "หาตัวที่ไม่ใช่อุปกรณ์การเรียน", group: ["✏️", "📚", "✂️", "📏", "🖍️", "📒", "🎒", "🖌️"], odds: ["🐤", "🍉", "🚗", "🌈", "⛅"] },
+        { hint: "หาตัวที่กินไม่ได้", group: ["🍚", "🍜", "🍞", "🥚", "🍗", "🥛", "🍲", "🥗"], odds: ["🚗", "🐶", "📕", "🌻", "🧸"] },
       ],
     },
   },

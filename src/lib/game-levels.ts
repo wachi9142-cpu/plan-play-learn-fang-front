@@ -24,8 +24,25 @@ export function applyDifficulty(config: GameConfig, level: Difficulty): { config
       return { config: { ...config, pairs }, info: { questions: pairs.length, timeLimit: level === "hard" ? 20 * pairs.length : undefined, note: `จับคู่ ${pairs.length} คู่${level === "hard" ? " · จำตำแหน่ง · จับเวลา" : level === "easy" ? " · ตัวเลือกน้อย" : ""}` } };
     }
     case "odd-one-out": {
-      const rounds = take(config.rounds, level === "easy" ? 3 : config.rounds.length).map((r) => ({ ...r, items: level === "easy" ? [r.odd, ...r.items.filter((i) => i !== r.odd).slice(0, 2)] : r.items }));
-      return { config: { ...config, rounds }, info: { questions: rounds.length, timeLimit: level === "hard" ? 15 * rounds.length : undefined, note: `${rounds.length} ข้อ${level === "easy" ? " · 3 ตัวเลือก" : level === "hard" ? " · จับเวลา" : ""}` } };
+      /** ง่าย 3 รูป/1 ตัวแปลก · ปานกลาง 6 รูป/2 ตัว · ยาก 10 รูป/3–4 ตัว */
+      const plan = level === "easy" ? { total: 3, odds: 1 } : level === "medium" ? { total: 6, odds: 2 } : { total: 10, odds: 0 };
+      const picked = take(config.rounds, level === "easy" ? 3 : config.rounds.length).map((r, i) => {
+        const nOdd = level === "hard" ? 3 + (i % 2) : plan.odds;          // ยาก: สลับ 3 กับ 4 ตัว
+        const odds = r.odds.slice(0, Math.min(nOdd, r.odds.length));
+        const group = r.group.slice(0, Math.max(1, plan.total - odds.length));
+        return { ...r, picked: odds, items: [...group, ...odds] };
+      });
+      const totalOdds = picked.reduce((a, r) => a + (r.picked?.length ?? 1), 0);
+      return {
+        config: { ...config, rounds: picked },
+        info: {
+          questions: picked.length,
+          timeLimit: level === "hard" ? 20 * picked.length : undefined,
+          note: level === "easy" ? `${picked.length} ข้อ · 3 รูป หาตัวแปลก 1 ตัว`
+            : level === "medium" ? `${picked.length} ข้อ · 6 รูป หาตัวแปลก 2 ตัว`
+            : `${picked.length} ข้อ · 10 รูป หาตัวแปลก 3–4 ตัว (รวม ${totalOdds} ตัว) · จับเวลา`,
+        },
+      };
     }
     case "sort": {
       const rounds = take(config.rounds, level === "easy" ? 2 : config.rounds.length).map((r) => {

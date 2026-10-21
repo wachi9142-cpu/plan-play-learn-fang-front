@@ -11,9 +11,10 @@ export function GameCard({ game, className, style }: { game: Game; className?: s
   const cat = GAME_CATEGORIES[game.category];
   const plans = game.planIds.map(getPlan).filter((p) => p !== undefined);
   const players = playersLabel(game);
+  const href = game.href ?? `/games/${game.id}`;
   return (
     <article className={cn("card card-hover group flex flex-col overflow-hidden", className)} style={style}>
-      <Link href={`/games/${game.id}`} className={cn("grid h-36 place-items-center text-7xl transition-transform group-hover:scale-105 sm:h-40", game.cover)} aria-label={`เล่น ${game.title}`}>
+      <Link href={href} className={cn("grid h-36 place-items-center text-7xl transition-transform group-hover:scale-105 sm:h-40", game.cover)} aria-label={`เล่น ${game.title}`}>
         <span className="drop-shadow-sm">{game.emoji}</span>
       </Link>
       <div className="flex flex-1 flex-col p-4 sm:p-5">
@@ -28,7 +29,7 @@ export function GameCard({ game, className, style }: { game: Game; className?: s
         {plans.length > 0 && (
           <p className="mt-2 truncate text-[13px] text-ink-soft">📖 {plans.map((p) => p.title).join(" · ")}</p>
         )}
-        <Link href={`/games/${game.id}`} className="tap mt-4 inline-flex items-center justify-center gap-2 rounded-full bg-purple-600 px-5 py-2.5 text-base font-medium text-white shadow-soft transition hover:bg-purple-700">
+        <Link href={href} className="tap mt-4 inline-flex items-center justify-center gap-2 rounded-full bg-purple-600 px-5 py-2.5 text-base font-medium text-white shadow-soft transition hover:bg-purple-700">
           <Play size={18} fill="currentColor" /> เริ่มเล่น
         </Link>
       </div>
