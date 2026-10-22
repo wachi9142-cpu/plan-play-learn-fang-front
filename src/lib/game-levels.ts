@@ -108,6 +108,16 @@ export function applyDifficulty(config: GameConfig, level: Difficulty): { config
       return { config, info: { questions: 1, note: "เลือกเล่นกับเครื่อง (ง่าย/เก่ง) หรือเล่นกับเพื่อนได้ในเกม" } };
     case "connect-four":
       return { config, info: { questions: 1, note: "เรียงให้ครบ 4 เม็ด — เลือกคู่แข่งได้ในเกม" } };
+    case "ring-toss":
+      return { config, info: { questions: 1, note: "เลือกโหมดได้ในเกม — เล่นอิสระ · จับเวลา 90 วินาที · ท้าทาย 60 วินาที" } };
+    case "egg-shooter":
+      return { config, info: { questions: 1, note: "เลือกเกณฑ์จับคู่ได้ในเกม — สี · รูปร่าง · ตัวเลข · พยัญชนะไทย และเลือกได้ 3 ระดับ" } };
+    case "dress-up-pro":
+      return { config, info: { questions: 1, note: "เลือกระดับได้ในเกม — อนุบาล 1 ถึงประถม รวม 4 ระดับ · 14 อาชีพ" } };
+    case "gray-pair":
+      return { config, info: { questions: 1, note: "เลือกหมวดภาพและระดับชั้นได้ในเกม — อนุบาล 1 ถึงประถม รวม 4 ระดับ" } };
+    case "thai-checkers":
+      return { config, info: { questions: 1, note: "เลือกโหมดได้ในเกม — ฝึกเดินหมาก · เล่นกับเครื่อง 3 ระดับ · เล่น 2 คน · โจทย์ฝึกคิด 4 ข้อ" } };
     case "checkers":
       return { config, info: { questions: 1, note: "กระดาน 6×6 สำหรับเด็ก — เลือกคู่แข่งได้ในเกม" } };
     case "hanoi": {
@@ -193,6 +203,19 @@ export function applyDifficulty(config: GameConfig, level: Difficulty): { config
         },
       };
     }
+    case "scoop-fish": {
+      // ง่าย: ปลาเยอะ กระดาษทน ช้อนหลายอัน · ยาก: ปลาหลบเก่งขึ้น กระดาษเปื่อยเร็ว
+      const cfg = level === "easy" ? { goal: 6, fishCount: 14, scoopsStart: 5, wearRate: 0.65, startMoney: 12 }
+        : level === "medium" ? { goal: 10, fishCount: 12, scoopsStart: 4, wearRate: 1, startMoney: 10 }
+        : { goal: 14, fishCount: 10, scoopsStart: 3, wearRate: 1.45, startMoney: 8 };
+      return {
+        config: { ...config, ...cfg },
+        info: {
+          questions: cfg.goal,
+          note: `ช้อนปลาให้ได้ ${cfg.goal} คะแนน · ปลาในอ่าง ${cfg.fishCount} ตัว · ช้อน ${cfg.scoopsStart} อัน · เริ่มที่ ${cfg.startMoney} บาท`,
+        },
+      };
+    }
     case "fruit-farm": {
       // ไล่ระดับตามวัย — อนุบาลไม่มีสัตว์รบกวนและไม่แยกผลดิบ/สุก · ยากต้องบริหารเงินและหลายชนิด
       const cfg = level === "easy"
@@ -263,7 +286,7 @@ export function applyDifficulty(config: GameConfig, level: Difficulty): { config
       };
     }
     case "snakes-ladders":
-      return { config, info: { questions: 1, note: "กระดาน 30 ช่อง · มีบันได 4 จุด งู 4 จุด — เล่นคนเดียวหรือ 2 คนก็ได้" } };
+      return { config, info: { questions: 1, note: "กระดาน 30 ช่อง · บันได 4 จุด งู 4 จุด · ช่องภารกิจ 7 จุด — เลือกเล่น 1 คนแข่งเครื่อง หรือ 2–4 คนได้ก่อนเริ่ม" } };
     case "dominoes":
       return { config, info: { questions: 1, note: "มีโหมดเดียว — ต่อเลขให้ตรงกันจนหมดมือก่อนอีกฝ่าย" } };
     case "whack": {

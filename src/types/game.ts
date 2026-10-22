@@ -45,6 +45,10 @@ export type GameConfig =
   | { engine: "color-pair"; pairs: { left: string; right: string; label: string }[] }
   | { engine: "shadow-match"; items: { emoji: string; label: string }[] }
   | { engine: "gray-match"; items: { emoji: string; label: string }[] }
+  | { engine: "gray-pair"; setId?: string; levelId?: string }
+  | { engine: "dress-up-pro"; levelId?: string }
+  | { engine: "egg-shooter"; modeId?: string; levelId?: string }
+  | { engine: "ring-toss" }
   | { engine: "sliding"; items: string[]; size?: 3 | 4; theme?: "purple" | "pink" | "green" | "yellow" }
   /* 💻 Coding & Logic */
   | { engine: "grid-path"; actor: string; goal: string; hint?: string; levels: Record<"easy" | "medium" | "hard", GridLevelCfg> }
@@ -55,12 +59,13 @@ export type GameConfig =
   | { engine: "tic-tac-toe"; marks?: [string, string] }
   | { engine: "connect-four" }
   | { engine: "checkers" }
+  | { engine: "thai-checkers" }
   | { engine: "hanoi"; discs?: number }
   | { engine: "flash-memory"; pairs?: number }
   | { engine: "whack"; items?: string[]; prompt?: string }
   | { engine: "block-journey"; cols?: number; rows?: number }
   | { engine: "dominoes"; max?: number }
-  | { engine: "snakes-ladders" }
+  | { engine: "snakes-ladders"; missions?: boolean; cats?: ("count" | "world" | "observe" | "life")[] }
   | { engine: "tycoon"; level?: "easy" | "hard"; rounds?: number }
   | { engine: "color-paint"; size?: number; colors?: number; task?: boolean }
   | { engine: "cake-decor" }
@@ -70,6 +75,7 @@ export type GameConfig =
   | { engine: "healthy-food"; count?: number }
   | { engine: "fishing"; pondId?: string; seconds?: number; target?: number; fishCount?: number }
   | { engine: "egg-catch"; seconds?: number; lives?: number; target?: number; fallSpeed?: number; gapMs?: number; rottenRate?: number }
+  | { engine: "scoop-fish"; goal?: number; fishCount?: number; scoopsStart?: number; wearRate?: number; startMoney?: number }
   | { engine: "fruit-farm"; plots?: number; fruitIds?: string[]; orders?: number; maxPerLine?: number; withRipeness?: boolean; withPests?: boolean; withShop?: boolean; startMoney?: number }
   | {
       engine: "dress-up";
