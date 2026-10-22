@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { CALENDAR_EVENTS, CALENDAR_TYPES, THAI_DAYS, THAI_MONTHS, THAI_MONTHS_SHORT, eventsOn, type CalendarEvent } from "@/data/calendar";
 import { cn } from "@/lib/cn";
+import { todayLocalISO } from "@/lib/today";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 const iso = (y: number, m: number, d: number) => `${y}-${pad(m + 1)}-${pad(d)}`;
@@ -11,9 +12,9 @@ const iso = (y: number, m: number, d: number) => `${y}-${pad(m + 1)}-${pad(d)}`;
 /** ปฏิทินรายเดือน — กดวันที่เพื่อดูรายละเอียด */
 export function SchoolCalendar() {
   // เริ่มที่เดือนแรกที่มีเหตุการณ์ (หรือเดือนปัจจุบันถ้าอยู่ในช่วง)
-  const first = CALENDAR_EVENTS.map((e) => e.date).sort()[0] ?? new Date().toISOString().slice(0, 10);
+  const first = CALENDAR_EVENTS.map((e) => e.date).sort()[0] ?? todayLocalISO();
   const last = CALENDAR_EVENTS.map((e) => e.endDate ?? e.date).sort().at(-1) ?? first;
-  const today = new Date().toISOString().slice(0, 10);
+  const today = todayLocalISO();
   const start = today >= first && today <= last ? today : first;
 
   const [year, setYear] = useState(Number(start.slice(0, 4)));

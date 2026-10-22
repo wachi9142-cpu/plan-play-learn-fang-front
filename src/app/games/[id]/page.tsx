@@ -7,6 +7,7 @@ import { getGrade, getPlan, getUnit } from "@/data/plans";
 import { getCoreActivity } from "@/data/core-activities";
 import { Breadcrumb, Tag } from "@/components/ui";
 import { GameSession } from "@/components/games";
+import { GameDossier } from "@/components/games/GameDossier";
 import { LEVELS, applyDifficulty } from "@/lib/game-levels";
 import { OfflineButtons } from "@/components/games/OfflineGames";
 import { AGE_BANDS, bandsForRange } from "@/lib/age-bands";
@@ -49,10 +50,20 @@ export default async function GamePage({ params }: { params: Promise<Params> }) 
         </div>
       </div>
 
+      {/* ▶ ปุ่มใหญ่ — เด็กเห็นเกมก่อนข้อมูลอื่นเสมอ */}
+      <a href="#play" className="tap animate-rise mb-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-purple-700 px-5 py-3.5 font-display text-lg text-white shadow-soft hover:bg-purple-800">
+        ▶ เริ่มเล่นเกม
+      </a>
+
       <div className="animate-rise mb-4"><OfflineButtons game={game} /></div>
       <div id="play" className="animate-rise delay-1">
         <GameSession game={game} />
       </div>
+
+      {/* 📁 แฟ้มข้อมูลเกมเพื่อการเรียนรู้ — ทุกแผงปิดอยู่ กดจึงเปิด หน้าเกมจึงสะอาด */}
+      <section className="animate-rise delay-2 mt-6">
+        <GameDossier game={game} />
+      </section>
 
       {/* ข้อมูลการเชื่อมโยงของเกม */}
       <section className="animate-rise delay-2 mt-8 grid gap-4 md:grid-cols-2">

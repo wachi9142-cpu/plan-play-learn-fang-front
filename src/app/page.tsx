@@ -18,6 +18,7 @@ import { HeroBanner } from "@/components/partials/HeroBanner";
 import { PrepThisWeek, UpcomingEvents } from "@/components/events";
 import { PinnedNotice } from "@/components/partials/PinnedNotice";
 import { cn } from "@/lib/cn";
+import { todayLocalISO } from "@/lib/today";
 
 const thaiDate = (iso: string) => `${Number(iso.slice(8, 10))} ${THAI_MONTHS_SHORT[Number(iso.slice(5, 7)) - 1]} ${Number(iso.slice(0, 4)) + 543 - 2500}`;
 
@@ -25,7 +26,7 @@ export default function HomePage() {
   const latestNews = sortedNews().slice(0, 4);
 
   // กิจกรรมที่กำลังจะมาถึง (ตั้งแต่วันนี้) 3 รายการ — ถ้าไม่มี แสดง 3 รายการแรก
-  const today = new Date().toISOString().slice(0, 10);
+  const today = todayLocalISO();
   const sortedEvents = [...CALENDAR_EVENTS].sort((a, b) => a.date.localeCompare(b.date));
   const future = sortedEvents.filter((e) => (e.endDate ?? e.date) >= today);
   const upcoming = (future.length ? future : sortedEvents).slice(0, 3);

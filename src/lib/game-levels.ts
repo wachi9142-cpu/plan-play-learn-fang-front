@@ -189,7 +189,7 @@ export function applyDifficulty(config: GameConfig, level: Difficulty): { config
         info: {
           questions: cfg.count,
           timeLimit: level === "hard" ? 15 * cfg.count : undefined,
-          note: `${cfg.count} ข้อ · เลือกจากเงา ${cfg.choices} อัน${level === "hard" ? " · เงาเอียงและคล้ายกันมาก · จับเวลา" : ""}`,
+          note: `เลือกจากเงา ${cfg.choices} อัน${level === "hard" ? " · เงาเอียงและคล้ายกันมาก · จับเวลา" : ""}`,
         },
       };
     }
