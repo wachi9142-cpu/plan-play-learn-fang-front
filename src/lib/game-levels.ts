@@ -193,6 +193,16 @@ export function applyDifficulty(config: GameConfig, level: Difficulty): { config
         },
       };
     }
+    case "healthy-food": {
+      // จำนวนอาหารต่อรอบ — ครึ่งหนึ่งมีประโยชน์ อีกครึ่งกินแต่น้อยเสมอ
+      const c = level === "easy" ? 6 : level === "medium" ? 10 : 12;
+      return {
+        config: { ...config, count: c },
+        info: { questions: c, timeLimit: level === "hard" ? 12 * c : undefined, note: `อาหาร ${c} อย่างต่อรอบ${level === "hard" ? " · จับเวลา" : ""}` },
+      };
+    }
+    case "scene-builder":
+      return { config, info: { questions: 1, note: "ไม่มีระดับ ไม่มีผิดถูก — วาง ย้าย ย่อขยาย และลบสติกเกอร์ได้ตามใจ" } };
     case "cake-decor":
       return { config, info: { questions: 1, note: "ไม่มีระดับ ไม่มีผิดถูก — ของแต่งและสีเค้กสุ่มใหม่ทุกรอบ" } };
     case "color-paint": {

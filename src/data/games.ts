@@ -1,5 +1,6 @@
 import { SPOT_CATEGORIES } from "@/data/spot-diff";
 import { SHADOW_CATEGORIES } from "@/data/shadow-quiz";
+import { SCENES } from "@/data/scene-builder";
 import { playableCategories } from "@/data/jigsaw";
 import { CODING_GAMES } from "./games-coding";
 import type { Game, GameCategory } from "@/types";
@@ -63,8 +64,8 @@ export const CATEGORY_KEYWORDS: Record<GameCategory, string[]> = {
   coding: ["โค้ดดิ้ง", "โค้ด", "เขียนโปรแกรม", "คำสั่ง", "ลูป", "coding", "programming", "block"],
   math: ["คณิตศาสตร์", "คณิต", "เลข", "ตัวเลข", "บวก", "ลบ", "นับ", "math", "maths", "number", "count", "add", "subtract"],
   language: ["ภาษา", "คำศัพท์", "อ่าน", "คำ", "language", "vocabulary", "word", "english", "reading", "flashcard", "แฟลชการ์ด"],
-  science: ["วิทยาศาสตร์", "ทดลอง", "science", "experiment", "nature"],
-  creative: ["สร้างสรรค์", "ศิลปะ", "วาด", "creative", "art", "draw", "paint"],
+  science: ["วิทยาศาสตร์", "ทดลอง", "อาหาร", "สุขภาพ", "เลือกกิน", "โภชนาการ", "science", "experiment", "nature", "food", "health", "nutrition"],
+  creative: ["สร้างสรรค์", "ศิลปะ", "วาด", "สร้างฉาก", "ฉาก", "ตัดแปะ", "สติกเกอร์", "creative", "art", "draw", "paint", "scene", "sticker", "collage"],
 };
 
 /** 👥 ป้ายบอกว่าเกมนี้เล่นได้กี่คน */
@@ -143,6 +144,44 @@ export const GAMES: Game[] = [
     activityType: "game",
     config: { engine: "shadow-quiz", categoryId: c.id, choices: 3, count: 8 },
   })),
+
+  /* 🖼️ สร้างฉาก — แทนใบงานตัดแปะ เด็กเลือกสติกเกอร์มาวางเองได้ตามใจ */
+  ...SCENES.map((c): Game => ({
+    id: `scene-${c.id}`,
+    title: `สร้างฉาก ${c.label}`,
+    titleEn: `Build Your Own ${c.labelEn}`,
+    emoji: c.emoji,
+    cover: c.tint,
+    description: `${c.hint} — เลือกสติกเกอร์จากถาดแล้วคลิกวางบนภาพ ลากย้าย ย่อขยาย กลับด้าน และลบได้ ไม่มีผิดถูก มีสติกเกอร์ ${c.groups.reduce((n, g) => n + g.items.length, 0)} แบบ`,
+    skills: ["ความคิดสร้างสรรค์", "การจัดวางและมิติสัมพันธ์", "การเล่าเรื่องจากภาพ", "กล้ามเนื้อมือและสายตา"],
+    gradeId: "k1",
+    ages: "3–6 ปี",
+    players: [1],
+    noLevels: true,
+    category: "creative",
+    zone: "edu",
+    planIds: [],
+    activityType: "creative",
+    config: { engine: "scene-builder", sceneId: c.id },
+  })),
+
+  /* 🍎 หนูน้อยเลือกกิน — ลากอาหารมีประโยชน์เข้าปาก ของหวานใส่ถังขยะ */
+  {
+    id: "healthy-food",
+    title: "หนูน้อยเลือกกิน", titleEn: "Healthy Food Picker",
+    emoji: "🍎",
+    cover: "bg-mint-soft",
+    description: "ลากอาหารที่มีประโยชน์ไปให้หนูน้อยกิน ส่วนของหวานที่ควรกินแต่น้อยให้ลากไปใส่ถังขยะ วางผิดที่ไม่เป็นไร อาหารกลับที่เดิมพร้อมคำใบ้ — สอนว่าขนมไม่ใช่ของไม่ดี แค่ควรกินแต่น้อย",
+    skills: ["จำแนกประเภทอาหาร", "การตัดสินใจ", "ดูแลสุขภาพเบื้องต้น", "ประสานสัมพันธ์มือกับตา"],
+    gradeId: "k1",
+    ages: "3–6 ปี",
+    players: [1],
+    category: "science",
+    zone: "edu",
+    planIds: ["food"],
+    activityType: "game",
+    config: { engine: "healthy-food", count: 10 },
+  },
 
   /* 🧩 จิ๊กซอว์ — แต่ละหมวดเป็นเกมหนึ่งเกม กดแล้วไปหน้าต่อภาพของหมวดนั้น */
   ...playableCategories().map((c): Game => ({

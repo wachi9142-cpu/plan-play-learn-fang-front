@@ -66,6 +66,8 @@ export type GameConfig =
   | { engine: "cake-decor" }
   | { engine: "spot-diff"; categoryId?: string; diffs?: number }
   | { engine: "shadow-quiz"; categoryId?: string; choices?: number; count?: number; tricky?: boolean }
+  | { engine: "scene-builder"; sceneId?: string }
+  | { engine: "healthy-food"; count?: number }
   | {
       engine: "dress-up";
       pickCount?: number;
