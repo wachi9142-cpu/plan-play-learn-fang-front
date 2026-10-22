@@ -70,6 +70,7 @@ export type GameConfig =
   | { engine: "healthy-food"; count?: number }
   | { engine: "fishing"; pondId?: string; seconds?: number; target?: number; fishCount?: number }
   | { engine: "egg-catch"; seconds?: number; lives?: number; target?: number; fallSpeed?: number; gapMs?: number; rottenRate?: number }
+  | { engine: "fruit-farm"; plots?: number; fruitIds?: string[]; orders?: number; maxPerLine?: number; withRipeness?: boolean; withPests?: boolean; withShop?: boolean; startMoney?: number }
   | {
       engine: "dress-up";
       pickCount?: number;

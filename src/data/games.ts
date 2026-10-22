@@ -65,7 +65,7 @@ export const CATEGORY_KEYWORDS: Record<GameCategory, string[]> = {
   coding: ["โค้ดดิ้ง", "โค้ด", "เขียนโปรแกรม", "คำสั่ง", "ลูป", "coding", "programming", "block"],
   math: ["คณิตศาสตร์", "คณิต", "เลข", "ตัวเลข", "บวก", "ลบ", "นับ", "math", "maths", "number", "count", "add", "subtract"],
   language: ["ภาษา", "คำศัพท์", "อ่าน", "คำ", "language", "vocabulary", "word", "english", "reading", "flashcard", "แฟลชการ์ด"],
-  science: ["วิทยาศาสตร์", "ทดลอง", "อาหาร", "สุขภาพ", "เลือกกิน", "โภชนาการ", "science", "experiment", "nature", "food", "health", "nutrition"],
+  science: ["วิทยาศาสตร์", "ทดลอง", "อาหาร", "สุขภาพ", "เลือกกิน", "โภชนาการ", "สวนผลไม้", "ปลูกต้นไม้", "ทำสวน", "ผลไม้", "ปุ๋ย", "ฟาร์ม", "science", "experiment", "nature", "food", "health", "nutrition", "farm", "garden", "fruit", "plant", "grow"],
   creative: ["สร้างสรรค์", "ศิลปะ", "วาด", "สร้างฉาก", "ฉาก", "ตัดแปะ", "สติกเกอร์", "creative", "art", "draw", "paint", "scene", "sticker", "collage"],
 };
 
@@ -219,6 +219,24 @@ export const GAMES: Game[] = [
     planIds: ["food"],
     activityType: "game",
     config: { engine: "egg-catch", seconds: 60, lives: 3, target: 20 },
+  },
+
+  /* 🌳 เจ้าของสวนผลไม้ — ปลูก ดูแล ไล่สัตว์ เก็บตามออเดอร์ ขาย แล้วพัฒนาสวน */
+  {
+    id: "fruit-farm",
+    title: "เจ้าของสวนผลไม้มหาสนุก", titleEn: "My Fruit Farm",
+    emoji: "🌳",
+    cover: "bg-mint-soft",
+    description: "ดูแลสวนตั้งแต่หยอดเมล็ด รดน้ำ ใส่ปุ๋ย รอออกดอกติดผล จนผลสุกพร้อมเก็บ แล้วจัดผลไม้ให้ตรงออเดอร์ของลูกค้า ได้เงินมาซื้อถุงห่อผลไม้ สุนัขเฝ้าสวน เหยี่ยว และจ้างคนงาน — ระดับสูงต้องแยกผลดิบกับผลสุก และคอยไล่ลิงกับนกด้วย",
+    skills: ["นับจำนวนและคิดเงิน", "สังเกตชนิด สี และความสุก", "วางแผนและจัดลำดับงาน", "ความรับผิดชอบในการดูแล"],
+    gradeId: "k1",
+    ages: "4–8 ปี",
+    players: [1],
+    category: "science",
+    zone: "edu",
+    planIds: ["food"],
+    activityType: "game",
+    config: { engine: "fruit-farm", plots: 6, fruitIds: ["mango", "orange"], orders: 5, maxPerLine: 4, withRipeness: true, withPests: true, withShop: true, startMoney: 25 },
   },
 
   /* 🧩 จิ๊กซอว์ — แต่ละหมวดเป็นเกมหนึ่งเกม กดแล้วไปหน้าต่อภาพของหมวดนั้น */

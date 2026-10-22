@@ -17,7 +17,7 @@ import { cn } from "@/lib/cn";
  * ทุกแผงปิดอยู่ตอนเข้าหน้า หน้าเกมจึงสะอาด เด็กเห็นเกมก่อนเสมอ
  */
 
-type PanelId = "how" | "facts" | "objective" | "growth" | "observe" | "extend" | "assess";
+type PanelId = "how" | "facts" | "origin" | "objective" | "growth" | "observe" | "extend" | "assess";
 
 function Panel({ id, open, onToggle, icon, title, sub, tone = "kid", children, speak }: {
   id: PanelId;
@@ -117,6 +117,62 @@ export function GameDossier({ game }: { game: Game }) {
           </Panel>
         </div>
       </section>
+
+      {/* ───── แนวคิดริเริ่มของผู้พัฒนาเกม ───── */}
+      {d.origin && (
+        <section>
+          <Panel
+            id="origin" open={open} onToggle={toggle} tone="teacher"
+            icon={<Lightbulb size={20} />}
+            title="แนวคิดริเริ่มของผู้พัฒนาเกม"
+            sub="เกมนี้เริ่มจากความคิดของใคร และอะไรที่เพิ่มเข้ามาทีหลัง"
+          >
+            {d.origin.from && (
+              <div className="mb-4 rounded-2xl bg-yellow-soft px-4 py-3">
+                <p className="mb-1 font-medium text-[#8a6a00]">🌱 ที่มาของไอเดีย</p>
+                <p className="text-[#8a6a00]">{d.origin.from}</p>
+              </div>
+            )}
+
+            <div className="grid gap-3 md:grid-cols-2">
+              {/* ของครูฟ่างเอง */}
+              <div className="rounded-2xl border-2 border-purple-300 bg-white p-3.5">
+                <p className="mb-2 font-display text-[15px] leading-snug text-purple-800">
+                  💜 แนวคิดต้นฉบับของครูฟ่าง
+                </p>
+                <Bullets items={d.origin.own} marker="●" />
+              </div>
+
+              {/* ที่พัฒนาต่อร่วมกัน */}
+              <div className="rounded-2xl border border-line bg-cream p-3.5">
+                <p className="mb-2 font-display text-[15px] leading-snug text-purple-800">
+                  🤝 ข้อเสนอที่ช่วยพัฒนารายละเอียดเพิ่มเติม
+                </p>
+                <Bullets items={d.origin.added} marker="+" />
+              </div>
+            </div>
+
+            {d.origin.unique && (
+              <div className="mt-3">
+                <p className="mb-1.5 font-medium text-purple-800">✨ จุดเด่นเฉพาะของเกมนี้</p>
+                <Bullets items={d.origin.unique} marker="★" />
+              </div>
+            )}
+
+            {d.origin.goal && (
+              <div className="mt-3">
+                <p className="mb-1.5 font-medium text-purple-800">🎯 เป้าหมายการเรียนรู้ที่ตั้งไว้ตั้งแต่ต้น</p>
+                <Bullets items={d.origin.goal} marker="→" />
+              </div>
+            )}
+
+            <p className="mt-3 rounded-xl bg-white px-3 py-2 text-[13px] leading-snug text-ink-soft">
+              💡 ส่วนนี้บันทึกไว้เพื่อให้เห็นว่าเกมนี้มาจากความคิดของครูฟ่างตรงไหน
+              และส่วนไหนเป็นรายละเอียดที่เพิ่มเข้ามาระหว่างวางแผนและลงมือทำ
+            </p>
+          </Panel>
+        </section>
+      )}
 
       {/* ───── ฝั่งครูและผู้ปกครอง ───── */}
       <section className="rounded-3xl border border-purple-200 bg-purple-50/70 p-4 sm:p-5">

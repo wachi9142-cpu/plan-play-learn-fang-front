@@ -193,6 +193,21 @@ export function applyDifficulty(config: GameConfig, level: Difficulty): { config
         },
       };
     }
+    case "fruit-farm": {
+      // ไล่ระดับตามวัย — อนุบาลไม่มีสัตว์รบกวนและไม่แยกผลดิบ/สุก · ยากต้องบริหารเงินและหลายชนิด
+      const cfg = level === "easy"
+        ? { plots: 4, fruitIds: ["mango"], orders: 4, maxPerLine: 3, withRipeness: false, withPests: false, withShop: false, startMoney: 20 }
+        : level === "medium"
+          ? { plots: 6, fruitIds: ["mango", "orange"], orders: 5, maxPerLine: 4, withRipeness: true, withPests: true, withShop: true, startMoney: 25 }
+          : { plots: 9, fruitIds: ["mango", "orange", "banana", "watermelon"], orders: 7, maxPerLine: 5, withRipeness: true, withPests: true, withShop: true, startMoney: 30 };
+      return {
+        config: { ...config, ...cfg },
+        info: {
+          questions: cfg.orders,
+          note: `${cfg.plots} แปลง · ผลไม้ ${cfg.fruitIds.length} ชนิด · ออเดอร์ ${cfg.orders} ใบ · เริ่มที่ ${cfg.startMoney} บาท${cfg.withRipeness ? " · แยกผลดิบ-ผลสุก" : ""}${cfg.withPests ? " · มีลิงและนกมาป่วน" : ""}${cfg.withShop ? " · มีร้านพัฒนาสวน" : ""}`,
+        },
+      };
+    }
     case "egg-catch": {
       // ง่าย: ไข่ตกช้า ของที่ต้องหลบน้อย หัวใจเยอะ · ยาก: ตกเร็ว ถี่ และของหลบเยอะขึ้น
       const cfg = level === "easy" ? { seconds: 60, lives: 5, target: 12, fallSpeed: 22, gapMs: 1300, rottenRate: 0.18 }
