@@ -1062,3 +1062,41 @@ html:not([data-effect="none"]) nav[aria-label="ทางลัด"] { background
 /* 🖤 เกมจับคู่ภาพขาวดำ — ทำให้ภาพเป็นสีเทาแต่ยังเห็นรายละเอียด (ต่างจากเงาที่เป็นสีดำล้วน) */
 .emoji-gray { filter: grayscale(1) contrast(1.15); }
 html[data-theme="dark"] .emoji-gray { filter: grayscale(1) contrast(1.1) brightness(1.1); }
+
+/* 🎣 เกมตกปลา — ปลาสีทองและปลาพิเศษสีรุ้งเรืองแสง */
+.fish-gold { filter: sepia(1) saturate(7) hue-rotate(-18deg) brightness(1.12) drop-shadow(0 0 6px #ffd166); }
+
+@keyframes fish-rainbow {
+  0%   { filter: hue-rotate(0deg) saturate(2.6) brightness(1.25) drop-shadow(0 0 9px #ffd1f5); }
+  50%  { filter: hue-rotate(180deg) saturate(2.6) brightness(1.3) drop-shadow(0 0 13px #9ad7ff); }
+  100% { filter: hue-rotate(360deg) saturate(2.6) brightness(1.25) drop-shadow(0 0 9px #ffd1f5); }
+}
+.fish-special { animation: fish-rainbow 2.4s linear infinite; }
+
+/* ออร่ารอบตัวปลาพิเศษ — โปร่งใส ไม่บังตัวปลา */
+@keyframes fish-aura {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.55; }
+  50%      { transform: translate(-50%, -50%) scale(1.22); opacity: 0.9; }
+}
+.fish-aura {
+  background: radial-gradient(circle, rgba(255,230,140,0.85) 0%, rgba(255,170,230,0.5) 42%, rgba(150,210,255,0.28) 68%, transparent 78%);
+  animation: fish-aura 1.9s ease-in-out infinite;
+}
+
+/* ประกายวิบวับที่ลอยออกจากตัวปลา แล้วจางหาย */
+@keyframes fish-spark {
+  0%   { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+  25%  { opacity: 1; }
+  100% { transform: translate(calc(-50% + var(--sx)), calc(-50% + var(--sy))) scale(1.1); opacity: 0; }
+}
+.fish-spark { animation: fish-spark 1.5s ease-out infinite; }
+
+/* 🎣 เด็กที่ไม่ชอบแสงกะพริบ หรือเครื่องที่ตั้งค่าลดการเคลื่อนไหว — หยุดเอฟเฟกต์ให้หมด */
+.fx-off .fish-special, .fx-off .fish-aura, .fx-off .fish-spark { animation: none; }
+.fx-off .fish-special { filter: hue-rotate(140deg) saturate(2.4) brightness(1.2); }
+.fx-off .fish-spark { opacity: 0; }
+.fx-off .fish-aura { transform: translate(-50%, -50%); opacity: 0.5; }
+@media (prefers-reduced-motion: reduce) {
+  .fish-special, .fish-aura, .fish-spark { animation: none; }
+  .fish-spark { opacity: 0; }
+}

@@ -193,6 +193,26 @@ export function applyDifficulty(config: GameConfig, level: Difficulty): { config
         },
       };
     }
+    case "egg-catch": {
+      // ง่าย: ไข่ตกช้า ของที่ต้องหลบน้อย หัวใจเยอะ · ยาก: ตกเร็ว ถี่ และของหลบเยอะขึ้น
+      const cfg = level === "easy" ? { seconds: 60, lives: 5, target: 12, fallSpeed: 22, gapMs: 1300, rottenRate: 0.18 }
+        : level === "medium" ? { seconds: 60, lives: 3, target: 20, fallSpeed: 28, gapMs: 1050, rottenRate: 0.3 }
+        : { seconds: 75, lives: 3, target: 28, fallSpeed: 35, gapMs: 820, rottenRate: 0.4 };
+      return {
+        config: { ...config, ...cfg },
+        info: { questions: cfg.target, note: `${cfg.seconds} วินาที · ${cfg.lives} หัวใจ · เป้าหมาย ${cfg.target} ฟอง` },
+      };
+    }
+    case "fishing": {
+      // เวลาต่อรอบและความหนาแน่นของปลา — ง่ายให้เวลาเยอะ ปลาเยอะ เล็งง่าย
+      const cfg = level === "easy" ? { seconds: 90, target: 20, fishCount: 10 }
+        : level === "medium" ? { seconds: 60, target: 30, fishCount: 9 }
+        : { seconds: 45, target: 35, fishCount: 8 };
+      return {
+        config: { ...config, ...cfg },
+        info: { questions: cfg.target, note: `${cfg.seconds} วินาที · ปลาในบ่อ ${cfg.fishCount} ตัว · เป้าหมาย ${cfg.target} คะแนน` },
+      };
+    }
     case "healthy-food": {
       // จำนวนอาหารต่อรอบ — ครึ่งหนึ่งมีประโยชน์ อีกครึ่งกินแต่น้อยเสมอ
       const c = level === "easy" ? 6 : level === "medium" ? 10 : 12;

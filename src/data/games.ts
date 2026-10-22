@@ -1,6 +1,7 @@
 import { SPOT_CATEGORIES } from "@/data/spot-diff";
 import { SHADOW_CATEGORIES } from "@/data/shadow-quiz";
 import { SCENES } from "@/data/scene-builder";
+import { PONDS } from "@/data/fishing";
 import { playableCategories } from "@/data/jigsaw";
 import { CODING_GAMES } from "./games-coding";
 import type { Game, GameCategory } from "@/types";
@@ -60,7 +61,7 @@ export const CATEGORY_KEYWORDS: Record<GameCategory, string[]> = {
   shadow: ["เงา", "shadow", "silhouette"],
   logic: ["ตรรกะ", "คิด", "เลื่อน", "สมอง", "logic", "thinking", "brain", "slide", "sliding"],
   board: ["กระดาน", "วางแผน", "หมากฮอส", "โอเอ็กซ์", "เรียงสี่", "ฮานอย", "board", "strategy", "checkers", "tic tac toe", "connect four", "hanoi", "chess"],
-  reflex: ["ตีตุ่น", "ไว", "เร็ว", "ตอบสนอง", "สมาธิ", "whack", "mole", "reflex", "speed", "focus"],
+  reflex: ["ตีตุ่น", "ไว", "เร็ว", "ตอบสนอง", "สมาธิ", "ตกปลา", "ปลา", "เบ็ด", "เก็บไข่", "ไข่", "ตะกร้า", "คุณยาย", "ไก่", "whack", "mole", "reflex", "speed", "focus", "fishing", "fish", "egg", "catch", "hen", "basket"],
   coding: ["โค้ดดิ้ง", "โค้ด", "เขียนโปรแกรม", "คำสั่ง", "ลูป", "coding", "programming", "block"],
   math: ["คณิตศาสตร์", "คณิต", "เลข", "ตัวเลข", "บวก", "ลบ", "นับ", "math", "maths", "number", "count", "add", "subtract"],
   language: ["ภาษา", "คำศัพท์", "อ่าน", "คำ", "language", "vocabulary", "word", "english", "reading", "flashcard", "แฟลชการ์ด"],
@@ -181,6 +182,43 @@ export const GAMES: Game[] = [
     planIds: ["food"],
     activityType: "game",
     config: { engine: "healthy-food", count: 10 },
+  },
+
+  /* 🎣 ตกปลา — เลื่อนเมาส์เล็งแล้วคลิกหย่อนเบ็ด มี 2 ฉากให้เลือก */
+  ...PONDS.map((p): Game => ({
+    id: `fishing-${p.id}`,
+    title: `ตกปลา · ${p.label}`,
+    titleEn: `Fishing: ${p.labelEn}`,
+    emoji: "🎣",
+    cover: p.tint,
+    description: `${p.hint} — เลื่อนเมาส์บังคับเบ็ดแล้วคลิกหย่อนลงน้ำ ปลาตัวเล็ก +1 ตัวกลาง +3 ปลาสีทอง +5 และปลาพิเศษสีรุ้ง +10 คะแนน · จับเวลา · ปิดเอฟเฟกต์แสงได้`,
+    skills: ["ประสานสัมพันธ์มือกับตา", "ความแม่นยำในการเล็ง", "สังเกตสีและขนาด", "การนับและรวมคะแนน"],
+    gradeId: "k1",
+    ages: "4–6 ปี",
+    players: [1],
+    category: "reflex",
+    zone: "fun",
+    planIds: [],
+    activityType: "game",
+    config: { engine: "fishing", pondId: p.id, seconds: 60, target: 30, fishCount: 9 },
+  })),
+
+  /* 🥚 เก็บไข่ให้คุณยาย — เลื่อนตะกร้ารับไข่ดี หลบไข่เสียกับขี้ไก่ */
+  {
+    id: "egg-catch",
+    title: "เก็บไข่ให้คุณยาย", titleEn: "Catch Grandma's Eggs",
+    emoji: "🥚",
+    cover: "bg-yellow-soft",
+    description: "แม่ไก่ 5 ตัวบนคอนผลัดกันออกไข่ เลื่อนเมาส์หรือกดลูกศรขยับตะกร้าไปรับไข่ดี แล้วหลบไข่เสียกับขี้ไก่ ไข่ที่ตกพื้นจะแตกน่ารัก ๆ ไม่ลงโทษแรง — พลาดไข่ดีไม่เสียหัวใจ",
+    skills: ["ประสานสัมพันธ์มือกับตา", "สมาธิและการตอบสนอง", "สังเกตและจำแนก", "ตัดสินใจเฉพาะหน้า"],
+    gradeId: "k1",
+    ages: "4–6 ปี",
+    players: [1],
+    category: "reflex",
+    zone: "fun",
+    planIds: ["food"],
+    activityType: "game",
+    config: { engine: "egg-catch", seconds: 60, lives: 3, target: 20 },
   },
 
   /* 🧩 จิ๊กซอว์ — แต่ละหมวดเป็นเกมหนึ่งเกม กดแล้วไปหน้าต่อภาพของหมวดนั้น */

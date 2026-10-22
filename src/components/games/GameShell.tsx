@@ -14,7 +14,7 @@ export interface GameOutcome { mistakes: number; total: number; seconds: number;
  * กรอบเกมที่ใช้ร่วมกันทุก engine: คำสั่ง · ความคืบหน้า · เริ่มใหม่ · ⏱ จับเวลา (นับขึ้นทุกเกม · นับถอยหลังเมื่อกำหนด timeLimit) · หน้าจบเกมแบบให้กำลังใจ
  * mistakes/total → คำนวณดาว 2–5 · onDone ถูกเรียกครั้งเดียวเมื่อจบ
  */
-export function GameShell({ instruction, progress, done, onRestart, children, stats, mistakes = 0, total = 1, timeLimit, onDone }: {
+export function GameShell({ instruction, progress, done, onRestart, children, stats, mistakes = 0, total = 1, timeLimit, hideClock, onDone }: {
   instruction: string;
   progress?: { current: number; total: number };
   done: boolean;
@@ -24,6 +24,8 @@ export function GameShell({ instruction, progress, done, onRestart, children, st
   mistakes?: number;
   total?: number;
   timeLimit?: number;
+  /** เกมที่มีนาฬิกาของตัวเอง (เช่น เกมที่หยุดชั่วคราวได้) ซ่อนนาฬิกาของกรอบไม่ให้ซ้ำซ้อน */
+  hideClock?: boolean;
   onDone?: (o: GameOutcome) => void;
 }) {
   const [left, setLeft] = useState<number | null>(timeLimit ?? null);
@@ -67,7 +69,7 @@ export function GameShell({ instruction, progress, done, onRestart, children, st
             {Array.from({ length: Math.min(progress.total, 12) }, (_, i) => <span key={i} className={cn("text-lg transition", i < progress.current ? "" : "opacity-25 grayscale")}>⭐</span>)}
           </div>
         )}
-        {timeLimit === undefined && !finished && <span className="rounded-full bg-white px-2.5 py-1 font-mono text-[14px] text-purple-700" title="เวลาที่ใช้">⏱ {mmss(elapsed)}</span>}
+        {timeLimit === undefined && !hideClock && !finished && <span className="rounded-full bg-white px-2.5 py-1 font-mono text-[14px] text-purple-700" title="เวลาที่ใช้">⏱ {mmss(elapsed)}</span>}
         {left !== null && !finished && <span className={cn("rounded-full px-2.5 py-1 font-mono text-[14px]", left <= 10 ? "animate-pulse bg-red-50 text-red-600" : "bg-white text-purple-700")}>⏱ {mmss(left)}</span>}
         <button type="button" onClick={restart} className="tap inline-flex items-center gap-1.5 rounded-full border border-purple-200 bg-white px-3.5 py-1.5 text-[14px] font-medium text-purple-700 hover:bg-purple-100"><RotateCcw size={15} /> เริ่มใหม่</button>
       </div>

@@ -25,6 +25,8 @@ import { SpotDiffGame } from "./engines/SpotDiffGame";
 import { ShadowQuizGame } from "./engines/ShadowQuizGame";
 import { SceneBuilderGame } from "./engines/SceneBuilderGame";
 import { HealthyFoodGame } from "./engines/HealthyFoodGame";
+import { FishingGame } from "./engines/FishingGame";
+import { EggCatchGame } from "./engines/EggCatchGame";
 import { scenesFor } from "@/data/spot-diff-helpers";
 import { IQGame } from "./engines/IQGame";
 import { TraceLineGame } from "./engines/TraceLineGame";
@@ -65,6 +67,8 @@ export function GamePlayer({ config, extras = {} }: { config: GameConfig; extras
     case "cake-decor": return <CakeDecorGame onDone={x.onDone} />;
     case "scene-builder": return <SceneBuilderGame sceneId={config.sceneId} onDone={x.onDone} />;
     case "healthy-food": return <HealthyFoodGame count={config.count} {...x} />;
+    case "fishing": return <FishingGame pondId={config.pondId} seconds={config.seconds} target={config.target} fishCount={config.fishCount} onDone={x.onDone} />;
+    case "egg-catch": return <EggCatchGame seconds={config.seconds} lives={config.lives} target={config.target} fallSpeed={config.fallSpeed} gapMs={config.gapMs} rottenRate={config.rottenRate} onDone={x.onDone} />;
     case "color-paint": return <ColorPaintGame size={config.size} colors={config.colors} task={config.task} {...x} />;
     case "tycoon": return <TycoonGame level={config.level} rounds={config.rounds} onDone={x.onDone} />;
     case "snakes-ladders": return <SnakesLaddersGame onDone={x.onDone} />;
