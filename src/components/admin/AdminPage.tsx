@@ -20,7 +20,7 @@ import { PROJECTS } from "@/data/projects";
 import { NEWS } from "@/data/news";
 import { CALENDAR_EVENTS } from "@/data/calendar";
 import { listAllAssets } from "@/lib/studio-assets";
-import { EffectAdmin } from "@/components/theme";
+import { EffectAdmin, FestivalAdmin } from "@/components/theme";
 
 /**
  * 👑 Admin / CMS — ภาพรวมข้อมูลทั้งระบบ + ทางลัดไปจัดการแต่ละส่วน
@@ -132,6 +132,7 @@ export function AdminPage() {
 
       <h2 className="mt-8 text-xl">✨ เอฟเฟกต์บรรยากาศ</h2>
       <div className="mt-2"><EffectAdmin /></div>
+      <div className="mt-4"><FestivalAdmin /></div>
 
       <h2 className="mt-8 text-xl">💾 สำรอง / กู้คืนข้อมูล</h2>
       <div className="card mt-2 flex flex-wrap items-center gap-3 p-4 text-[13px]">

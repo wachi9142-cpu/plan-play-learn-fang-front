@@ -19,7 +19,8 @@ import { useTheme } from "./useTheme";
  */
 
 export function Ambient() {
-  const { effect, ready, reduced } = useAmbient();
+  // shown = เอฟเฟกต์ที่ผู้ใช้เลือก หรือเอฟเฟกต์เทศกาลที่ตารางเปิดไว้วันนี้ (เวลาไทย)
+  const { shown: effect, ready, reduced } = useAmbient();
   const { resolved } = useTheme();
   const pathname = usePathname();
   // เอฟเฟกต์บางอย่าง (🌌 สวนหิ่งห้อย) สวยเฉพาะบนพื้นมืด — ไม่เปลี่ยนธีมให้เอง แค่ไม่เล่น

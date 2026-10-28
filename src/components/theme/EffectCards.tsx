@@ -4,13 +4,40 @@ import { Check } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { useAmbient } from "./useAmbient";
 import { useTheme } from "./useTheme";
+import { Switch } from "./ThemeMenuPanel";
 
 /** ✨ การ์ดเลือกเอฟเฟกต์บรรยากาศในหน้าตั้งค่า ⚙️ — เปิดได้ทีละ 1 อย่าง */
 export function EffectCards() {
-  const { effect, effects, ready, reduced, choose } = useAmbient();
+  const { effect, effects, ready, reduced, choose, festival, festivalOn, festivalAuto, chooseFestivalAuto } = useAmbient();
   const { resolved, setMode } = useTheme();
+  const festivalFx = festival ? effects.find((e) => e.id === festival.effectId) : undefined;
   return (
     <div>
+      {/* 🎆 เอฟเฟกต์เทศกาลอัตโนมัติ — ผู้ใช้ปิดเฉพาะเครื่องตัวเองได้ แม้ระบบกำลังเปิดเทศกาลอยู่ */}
+      <div className="card mb-3 flex flex-wrap items-center gap-3 p-4">
+        <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-purple-50 text-2xl">{festivalFx?.emoji ?? "🎆"}</span>
+        <span className="min-w-0 flex-1">
+          <span className="block font-display text-[16px] text-purple-800">เอฟเฟกต์เทศกาลอัตโนมัติ</span>
+          <span className="mt-0.5 block text-[13px] leading-snug text-ink-soft">
+            {ready && festival
+              ? festivalOn
+                ? <>ตอนนี้กำลังแสดง <b className="text-purple-700">{festival.name}</b> แทนเอฟเฟกต์ที่เลือกไว้ (ถึงวันที่ {festival.end})</>
+                : <>ช่วงนี้มี <b className="text-purple-700">{festival.name}</b> แต่ไม่ได้แสดง{!festivalAuto ? " เพราะปิดไว้ที่นี่" : effect === "none" ? " เพราะเลือก “ไม่มีเอฟเฟกต์” ไว้" : ""}</>
+              : "ช่วงเทศกาล ระบบจะเปิดเอฟเฟกต์ของเทศกาลให้เอง 3 วัน แล้วปิดเองเมื่อครบกำหนด"}
+          </span>
+        </span>
+        <button
+          type="button"
+          role="switch"
+          aria-checked={festivalAuto}
+          aria-label={festivalAuto ? "ปิดเอฟเฟกต์เทศกาลอัตโนมัติ" : "เปิดเอฟเฟกต์เทศกาลอัตโนมัติ"}
+          onClick={() => chooseFestivalAuto(!festivalAuto)}
+          disabled={reduced}
+          className="disabled:opacity-50"
+        >
+          <Switch on={ready && festivalAuto} />
+        </button>
+      </div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {effects.map((e) => {
           const needsDark = e.darkOnly === true && resolved !== "dark";
