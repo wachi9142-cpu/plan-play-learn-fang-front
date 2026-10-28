@@ -997,6 +997,137 @@ html[data-theme="dark"] .fx-tree { filter: drop-shadow(0 0 7px rgb(110 200 130 /
   100% { opacity: 0; transform: translate3d(14px, -78vh, 0) scale(1); }
 }
 
+/* ---------- 🏮 เทศกาลลอยโคม ----------
+ * ชั้นจากหลังไปหน้า: ฟ้า (::before) · ดาว · โคมจากลานหลังหมู่บ้าน · บ้าน · ผู้คน · โคมที่กำลังปล่อยจากมือ
+ * ทุกโคมเริ่มจากพื้นหมู่บ้านแล้วลอยขึ้น ไม่มีดวงไหนโผล่กลางอากาศ
+ */
+.fx-lanternfest {
+  --lf-house: #b7a2df;
+  --lf-people: #7c5fb3;
+  --lf-win: #ffcf7a;
+  --lf-door: #e9a95a;
+  --lf-s: 1;
+}
+html[data-theme="dark"] .fx-lanternfest {
+  --lf-house: #241743;
+  --lf-people: #150d2c;
+  --lf-win: #ffc25a;
+  --lf-door: #c9853a;
+}
+.fx-lanternfest::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 45% at 50% 100%, rgb(255 178 90 / 0.18), transparent 70%),
+    radial-gradient(90% 60% at 50% 0%, rgb(124 92 210 / 0.1), transparent 70%);
+}
+html[data-theme="dark"] .fx-lanternfest::before {
+  background:
+    radial-gradient(120% 45% at 50% 100%, rgb(255 166 72 / 0.22), transparent 70%),
+    linear-gradient(to bottom, rgb(38 26 92 / 0.34), rgb(64 36 108 / 0.16) 60%, transparent);
+}
+.lf-scene { position: absolute; inset: 0; }
+.lf-sky, .lf-village { position: absolute; inset: 0; }
+
+/* 🏡 หมู่บ้าน: ชิดล่างจอ เตี้ยพอไม่บังเนื้อหามาก */
+.lf-ground {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: calc(18px * var(--lf-s));
+  background: linear-gradient(to top, var(--lf-house), transparent);
+}
+.lf-house, .lf-person { position: absolute; bottom: 0; display: block; }
+.lf-person { bottom: calc(4px * var(--lf-s)); transform-origin: 50% 100%; }
+.lf-win { fill: var(--lf-win); animation: lf-win 7s ease-in-out infinite alternate; }
+.lf-door { fill: var(--lf-door); opacity: 0.55; }
+.lf-bulb { animation: lf-blink 2.4s ease-in-out infinite alternate; }
+.lf-bulb-0 { fill: #ffd76a; }
+.lf-bulb-1 { fill: #ff9e5e; }
+.lf-bulb-2 { fill: #f7a6d8; }
+.lf-hang { fill: #ff7a45; animation: lf-blink 3.2s ease-in-out infinite alternate; }
+html[data-theme="dark"] .lf-hang, html[data-theme="dark"] .lf-win { filter: drop-shadow(0 0 3px rgb(255 190 90 / 0.8)); }
+@keyframes lf-win   { from { opacity: 0.78; } to { opacity: 1; } }
+@keyframes lf-blink { from { opacity: 0.45; } to { opacity: 1; } }
+
+/* 🧍 ผู้คนขยับตัวเบา ๆ คนละจังหวะ */
+.lf-sway { animation: lf-sway 5s ease-in-out infinite alternate; }
+@keyframes lf-sway { from { transform: rotate(-2.2deg); } to { transform: rotate(2.2deg); } }
+
+/* 🏮 ตัวโคม: เอียงไปมาเล็กน้อย + แสงเรือง */
+.lf-lantern {
+  position: relative;
+  display: block;
+  transform-origin: 50% 100%;
+  animation: lf-tilt 4s ease-in-out infinite alternate;
+}
+.lf-glow {
+  position: absolute;
+  inset: -70%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(255 196 100 / calc(var(--fx-glow) * 0.8)) 0%, rgb(255 160 70 / 0) 62%);
+  animation: lf-blink 1.9s ease-in-out infinite alternate;
+}
+@keyframes lf-tilt { from { transform: rotate(-4deg); } to { transform: rotate(4deg); } }
+
+/* โคมที่ถือไว้ระดับอก (ยังไม่ปล่อย) */
+.lf-held { position: absolute; left: 50%; top: 42%; transform: translate(-50%, -50%); }
+
+/* 🙌 คนปล่อยโคม: ยกแขนถือโคมเหนือหัว → ปล่อยมือ → ลดแขน → ยกดวงใหม่ (รอบเดียวกับโคม) */
+.lf-arms-up, .lf-arms-down { animation-timing-function: steps(1, end); animation-iteration-count: infinite; }
+.lf-arms-up   { animation-name: lf-arms-up; }
+.lf-arms-down { animation-name: lf-arms-down; }
+@keyframes lf-arms-up   { 0%, 25% { opacity: 1; } 26%, 95% { opacity: 0; } 96%, 100% { opacity: 1; } }
+@keyframes lf-arms-down { 0%, 25% { opacity: 0; } 26%, 95% { opacity: 1; } 96%, 100% { opacity: 0; } }
+.lf-launch-anchor { position: absolute; left: 50%; bottom: calc(100% - 3px); transform: translateX(-50%); }
+.lf-launch {
+  display: block;
+  transform-origin: 50% 100%;
+  animation-name: lf-launch;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+@keyframes lf-launch {
+  0%   { opacity: 0; transform: translate3d(0, 4px, 0) scale(0.9); }
+  4%   { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+  15%  { transform: translate3d(0, -3px, 0) scale(1); }        /* ถือไว้เหนือหัว ขยับนิด ๆ */
+  25%  { transform: translate3d(0, 0, 0) scale(1); }           /* ปล่อยมือ */
+  45%  { transform: translate3d(calc(var(--lf-dx) * 0.25), -24vh, 0) scale(0.82); }
+  70%  { opacity: 0.95; transform: translate3d(calc(var(--lf-dx) * 0.6), -60vh, 0) scale(0.58); }
+  100% { opacity: 0; transform: translate3d(var(--lf-dx), -104vh, 0) scale(0.32); }
+}
+
+/* โคมจากลานหลังหมู่บ้าน: โผล่จากหลังหลังคา ลอยขึ้น เล็กลงและจางตามระยะ */
+.lf-rise {
+  position: absolute;
+  display: block;
+  opacity: 0;
+  transform-origin: 50% 100%;
+  animation-name: lf-rise;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+@keyframes lf-rise {
+  0%   { opacity: 0; transform: translate3d(0, 0, 0) scale(1); }
+  5%   { opacity: 0.95; }
+  40%  { transform: translate3d(calc(var(--lf-dx) * 0.35), -40vh, 0) scale(0.72); }
+  80%  { opacity: 0.8; }
+  100% { opacity: 0; transform: translate3d(var(--lf-dx), -106vh, 0) scale(0.3); }
+}
+
+@media (max-width: 640px) {
+  .fx-lanternfest { --lf-s: 0.72; }
+  .lf-rise:nth-child(n + 9) { display: none; }
+}
+@media (min-width: 641px) and (max-width: 1023px) {
+  .fx-lanternfest { --lf-s: 0.86; }
+  .lf-rise:nth-child(n + 13) { display: none; }
+}
+/* เครื่องสเปกต่ำ (ตรวจจาก CPU/RAM): ตัดโคม บ้าน และคนเสริมออกอีก */
+.lf-lite .lf-x { display: none; }
+
 /* ---------- มือถือ/แท็บเล็ต: ลดจำนวนอนุภาคให้เบาเครื่อง ---------- */
 @media (max-width: 640px) {
   .fx-fall:nth-child(n + 13) { display: none; }

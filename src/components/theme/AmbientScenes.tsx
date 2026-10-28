@@ -10,6 +10,7 @@
  * ไม่มีฉากไหนที่ใช้ได้เฉพาะโหมดใดโหมดหนึ่ง
  */
 
+import { useEffect, useState } from "react";
 import { Snowflake } from "./Snowflake";
 
 /** เลขสุ่มแบบคงที่ (ฝั่งเซิร์ฟเวอร์กับเบราว์เซอร์ตรงกัน แต่ยังดูสุ่มเป็นธรรมชาติ) */
@@ -712,6 +713,204 @@ function Tree() {
   );
 }
 
+/* ================= 🏮 เทศกาลลอยโคม ================= */
+
+/** 🏠 บ้านในหมู่บ้าน — left เป็น % ของจอ · sm = ซ่อนบนมือถือ */
+const HOUSES = [
+  { left: -1, w: 120, h: 92, v: 0 },
+  { left: 11, w: 96, h: 74, v: 1, sm: true },
+  { left: 24, w: 128, h: 100, v: 0 },
+  { left: 40, w: 100, h: 78, v: 1, sm: true },
+  { left: 55, w: 120, h: 96, v: 0 },
+  { left: 70, w: 100, h: 76, v: 1, sm: true },
+  { left: 84, w: 130, h: 98, v: 0 },
+];
+
+type PersonKind = "release" | "hold" | "watch" | "kid" | "kid-point";
+
+/**
+ * 🧑‍🤝‍🧑 ผู้คนที่ลานหมู่บ้าน — "release" คือคนที่ยกโคมขึ้นแล้วปล่อย
+ * โคมของคนนั้นใช้รอบเวลาเดียวกับท่าแขน จึงลอยออกจากมือจริง ๆ
+ */
+const PEOPLE: { left: number; kind: PersonKind; d?: number; delay?: number; sway?: number; sm?: boolean }[] = [
+  { left: 5, kind: "release", d: 16, delay: -2 },
+  { left: 7.6, kind: "kid-point", sway: 4.2 },
+  { left: 15, kind: "hold", sway: 5.4 },
+  { left: 17.2, kind: "kid", sway: 3.6, sm: true },
+  { left: 21, kind: "watch", sway: 6.2, sm: true },
+  { left: 22.6, kind: "watch", sm: true },
+  { left: 31, kind: "release", d: 19, delay: -9 },
+  { left: 35, kind: "hold", sway: 4.8, sm: true },
+  { left: 37.2, kind: "kid", sm: true },
+  { left: 46, kind: "release", d: 15, delay: -5, sm: true },
+  { left: 49, kind: "watch", sway: 5.8 },
+  { left: 50.6, kind: "watch" },
+  { left: 52.6, kind: "kid-point", sway: 3.9 },
+  { left: 61, kind: "release", d: 18, delay: -13 },
+  { left: 65, kind: "hold", sway: 5.1, sm: true },
+  { left: 76, kind: "release", d: 17, delay: -7, sm: true },
+  { left: 79, kind: "kid", sway: 4.4, sm: true },
+  { left: 88, kind: "hold", sway: 6 },
+  { left: 92, kind: "release", d: 20, delay: -15 },
+  { left: 95.4, kind: "kid-point", sm: true },
+];
+
+/**
+ * 🏮 โคมจากลานหลังหมู่บ้าน (ชั้นหลังสุด) — ทุกดวงเริ่มที่พื้นหลังหลังคาบ้าน แล้วลอยขึ้นจนเล็กและจางไปบนฟ้า
+ * ไม่มีดวงไหนโผล่กลางอากาศ · ที่เห็นอยู่สูงแล้วตอนเปิดหน้า คือดวงที่ปล่อยไปก่อนหน้า (delay ติดลบ)
+ * ดวงไกลเล็กกว่า เบลอกว่า และช้ากว่า
+ */
+const SKY_LANTERNS = Array.from({ length: 16 }, (_, i) => {
+  const far = i % 3 === 2;
+  return {
+    left: +(rnd(i, 21.773) * 94 + 3).toFixed(2),
+    base: +(6 + rnd(i, 47.119) * 36).toFixed(0),
+    size: +((far ? 11 : 16) + rnd(i, 63.337) * (far ? 5 : 10)).toFixed(1),
+    dur: +((far ? 30 : 22) + rnd(i, 35.881) * 12).toFixed(2),
+    delay: +(-rnd(i, 89.443) * 34).toFixed(2),
+    dx: +((rnd(i, 14.227) - 0.5) * 120).toFixed(0),
+    tilt: +(3 + rnd(i, 72.991) * 3).toFixed(2),
+    far,
+  };
+});
+
+function LanternFest() {
+  // เครื่องที่ CPU/RAM น้อย ลดจำนวนโคมและคนลงอีกครึ่ง (นอกเหนือจากที่ลดตามขนาดจอใน CSS)
+  const [lite, setLite] = useState(false);
+  useEffect(() => {
+    const nav = navigator as Navigator & { deviceMemory?: number };
+    setLite((nav.hardwareConcurrency ?? 8) <= 4 || (nav.deviceMemory ?? 8) <= 4);
+  }, []);
+
+  return (
+    <div className={`lf-scene ${lite ? "lf-lite" : ""}`}>
+      <svg width="0" height="0" className="absolute" aria-hidden>
+        <defs>
+          <linearGradient id="lf-paper" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#ffe7a6" />
+            <stop offset="55%" stopColor="#ffb44f" />
+            <stop offset="100%" stopColor="#f0782c" />
+          </linearGradient>
+        </defs>
+      </svg>
+
+      <TwinkleStars count={10} />
+
+      <div className="lf-sky">
+        {SKY_LANTERNS.map((l, i) => (
+          <span
+            key={i}
+            className={`lf-rise ${l.far ? "fx-far" : ""} ${i % 2 ? "lf-x" : ""}`}
+            style={{ left: `${l.left}%`, bottom: `${l.base}px`, animationDuration: `${l.dur}s`, animationDelay: `${l.delay}s`, ["--lf-dx" as string]: `${l.dx}px` }}
+          >
+            <SkyLantern size={l.size} tilt={l.tilt} />
+          </span>
+        ))}
+      </div>
+
+      <div className="lf-village">
+        <span className="lf-ground" />
+        {HOUSES.map((h, i) => (
+          <span key={i} className={`lf-house ${h.sm ? "fx-sm-hide lf-x" : ""}`} style={{ left: `${h.left}%`, width: `calc(${h.w}px * var(--lf-s))`, height: `calc(${h.h}px * var(--lf-s))` }}>
+            <House variant={h.v} id={i} />
+          </span>
+        ))}
+        {PEOPLE.map((p, i) => (
+          <Person key={i} {...p} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SkyLantern({ size, tilt }: { size: number; tilt: number }) {
+  return (
+    <span className="lf-lantern" style={{ width: `${size}px`, height: `${size * 1.25}px`, animationDuration: `${tilt}s` }}>
+      <span className="lf-glow" />
+      <svg viewBox="0 0 24 30" className="relative block size-full">
+        <path d="M4 3Q12 0 20 3L18 23Q12 25.6 6 23Z" fill="url(#lf-paper)" />
+        <path d="M9.4 2.2 8.6 23.8M14.6 2.2l.8 21.6" stroke="#e8823a" strokeWidth=".6" opacity=".45" fill="none" />
+        <path d="M6 23Q12 25.6 18 23" stroke="#d9622a" strokeWidth="1.1" fill="none" />
+        <ellipse cx="12" cy="23.9" rx="3.4" ry="1.3" fill="#fff4c9" />
+      </svg>
+    </span>
+  );
+}
+
+/** 🏡 บ้านทรงจั่วสูง มีกาแลบนยอด หน้าต่างมีไฟ ไฟประดับใต้ชายคา และโคมแขวน */
+function House({ variant, id }: { variant: number; id: number }) {
+  const lights = [18, 30, 42, 58, 70, 82];
+  return (
+    <svg viewBox="0 0 100 80" preserveAspectRatio="xMidYMax meet" className="block size-full">
+      {variant === 0 ? (
+        <>
+          <path d="M44 10 37 0M56 10l7-10" stroke="var(--lf-house)" strokeWidth="3" strokeLinecap="round" />
+          <path d="M0 36 50 6l50 30Z" fill="var(--lf-house)" />
+          <rect x="12" y="34" width="76" height="46" fill="var(--lf-house)" />
+          <rect className="lf-win" x="22" y="45" width="14" height="12" rx="1.5" style={{ animationDelay: `${-id * 1.3}s` }} />
+          <rect className="lf-win" x="64" y="45" width="14" height="12" rx="1.5" style={{ animationDelay: `${-id * 1.3 - 2}s` }} />
+          <rect className="lf-door" x="44" y="54" width="12" height="26" rx="1" />
+        </>
+      ) : (
+        <>
+          <path d="M6 44 50 18l44 26Z" fill="var(--lf-house)" />
+          <rect x="16" y="42" width="68" height="38" fill="var(--lf-house)" />
+          <rect className="lf-win" x="28" y="52" width="16" height="12" rx="1.5" style={{ animationDelay: `${-id * 1.1}s` }} />
+          <rect className="lf-door" x="58" y="56" width="12" height="24" rx="1" />
+        </>
+      )}
+      {/* ไฟประดับใต้ชายคา */}
+      {lights.map((x, i) => (
+        <circle key={i} className={`lf-bulb lf-bulb-${i % 3}`} cx={x} cy={variant === 0 ? 38 : 46} r="1.8" style={{ animationDelay: `${-(i + id) * 0.45}s` }} />
+      ))}
+      <path d={variant === 0 ? "M8 37v5" : "M12 45v5"} stroke="var(--lf-house)" strokeWidth="1" />
+      <ellipse className="lf-hang" cx={variant === 0 ? 8 : 12} cy={variant === 0 ? 46 : 54} rx="3.4" ry="4.4" />
+    </svg>
+  );
+}
+
+/** 🧍 คนเงาดำ — แต่ละท่ามีแขนต่างกัน · คนที่ "release" สลับท่ายกโคม/ลดแขนตามรอบของโคม */
+function Person({ left, kind, d = 16, delay = 0, sway, sm }: (typeof PEOPLE)[number]) {
+  const kid = kind === "kid" || kind === "kid-point";
+  const k = kid ? 0.62 : 0.9;
+  const timing = { animationDuration: `${d}s`, animationDelay: `${delay}s` };
+  const arm = { stroke: "var(--lf-people)", strokeWidth: 2.6, strokeLinecap: "round" as const, fill: "none" };
+
+  return (
+    <span
+      className={`lf-person ${sway ? "lf-sway" : ""} ${sm ? "fx-sm-hide lf-x" : ""}`}
+      style={{ left: `${left}%`, width: `calc(${20 * k}px * var(--lf-s))`, height: `calc(${44 * k}px * var(--lf-s))`, animationDuration: sway ? `${sway}s` : undefined }}
+    >
+      <svg viewBox="0 -4 20 44" className="block size-full overflow-visible">
+        <circle cx="10" cy="6" r="4" fill="var(--lf-people)" />
+        <path d="M6 12Q10 10 14 12L16 30Q16 33 13 33V40H11V33H9V40H7V33Q4 33 4 30Z" fill="var(--lf-people)" />
+        {kind === "release" && (
+          <>
+            <g className="lf-arms-up" style={timing}><path d="M6.5 13.5 5 -2M13.5 13.5 15 -2" {...arm} /></g>
+            <g className="lf-arms-down" style={timing}><path d="M6.5 13.5 4 25M13.5 13.5 16 25" {...arm} /></g>
+          </>
+        )}
+        {kind === "hold" && <path d="M6.5 13.5 9 21M13.5 13.5 11 21" {...arm} />}
+        {(kind === "watch" || kind === "kid") && <path d="M6.5 13.5 4 25M13.5 13.5 16 25" {...arm} />}
+        {kind === "kid-point" && <path d="M6.5 13.5 4 25M13.5 13.5 19 1" {...arm} />}
+      </svg>
+
+      {kind === "hold" && (
+        <span className="lf-held">
+          <SkyLantern size={13} tilt={4.5} />
+        </span>
+      )}
+      {kind === "release" && (
+        <span className="lf-launch-anchor">
+          <span className="lf-launch" style={{ ...timing, ["--lf-dx" as string]: `${(rnd(left, 9.17) - 0.5) * 90}px` }}>
+            <SkyLantern size={22} tilt={3.8} />
+          </span>
+        </span>
+      )}
+    </span>
+  );
+}
+
 /* ================= ทะเบียนตัวแสดงผล ================= */
 
 export const SCENES: Record<string, () => React.JSX.Element> = {
@@ -728,4 +927,5 @@ export const SCENES: Record<string, () => React.JSX.Element> = {
   newyear: NewYear,
   firefly: Firefly,
   purplenight: PurpleNight,
+  lanternfest: LanternFest,
 };
