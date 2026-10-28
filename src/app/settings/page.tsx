@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { EffectCards, ThemeCards } from "@/components/theme";
 import { BackButton } from "@/components/ui/BackButton";
+import { SoundSettingCard } from "@/components/ui/SoundSettingCard";
 
 export const metadata: Metadata = {
   title: "ตั้งค่า",
@@ -34,6 +35,12 @@ export default function SettingsPage() {
         <h2 className="text-xl sm:text-2xl">✨ เอฟเฟกต์บรรยากาศ</h2>
         <p className="mt-1 text-[14px] text-ink-soft">ลูกเล่นตามฤดูกาลและเทศกาล — เปิดไว้เมื่อไหร่ก็ได้ ระบบจำค่าไว้ให้เหมือนกับธีม</p>
         <div className="mt-3"><EffectCards /></div>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-xl sm:text-2xl">🔊 เสียง</h2>
+        <p className="mt-1 text-[14px] text-ink-soft">เปิด–ปิดเสียงในเกมทุกเกมพร้อมกัน — ปุ่มเสียงในแต่ละเกมใช้ค่าเดียวกันนี้</p>
+        <div className="mt-3 max-w-xl"><SoundSettingCard /></div>
       </section>
 
       <section className="mt-8">
