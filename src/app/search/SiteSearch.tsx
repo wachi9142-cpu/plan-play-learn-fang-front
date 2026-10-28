@@ -61,7 +61,8 @@ export function SiteSearch() {
           ) : (
             <div className="grid gap-2">
               {results.map((r) => (
-                <Link key={`${r.kind}-${r.href}`} href={r.href} className="card card-hover group flex items-center gap-3 px-4 py-3">
+                // แฟลชการ์ดหลายคำลิงก์ไปหน้าชุดเดียวกัน จึงต้องรวมชื่อเข้าไปให้ key ไม่ซ้ำ
+                <Link key={`${r.kind}-${r.href}-${r.title}`} href={r.href} className="card card-hover group flex items-center gap-3 px-4 py-3">
                   <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-purple-100 text-2xl">{r.emoji}</span>
                   <span className="min-w-0 flex-1">
                     <span className="block text-[12px] text-purple-500">{SEARCH_KINDS[r.kind].emoji} {SEARCH_KINDS[r.kind].label}</span>

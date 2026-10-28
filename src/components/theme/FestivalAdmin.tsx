@@ -83,7 +83,7 @@ export function FestivalAdmin() {
         🔢 ลำดับความสำคัญ: <b className="text-purple-700">เลขน้อยชนะ</b> เมื่อหลายงานตรงกัน · ผู้ใช้ปิดเอฟเฟกต์เทศกาลในเครื่องตัวเองได้ที่หน้าตั้งค่า · หน้าเกม ใบงาน Studio และห้องเรียนออนไลน์ยังปิดเอฟเฟกต์ตามเดิม
       </p>
 
-      <ul className="mt-4 grid gap-2">
+      <ul className="mt-4 grid grid-cols-1 gap-2">
         {items.map((f) => {
           const live = showing?.id === f.id;
           const past = today > f.end;

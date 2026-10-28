@@ -58,7 +58,7 @@ export function EffectAdmin() {
         </button>
       </div>
 
-      <ul className="mt-4 grid gap-2">
+      <ul className="mt-4 grid grid-cols-1 gap-2">
         {items.map((e, i) => {
           const editing = open === e.id;
           const locked = e.id === "none";

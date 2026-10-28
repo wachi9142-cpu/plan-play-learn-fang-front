@@ -12,12 +12,12 @@ export default function ContactPage() {
     <div className="container-page py-8 sm:py-12">
       <PageHeader emoji="📞" title="ติดต่อเรา" description="ข้อมูลการติดต่อของ Little Purple Garden" />
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {/* ข้อมูลโรงเรียน + ที่อยู่ */}
         <section className="card animate-rise delay-1 p-5 sm:p-6">
           <div className="flex items-center gap-4">
             <Image src="/logo-lpg.webp" alt="Little Purple Garden" width={80} height={80} className="size-20 rounded-full bg-white object-cover shadow-soft" />
-            <div>
+            <div className="min-w-0">
               <h2 className="flex items-center gap-2 text-xl sm:text-2xl">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/school/house.webp" alt="" className="block w-10 shrink-0 sm:w-12" />
@@ -70,7 +70,7 @@ export default function ContactPage() {
         {/* ช่องทางติดต่อ */}
         <section className="card animate-rise delay-4 p-5 sm:p-6 lg:col-span-2">
           <h2 className="text-xl sm:text-2xl">📱 ช่องทางติดต่อ</h2>
-          <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {CONTACT.channels.map((c) => (
               <a key={c.id} href={c.href} target={c.href.startsWith("http") ? "_blank" : undefined} rel="noopener" className="card card-hover flex items-center gap-3 p-4">
                 <span className="grid size-12 shrink-0 place-items-center overflow-hidden rounded-xl bg-purple-100 text-2xl">
