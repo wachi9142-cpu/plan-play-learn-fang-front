@@ -54,6 +54,8 @@ export const BUILT_IN_EFFECTS: EffectDef[] = [
   { id: "christmas", emoji: "🎄", label: "Christmas Garden — คริสต์มาส", hint: "หิมะตกเบา ๆ ไฟประดับกะพริบ ต้นสนเล็ก ๆ และดาวสีทอง", season: "festival", order: 100, enabled: true },
   { id: "newyear", emoji: "🎆", label: "New Year Garden — ฉลองปีใหม่", hint: "ดอกไม้ไฟดวงเล็กนาน ๆ ครั้ง และประกายแสงลอยขึ้นนุ่ม ๆ", season: "festival", order: 110, enabled: true },
   { id: "lanternfest", emoji: "🏮", label: "Lantern Festival — ลอยโคมยามค่ำ", hint: "หมู่บ้านเปิดไฟ ผู้คนยกโคมขึ้นแล้วปล่อย โคมค่อย ๆ ลอยสู่ฟ้าสีม่วงทอง", season: "festival", order: 112, enabled: true, time: "18:00–06:00" },
+  { id: "nagafire", emoji: "🐉", label: "Naga Fireballs — ลูกไฟพญานาค", hint: "พญานาคทองริมแม่น้ำยามค่ำ ลูกไฟผุดขึ้นจากผิวน้ำแล้วลอยสู่ฟ้า พร้อมแสงสะท้อนบนน้ำ", season: "festival", order: 113, enabled: true, time: "18:00–06:00" },
+  { id: "loykrathong", emoji: "🪷", label: "Loy Krathong — สายน้ำแห่งแสงเทียน", hint: "ผู้คนริมตลิ่งค่อย ๆ วางกระทงลงน้ำ กระทงลอยตามกระแส เปลวเทียนไหว แสงสะท้อนบนผิวน้ำใต้พระจันทร์เต็มดวง", season: "festival", order: 111, enabled: true, time: "18:00–06:00" },
   { id: "firefly", emoji: "🌌", label: "Firefly Garden — สวนหิ่งห้อย", hint: "หิ่งห้อยตัวเล็ก ๆ เรืองแสงทองอ่อน บินช้า ๆ รอบสวนยามค่ำคืน", season: "night", order: 115, enabled: true, time: "18:00–06:00", darkOnly: true },
   { id: "purplenight", emoji: "💜", label: "Purple Night Garden — สวนกลางคืน", hint: "ม่านม่วงนวล พระจันทร์ ดาวกระพริบ และหิ่งห้อยบินผ่าน", season: "night", order: 120, enabled: true, time: "18:00–06:00" },
 ];

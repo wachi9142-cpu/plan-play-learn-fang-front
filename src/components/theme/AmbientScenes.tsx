@@ -911,6 +911,301 @@ function Person({ left, kind, d = 16, delay = 0, sway, sm }: (typeof PEOPLE)[num
   );
 }
 
+/* ================= 🐉 ลูกไฟพญานาค ================= */
+
+/**
+ * 🔥 ลูกไฟแต่ละดวงมี 1 รอบเวลา ใช้ร่วมกันทุกชั้น:
+ * แสงเรืองใต้น้ำ → ระลอกวงที่ผิวน้ำ → ผุดพ้นน้ำ → ลอยขึ้นฟ้า เล็กลงและจางหาย → พักก่อนดวงใหม่
+ * เงาสะท้อนบนแม่น้ำใช้รอบเดียวกัน จึงสว่างตอนลูกไฟอยู่ต่ำ และจางเมื่อลอยสูง
+ */
+const FIREBALLS = Array.from({ length: 10 }, (_, i) => ({
+  left: +(4 + rnd(i, 31.417) * 70).toFixed(2),
+  size: +(10 + rnd(i, 57.203) * 8).toFixed(1),
+  dur: +(9 + rnd(i, 23.887) * 7).toFixed(2),
+  delay: +(-rnd(i, 81.559) * 16).toFixed(2),
+  dx: +((rnd(i, 44.903) - 0.5) * 70).toFixed(0),
+}));
+
+/** 〰️ เส้นระลอกบนผิวน้ำ */
+const WAVES = Array.from({ length: 7 }, (_, i) => ({
+  left: +(rnd(i, 15.331) * 86).toFixed(2),
+  top: +(18 + rnd(i, 66.719) * 70).toFixed(2),
+  w: +(50 + rnd(i, 38.117) * 90).toFixed(0),
+  dur: +(6 + rnd(i, 92.443) * 5).toFixed(2),
+  delay: +(-rnd(i, 12.661) * 8).toFixed(2),
+}));
+
+function NagaFire() {
+  const [lite, setLite] = useState(false);
+  useEffect(() => {
+    const nav = navigator as Navigator & { deviceMemory?: number };
+    setLite((nav.hardwareConcurrency ?? 8) <= 4 || (nav.deviceMemory ?? 8) <= 4);
+  }, []);
+  const timing = (f: (typeof FIREBALLS)[number]) => ({ animationDuration: `${f.dur}s`, animationDelay: `${f.delay}s` });
+
+  return (
+    <div className={`nf-scene ${lite ? "nf-lite" : ""}`}>
+      <TwinkleStars count={9} />
+      <RiverBank />
+
+      {/* ชั้นพญานาค — อยู่หลังผิวน้ำ ลำตัวส่วนล่างจึงดูจมอยู่ในแม่น้ำ */}
+      <div className="nf-naga">
+        <Naga />
+      </div>
+
+      {/* ชั้นลูกไฟ — เริ่มใต้ผิวน้ำ (ถูกน้ำบังไว้) แล้วผุดขึ้น */}
+      <div className="nf-balls">
+        {FIREBALLS.map((f, i) => (
+          <span key={i} className={`nf-ball-anchor ${i % 2 ? "nf-x" : ""}`} style={{ left: `${f.left}%` }}>
+            <span className="nf-ball" style={{ ...timing(f), width: `${f.size}px`, height: `${f.size}px`, ["--nf-dx" as string]: `${f.dx}px` }}>
+              <span className="nf-spark nf-spark-a" />
+              <span className="nf-spark nf-spark-b" />
+            </span>
+          </span>
+        ))}
+      </div>
+
+      {/* ชั้นผิวน้ำ — ระลอก แสงเรืองใต้น้ำ วงคลื่น และเงาสะท้อนของลูกไฟแต่ละดวง */}
+      <div className="nf-water">
+        {WAVES.map((w, i) => (
+          <span key={i} className="nf-wave" style={{ left: `${w.left}%`, top: `${w.top}%`, width: `${w.w}px`, animationDuration: `${w.dur}s`, animationDelay: `${w.delay}s` }} />
+        ))}
+        <div className="nf-fx">
+          {FIREBALLS.map((f, i) => (
+            <span key={i} className={`nf-spot ${i % 2 ? "nf-x" : ""}`} style={{ left: `${f.left}%` }}>
+              <span className="nf-under" style={timing(f)} />
+              <span className="nf-ring" style={timing(f)} />
+              <span className="nf-reflect" style={timing(f)} />
+            </span>
+          ))}
+        </div>
+      </div>
+      <div className="nf-mist" />
+    </div>
+  );
+}
+
+/** 🌳 เงาตลิ่งและแนวไม้ฝั่งไกล เหนือผิวน้ำ */
+function RiverBank() {
+  return (
+    <svg viewBox="0 0 1200 60" preserveAspectRatio="none" className="nf-bank" aria-hidden>
+      <path d="M0 60V38c60-6 110-18 170-14s90 14 150 8 100-22 170-20 110 18 170 16 90-14 160-16 120 12 180 10 70-8 200-6V60Z" fill="var(--nf-bank)" />
+      <path d="M0 60V46c80 2 140-8 220-6s120 10 210 6 150-12 240-10 140 10 230 8 180-6 300-4V60Z" fill="var(--nf-bank-near)" />
+    </svg>
+  );
+}
+
+/** 🐉 พญานาค — ลำตัวเกล็ดทองโค้งขึ้นจากน้ำ หงอนกนก แผงคอสีมรกต ส่ายหัวและหายใจช้า ๆ */
+function Naga() {
+  const body = "M122 176C132 132 70 124 78 90C84 64 98 54 80 41";
+  return (
+    <svg viewBox="0 0 200 180" className="block size-full overflow-visible">
+      <defs>
+        <linearGradient id="nf-gold" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#ffe9a3" />
+          <stop offset="50%" stopColor="#e9b44c" />
+          <stop offset="100%" stopColor="#a8641f" />
+        </linearGradient>
+        <linearGradient id="nf-jade" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#5fe0b0" />
+          <stop offset="100%" stopColor="#0f7a63" />
+        </linearGradient>
+      </defs>
+
+      {/* โค้งลำตัวช่วงท้ายที่โผล่พ้นน้ำ */}
+      <g className="nf-hump">
+        <path d="M148 178C154 146 186 146 194 178" stroke="url(#nf-gold)" strokeWidth="15" fill="none" strokeLinecap="round" />
+        <path d="M148 178C154 146 186 146 194 178" stroke="#8a4d16" strokeWidth="9" strokeDasharray="2 5" fill="none" opacity=".55" />
+        <path d="M160 152l6-12 4 10 6-10 3 12" fill="url(#nf-jade)" />
+      </g>
+
+      <g className="nf-body">
+        <path d={body} stroke="url(#nf-gold)" strokeWidth="22" fill="none" strokeLinecap="round" />
+        <path d={body} stroke="#8a4d16" strokeWidth="15" strokeDasharray="2.4 5" fill="none" opacity=".5" />
+        <path d={body} stroke="#fff1c2" strokeWidth="3" fill="none" opacity=".55" transform="translate(-4 1)" />
+        {/* ครีบหลัง */}
+        <path d="M104 118l8-10 1 12 9-8-2 13M92 78l9-7-1 11 9-5-4 11" fill="url(#nf-jade)" />
+
+        <g className="nf-head">
+          {/* แผงคอ */}
+          <path className="nf-hood" d="M84 34C102 22 114 38 104 50C114 54 108 66 94 62C98 54 92 44 84 42Z" fill="url(#nf-jade)" stroke="#f3c96a" strokeWidth="1.2" />
+          {/* หัวและขากรรไกร */}
+          <path d="M86 34C78 22 58 22 44 31L32 37C38 42 52 44 60 45C70 49 80 48 88 43Z" fill="url(#nf-gold)" />
+          <path d="M46 40 36 45C48 50 62 51 74 48" stroke="#a8641f" strokeWidth="2.2" fill="none" strokeLinecap="round" />
+          {/* หงอนกนกเปลวไฟ */}
+          <path d="M66 27C63 15 72 10 69 1C78 9 81 16 76 24C82 15 91 13 93 6C96 17 91 26 85 32Z" fill="url(#nf-gold)" stroke="#fff1c2" strokeWidth=".8" />
+          {/* หนวดม้วน */}
+          <path d="M36 40C28 46 24 56 30 62s12-2 8-8" stroke="#f3c96a" strokeWidth="1.4" fill="none" strokeLinecap="round" />
+          <circle className="nf-eye" cx="62" cy="33" r="2.6" />
+        </g>
+      </g>
+    </svg>
+  );
+}
+
+/* ================= 🪷 ลอยกระทง ================= */
+
+type BankKind = "kneel" | "hold" | "watch" | "kid";
+
+/**
+ * 🧑‍🧑‍🧒 ผู้คนริมตลิ่งฝั่งใกล้ — "kneel" คือคนที่นั่งคุกเข่าวางกระทงลงน้ำ
+ * กระทงของคนนั้นใช้รอบเวลาเดียวกับท่าแขน: ถือไว้ → วางลงน้ำ → ลอยตามกระแสออกไป → หยิบใบใหม่
+ */
+const BANK_PEOPLE: { left: number; kind: BankKind; d?: number; delay?: number; run?: number; lane?: number; sway?: number; sm?: boolean }[] = [
+  { left: 6, kind: "kneel", d: 40, delay: -4, run: 52, lane: 0.42 },
+  { left: 12, kind: "hold", sway: 5.2 },
+  { left: 18.5, kind: "watch", sway: 6.1, sm: true },
+  { left: 20.2, kind: "kid", sway: 4.3, sm: true },
+  { left: 28, kind: "kneel", d: 46, delay: -21, run: 46, lane: 0.6 },
+  { left: 36, kind: "hold", sway: 4.7, sm: true },
+  { left: 43, kind: "watch", sway: 5.6 },
+  { left: 44.8, kind: "kid", sway: 3.8 },
+  { left: 52, kind: "kneel", d: 38, delay: -12, run: 40, lane: 0.5, sm: true },
+  { left: 61, kind: "hold", sway: 5.9 },
+  { left: 68, kind: "kneel", d: 44, delay: -30, run: 30, lane: 0.36 },
+  { left: 77, kind: "watch", sway: 6.4, sm: true },
+  { left: 78.7, kind: "watch", sm: true },
+  { left: 86, kind: "hold", sway: 5 },
+  { left: 92, kind: "kid", sway: 4.1, sm: true },
+];
+
+/** 🪷 กระทงที่ลอยมาจากต้นน้ำ — 3 ระยะ: ไกล (เล็ก ช้า ใกล้ตลิ่งฝั่งโน้น) · กลาง · ใกล้ */
+const DRIFTERS = Array.from({ length: 9 }, (_, i) => {
+  const depth = i % 3; // 0 ไกล · 1 กลาง · 2 ใกล้
+  return {
+    lane: [0.14, 0.38, 0.62][depth] + rnd(i, 27.551) * 0.1,
+    scale: [0.5, 0.72, 0.95][depth],
+    dur: +([84, 66, 52][depth] + rnd(i, 61.093) * 16).toFixed(2),
+    delay: +(-rnd(i, 39.307) * 80).toFixed(2),
+    bob: +(3 + rnd(i, 17.719) * 2).toFixed(2),
+    tone: i % 3,
+    depth,
+  };
+});
+
+/** ✨ ประกายแสงบนผิวน้ำ — วิบขึ้นนาน ๆ ครั้ง */
+const GLINTS = Array.from({ length: 8 }, (_, i) => ({
+  left: +(rnd(i, 52.117) * 94 + 3).toFixed(2),
+  top: +(15 + rnd(i, 74.551) * 70).toFixed(2),
+  dur: +(5 + rnd(i, 33.903) * 6).toFixed(2),
+  delay: +(-rnd(i, 18.227) * 10).toFixed(2),
+}));
+
+function LoyKrathong() {
+  const [lite, setLite] = useState(false);
+  useEffect(() => {
+    const nav = navigator as Navigator & { deviceMemory?: number };
+    setLite((nav.hardwareConcurrency ?? 8) <= 4 || (nav.deviceMemory ?? 8) <= 4);
+  }, []);
+
+  return (
+    <div className={`lk-scene ${lite ? "lk-lite" : ""}`}>
+      <span className="lk-moon" />
+      <TwinkleStars count={9} />
+      <RiverBank />
+
+      {/* แม่น้ำ — กระทงจากต้นน้ำลอยอยู่ในชั้นนี้ */}
+      <div className="lk-river">
+        {GLINTS.map((g, i) => (
+          <span key={i} className="lk-glint" style={{ left: `${g.left}%`, top: `${g.top}%`, animationDuration: `${g.dur}s`, animationDelay: `${g.delay}s` }} />
+        ))}
+        <div className="lk-drift">
+          {DRIFTERS.map((k, i) => (
+            <span
+              key={i}
+              className={`lk-drifter ${k.depth === 0 ? "fx-far" : ""} ${i % 2 ? "lk-x" : ""}`}
+              style={{ top: `${k.lane * 100}%`, animationDuration: `${k.dur}s`, animationDelay: `${k.delay}s`, zIndex: k.depth }}
+            >
+              <Krathong scale={k.scale} bob={k.bob} tone={k.tone} />
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* ตลิ่งฝั่งใกล้ + ผู้คน */}
+      <div className="lk-bank">
+        <span className="lk-ground" />
+        {BANK_PEOPLE.map((p, i) => (
+          <BankPerson key={i} {...p} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** 🪷 กระทงใบตอง กลีบพับ ดอกไม้ เทียนกับธูป · เปลวเทียนสั่นไหว และเงาสะท้อนใต้กระทง */
+function Krathong({ scale = 1, bob = 4, tone = 0 }: { scale?: number; bob?: number; tone?: number }) {
+  const flowers = [["#f59ac7", "#b38be8", "#fff1d6"], ["#b38be8", "#fff1d6", "#f59ac7"], ["#fff1d6", "#f59ac7", "#ffd27a"]][tone];
+  return (
+    <span className="lk-krathong" style={{ width: `${36 * scale}px`, height: `${27 * scale}px`, animationDuration: `${bob}s` }}>
+      <span className="lk-reflect" />
+      <span className="lk-halo" />
+      <svg viewBox="0 0 40 30" className="relative block size-full overflow-visible">
+        <ellipse cx="20" cy="25" rx="18" ry="4.6" fill="#2f7d48" />
+        <path d="M3 24 7 14l4 10ZM10 24l4-12 4 12ZM22 24l4-12 4 12ZM29 24l4-10 4 10Z" fill="#4fae69" stroke="#2f7d48" strokeWidth=".7" />
+        <path d="M16 24 20 11l4 13Z" fill="#62c07c" stroke="#2f7d48" strokeWidth=".7" />
+        <path d="M16.5 7.5 17.6 17M23.5 7.5 22.4 17" stroke="#c46a3a" strokeWidth=".9" />
+        <rect x="18.9" y="5" width="2.4" height="12" rx=".8" fill="#fff4dc" />
+        {[13, 20, 27].map((x, i) => (
+          <g key={x}>
+            <circle cx={x} cy={i === 1 ? 18 : 19} r="3.6" fill={flowers[i]} />
+            <circle cx={x} cy={i === 1 ? 18 : 19} r="1.2" fill="#f2b84b" />
+          </g>
+        ))}
+      </svg>
+      <span className="lk-flame" style={{ animationDuration: `${0.7 + tone * 0.13}s` }} />
+    </span>
+  );
+}
+
+/** 🧍 คนริมตลิ่ง — คนคุกเข่ายื่นมือวางกระทง · คนยืนถือกระทง · คนยืนชม · เด็ก */
+function BankPerson({ left, kind, d = 40, delay = 0, run = 40, lane = 0.5, sway, sm }: (typeof BANK_PEOPLE)[number]) {
+  const k = kind === "kid" ? 0.62 : 0.9;
+  const timing = { animationDuration: `${d}s`, animationDelay: `${delay}s` };
+  const arm = { stroke: "var(--lk-people)", strokeWidth: 2.6, strokeLinecap: "round" as const, fill: "none" };
+
+  return (
+    <span
+      className={`lk-person ${sway ? "lf-sway" : ""} ${sm ? "fx-sm-hide lk-x" : ""}`}
+      style={{ left: `${left}%`, width: `calc(${24 * k}px * var(--lk-s))`, height: `calc(${44 * k}px * var(--lk-s))`, animationDuration: sway ? `${sway}s` : undefined }}
+    >
+      <svg viewBox="0 -4 24 44" className="block size-full overflow-visible">
+        {kind === "kneel" ? (
+          <>
+            <circle cx="12" cy="16" r="4" fill="var(--lk-people)" />
+            <path d="M5 40V31Q5 24 9 21.5Q13 19.5 15 22.5L16 31H21Q23.5 31 23.5 34V40Z" fill="var(--lk-people)" />
+            <g className="lk-arms-reach" style={timing}><path d="M13 23.5 21 30" {...arm} /></g>
+            <g className="lk-arms-rest" style={timing}><path d="M13 23.5 17 31" {...arm} /></g>
+          </>
+        ) : (
+          <>
+            <circle cx="12" cy="6" r="4" fill="var(--lk-people)" />
+            <path d="M8 12Q12 10 16 12L18 30Q18 33 15 33V40H13V33H11V40H9V33Q6 33 6 30Z" fill="var(--lk-people)" />
+            {kind === "hold" ? <path d="M8.5 13.5 11 21M15.5 13.5 13 21" {...arm} /> : <path d="M8.5 13.5 6 25M15.5 13.5 18 25" {...arm} />}
+          </>
+        )}
+      </svg>
+
+      {kind === "hold" && (
+        <span className="lk-held-chest">
+          <Krathong scale={0.42} bob={4.6} />
+        </span>
+      )}
+      {kind === "kneel" && (
+        <span className="lk-place-anchor">
+          <span className="lk-held" style={timing}><Krathong scale={0.62} bob={9} /></span>
+          <span
+            className="lk-place"
+            style={{ ...timing, ["--lk-run" as string]: `${run}vw`, ["--lk-lane" as string]: `calc(var(--lk-river) * ${lane})` }}
+          >
+            <Krathong scale={0.62} bob={3.8} tone={Math.round(left) % 3} />
+          </span>
+        </span>
+      )}
+    </span>
+  );
+}
+
 /* ================= ทะเบียนตัวแสดงผล ================= */
 
 export const SCENES: Record<string, () => React.JSX.Element> = {
@@ -928,4 +1223,6 @@ export const SCENES: Record<string, () => React.JSX.Element> = {
   firefly: Firefly,
   purplenight: PurpleNight,
   lanternfest: LanternFest,
+  nagafire: NagaFire,
+  loykrathong: LoyKrathong,
 };

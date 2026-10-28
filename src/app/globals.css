@@ -1128,6 +1128,383 @@ html[data-theme="dark"] .lf-hang, html[data-theme="dark"] .lf-win { filter: drop
 /* เครื่องสเปกต่ำ (ตรวจจาก CPU/RAM): ตัดโคม บ้าน และคนเสริมออกอีก */
 .lf-lite .lf-x { display: none; }
 
+/* ---------- 🐉 ลูกไฟพญานาค ----------
+ * ชั้นจากหลังไปหน้า: ฟ้า (::before) · ดาว · ตลิ่งฝั่งไกล · พญานาค · ลูกไฟ · ผิวน้ำ (ระลอก แสงใต้น้ำ วงคลื่น เงาสะท้อน) · หมอก
+ * ลูกไฟเริ่มใต้ผิวน้ำ ซึ่งชั้นน้ำบังไว้ จึงเห็นเป็นแสงเรืองใต้น้ำก่อนผุดขึ้นจริง
+ */
+.fx-nagafire {
+  --nf-river: clamp(64px, 15vh, 130px);
+  --nf-water-top: rgb(160 140 222 / 0.5);
+  --nf-water-bot: rgb(96 74 176 / 0.62);
+  --nf-bank: rgb(132 108 192 / 0.4);
+  --nf-bank-near: rgb(108 84 170 / 0.5);
+}
+html[data-theme="dark"] .fx-nagafire {
+  --nf-water-top: rgb(34 24 78 / 0.86);
+  --nf-water-bot: rgb(10 8 32 / 0.94);
+  --nf-bank: #1d1338;
+  --nf-bank-near: #130c27;
+}
+.fx-nagafire::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgb(110 80 190 / 0.08), transparent 55%, rgb(255 150 80 / 0.12) 92%);
+}
+html[data-theme="dark"] .fx-nagafire::before {
+  background: linear-gradient(to bottom, rgb(20 14 60 / 0.45), rgb(46 26 90 / 0.22) 60%, rgb(255 120 50 / 0.14) 92%);
+}
+.nf-scene, .nf-balls { position: absolute; inset: 0; }
+
+.nf-bank {
+  position: absolute;
+  left: 0;
+  bottom: calc(var(--nf-river) - 2px);
+  width: 100%;
+  height: calc(var(--nf-river) * 0.45);
+}
+
+/* 🐉 พญานาค: ชิดขวา ไม่บังเนื้อหาหลัก · ลำตัวส่วนล่างอยู่หลังผิวน้ำ */
+.nf-naga {
+  position: absolute;
+  right: 2%;
+  bottom: calc(var(--nf-river) * 0.62);
+  width: clamp(130px, 21vw, 270px);
+  aspect-ratio: 200 / 180;
+  filter: drop-shadow(0 0 6px rgb(233 180 76 / 0.35));
+}
+html[data-theme="dark"] .nf-naga { filter: drop-shadow(0 0 10px rgb(240 180 80 / 0.45)); }
+.nf-body { transform-origin: 122px 176px; animation: nf-body 9s ease-in-out infinite alternate; }
+.nf-head { transform-origin: 82px 42px; animation: nf-head 6.5s ease-in-out infinite alternate; }
+.nf-hood { transform-origin: 86px 42px; animation: nf-hood 3.8s ease-in-out infinite alternate; }
+.nf-hump { animation: nf-hump 5.5s ease-in-out infinite alternate; }
+.nf-eye { fill: #7dffd0; animation: lf-blink 2.6s ease-in-out infinite alternate; }
+@keyframes nf-body { from { transform: rotate(-1.6deg); } to { transform: rotate(1.4deg); } }
+@keyframes nf-head { from { transform: rotate(-5deg); } to { transform: rotate(3deg); } }
+@keyframes nf-hood { from { transform: scale(1); } to { transform: scale(1.08); } }
+@keyframes nf-hump { from { transform: translateY(0); } to { transform: translateY(3px); } }
+
+/* 🔥 ลูกไฟ */
+.nf-ball-anchor { position: absolute; bottom: var(--nf-river); width: 0; height: 0; }
+.nf-ball {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: block;
+  opacity: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 42% 38%, #fff6d6 0 18%, #ffc24a 42%, #ff6a1f 68%, rgb(255 90 30 / 0) 72%);
+  box-shadow: 0 0 12px 4px rgb(255 140 50 / 0.65), 0 0 28px 8px rgb(255 90 30 / 0.3);
+  animation-name: nf-ball;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+/* หางแสงจาง ๆ ใต้ลูกไฟ */
+.nf-ball::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 55%;
+  width: 46%;
+  height: 280%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: linear-gradient(to bottom, rgb(255 170 70 / 0.65), rgb(255 110 40 / 0));
+}
+.nf-spark {
+  position: absolute;
+  left: 50%;
+  top: 70%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #ffd98a;
+  box-shadow: 0 0 4px #ffb04a;
+  animation: nf-spark 0.9s linear infinite;
+}
+.nf-spark-a { --nf-sx: -7px; }
+.nf-spark-b { --nf-sx: 6px; animation-delay: -0.45s; }
+@keyframes nf-spark {
+  from { opacity: 1; transform: translate(0, 0); }
+  to   { opacity: 0; transform: translate(var(--nf-sx), 16px); }
+}
+@keyframes nf-ball {
+  0%   { opacity: 0; transform: translate3d(-50%, 26px, 0) scale(0.5); }
+  10%  { opacity: 0.9; transform: translate3d(-50%, 20px, 0) scale(0.7); }   /* เรืองอยู่ใต้น้ำ */
+  18%  { opacity: 1; transform: translate3d(-50%, 2px, 0) scale(1); }        /* ผุดพ้นผิวน้ำ */
+  24%  { transform: translate3d(-50%, -8vh, 0) scale(0.95); }
+  68%  { opacity: 0.85; transform: translate3d(calc(-50% + var(--nf-dx)), -78vh, 0) scale(0.42); }
+  76%, 100% { opacity: 0; transform: translate3d(calc(-50% + var(--nf-dx)), -92vh, 0) scale(0.3); }
+}
+
+/* 🌊 ผิวน้ำ */
+.nf-water {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: var(--nf-river);
+  background: linear-gradient(to bottom, var(--nf-water-top), var(--nf-water-bot));
+  box-shadow: inset 0 1px 0 rgb(255 214 150 / 0.3);
+}
+.nf-wave {
+  position: absolute;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, rgb(255 226 170 / 0.5), transparent);
+  animation: nf-wave 8s ease-in-out infinite alternate;
+}
+@keyframes nf-wave {
+  from { opacity: 0.2; transform: translateX(-18px) scaleX(0.8); }
+  to   { opacity: 0.75; transform: translateX(18px) scaleX(1.1); }
+}
+.nf-fx { position: absolute; inset: 0; }
+.nf-spot { position: absolute; top: 0; width: 0; height: 100%; }
+.nf-under, .nf-ring, .nf-reflect {
+  position: absolute;
+  display: block;
+  opacity: 0;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+/* แสงเรืองใต้ผิวน้ำก่อนลูกไฟผุด */
+.nf-under {
+  left: -22px;
+  top: -4px;
+  width: 44px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgb(255 170 70 / 0.85), rgb(255 110 40 / 0) 70%);
+  animation-name: nf-under;
+}
+/* วงคลื่นตอนผุดพ้นน้ำ */
+.nf-ring {
+  left: -15px;
+  top: -4px;
+  width: 30px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid rgb(255 206 130 / 0.85);
+  animation-name: nf-ring;
+}
+/* เงาสะท้อนเป็นทางบนแม่น้ำ — สว่างตอนลูกไฟอยู่ต่ำ จางลงเมื่อลอยสูง */
+.nf-reflect {
+  left: -3px;
+  top: 3px;
+  width: 6px;
+  height: 80%;
+  border-radius: 3px;
+  transform-origin: 50% 0;
+  background: repeating-linear-gradient(to bottom, rgb(255 168 80 / 0.85) 0 4px, rgb(255 168 80 / 0.25) 4px 7px);
+  -webkit-mask-image: linear-gradient(to bottom, #000, transparent);
+  mask-image: linear-gradient(to bottom, #000, transparent);
+  animation-name: nf-reflect;
+}
+@keyframes nf-under   { 0% { opacity: 0; transform: scale(0.5); } 10% { opacity: 0.7; } 17% { opacity: 1; transform: scale(1.1); } 26% { opacity: 0.3; } 36%, 100% { opacity: 0; transform: scale(1); } }
+@keyframes nf-ring    { 0%, 15% { opacity: 0; transform: scale(0.3); } 19% { opacity: 0.9; transform: scale(0.8); } 34%, 100% { opacity: 0; transform: scale(2.4); } }
+@keyframes nf-reflect { 0%, 14% { opacity: 0; transform: scaleY(0.3); } 20% { opacity: 0.9; transform: scaleY(1); } 40% { opacity: 0.45; transform: scaleY(0.8); } 68%, 100% { opacity: 0; transform: scaleY(0.5); } }
+
+/* 🌫️ หมอกบาง ๆ เหนือแม่น้ำ */
+.nf-mist {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  bottom: calc(var(--nf-river) * 0.55);
+  height: calc(var(--nf-river) * 0.9);
+  background:
+    radial-gradient(55% 50% at 28% 60%, rgb(210 190 255 / 0.16), transparent 70%),
+    radial-gradient(45% 50% at 74% 50%, rgb(210 190 255 / 0.13), transparent 70%);
+  animation: nf-mist 18s ease-in-out infinite alternate;
+}
+@keyframes nf-mist { from { transform: translateX(-3%); } to { transform: translateX(3%); } }
+
+@media (max-width: 640px) {
+  .fx-nagafire { --nf-river: clamp(54px, 12vh, 90px); }
+  .nf-balls > :nth-child(n + 6), .nf-fx > :nth-child(n + 6) { display: none; }
+}
+@media (min-width: 641px) and (max-width: 1023px) {
+  .nf-balls > :nth-child(n + 8), .nf-fx > :nth-child(n + 8) { display: none; }
+}
+.nf-lite .nf-x { display: none; }
+
+/* ---------- 🪷 ลอยกระทง ----------
+ * ชั้นจากหลังไปหน้า: ฟ้า (::before) · พระจันทร์เต็มดวง · ดาว · ตลิ่งฝั่งไกล · แม่น้ำ (ประกาย + กระทงจากต้นน้ำ) · ตลิ่งฝั่งใกล้ · ผู้คน (+ กระทงที่กำลังวาง)
+ */
+.fx-loykrathong {
+  --lk-s: 1;
+  --lk-bank: calc(28px * var(--lk-s));
+  --lk-river: clamp(80px, 17vh, 150px);
+  --nf-river: calc(var(--lk-river) + var(--lk-bank));   /* ให้เงาตลิ่งฝั่งไกล (RiverBank) วางพอดีขอบน้ำ */
+  --nf-bank: rgb(132 108 192 / 0.4);
+  --nf-bank-near: rgb(108 84 170 / 0.5);
+  --lk-people: #6f55a6;
+  --lk-water-top: rgb(160 142 224 / 0.45);
+  --lk-water-bot: rgb(92 74 172 / 0.6);
+  --lk-ground-t: rgb(126 100 182 / 0.6);
+  --lk-ground-b: rgb(92 70 152 / 0.75);
+}
+html[data-theme="dark"] .fx-loykrathong {
+  --nf-bank: #1d1338;
+  --nf-bank-near: #130c27;
+  --lk-people: #120b26;
+  --lk-water-top: rgb(30 24 76 / 0.85);
+  --lk-water-bot: rgb(10 10 34 / 0.94);
+  --lk-ground-t: #1b1335;
+  --lk-ground-b: #0f0a20;
+}
+.fx-loykrathong::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgb(110 80 190 / 0.08), transparent 55%, rgb(255 200 120 / 0.12) 92%);
+}
+html[data-theme="dark"] .fx-loykrathong::before {
+  background: linear-gradient(to bottom, rgb(22 16 64 / 0.45), rgb(46 28 92 / 0.22) 60%, rgb(255 190 110 / 0.12) 92%);
+}
+.lk-scene, .lk-bank, .lk-drift { position: absolute; inset: 0; }
+.lk-moon {
+  position: absolute;
+  top: 7%;
+  left: 9%;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 38%, #fffdf0, #ffeaa8 70%);
+  box-shadow: 0 0 22px 6px rgb(255 228 160 / calc(var(--fx-glow) * 0.8));
+  opacity: 0.85;
+}
+
+/* 🌊 แม่น้ำ */
+.lk-river {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--lk-bank);
+  height: var(--lk-river);
+  background: linear-gradient(to bottom, var(--lk-water-top), var(--lk-water-bot));
+  box-shadow: inset 0 1px 0 rgb(255 230 170 / 0.28);
+}
+.lk-glint {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #fff3c8;
+  box-shadow: 0 0 6px 1px rgb(255 220 140 / 0.8);
+  opacity: 0;
+  animation: lk-glint 7s ease-in-out infinite;
+}
+@keyframes lk-glint { 0%, 80% { opacity: 0; transform: scale(0.4); } 88% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(0.6); } }
+
+/* กระทงจากต้นน้ำ: ลอยซ้ายไปขวาตามกระแส */
+.lk-drifter {
+  position: absolute;
+  left: 0;
+  margin-top: -14px;
+  animation: lk-drift 60s linear infinite;
+  will-change: transform;
+}
+@keyframes lk-drift { from { transform: translateX(-12vw); } to { transform: translateX(112vw); } }
+
+/* 🪷 ตัวกระทง: โคลงขึ้นลง หมุนนิด ๆ ตามระลอก */
+.lk-krathong {
+  position: relative;
+  display: block;
+  transform-origin: 50% 80%;
+  animation: lk-bob 4s ease-in-out infinite alternate;
+}
+@keyframes lk-bob { from { transform: translateY(0) rotate(-3deg); } to { transform: translateY(2px) rotate(3deg); } }
+.lk-flame {
+  position: absolute;
+  left: 50%;
+  top: -20%;
+  width: 16%;
+  height: 34%;
+  border-radius: 50% 50% 45% 45% / 62% 62% 38% 38%;
+  background: radial-gradient(circle at 50% 72%, #fffbe0 0 22%, #ffc24a 52%, rgb(255 120 40 / 0) 76%);
+  box-shadow: 0 0 6px 2px rgb(255 190 90 / calc(var(--fx-glow) * 1.1));
+  transform-origin: 50% 100%;
+  animation: lk-flicker 0.8s ease-in-out infinite alternate;
+}
+@keyframes lk-flicker {
+  0%   { transform: translateX(-50%) scale(1, 1) rotate(-3deg); opacity: 0.95; }
+  35%  { transform: translateX(-50%) scale(0.88, 1.14) rotate(2deg); opacity: 1; }
+  70%  { transform: translateX(-50%) scale(1.06, 0.9) rotate(-1deg); opacity: 0.85; }
+  100% { transform: translateX(-50%) scale(0.94, 1.06) rotate(3deg); opacity: 1; }
+}
+.lk-halo {
+  position: absolute;
+  left: 50%;
+  top: -40%;
+  width: 130%;
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(255 206 120 / calc(var(--fx-glow) * 0.75)), rgb(255 170 80 / 0) 62%);
+  animation: lf-blink 1.4s ease-in-out infinite alternate;
+}
+/* เงาเทียนสะท้อนบนผิวน้ำ ใต้กระทง */
+.lk-reflect {
+  position: absolute;
+  left: 50%;
+  top: 78%;
+  width: 24%;
+  height: 170%;
+  transform: translateX(-50%);
+  border-radius: 40%;
+  background: repeating-linear-gradient(to bottom, rgb(255 196 100 / 0.85) 0 3px, rgb(255 196 100 / 0.2) 3px 6px);
+  -webkit-mask-image: linear-gradient(to bottom, #000, transparent);
+  mask-image: linear-gradient(to bottom, #000, transparent);
+  animation: lk-shimmer 1.3s ease-in-out infinite alternate;
+}
+@keyframes lk-shimmer { from { opacity: 0.45; } to { opacity: 0.9; } }
+
+/* 🏞️ ตลิ่งฝั่งใกล้ + ผู้คน */
+.lk-ground {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: var(--lk-bank);
+  background: linear-gradient(to top, var(--lk-ground-b), var(--lk-ground-t));
+  border-radius: 40% 40% 0 0 / 14px 14px 0 0;
+}
+.lk-person { position: absolute; bottom: calc(var(--lk-bank) * 0.3); display: block; transform-origin: 50% 100%; }
+.lk-held-chest { position: absolute; left: 50%; top: 42%; transform: translate(-50%, -50%); }
+
+/* 🙏 คนคุกเข่าวางกระทง: ยื่นมือถือกระทง → วางลงน้ำ → กระทงลอยออกไป → หยิบใบใหม่ (รอบเดียวกัน) */
+.lk-arms-reach, .lk-arms-rest, .lk-held { animation-timing-function: steps(1, end); animation-iteration-count: infinite; }
+.lk-arms-reach { animation-name: lk-reach; }
+.lk-arms-rest  { animation-name: lk-rest; }
+@keyframes lk-reach { 0%, 9% { opacity: 1; } 10%, 89% { opacity: 0; } 90%, 100% { opacity: 1; } }
+@keyframes lk-rest  { 0%, 9% { opacity: 0; } 10%, 89% { opacity: 1; } 90%, 100% { opacity: 0; } }
+.lk-place-anchor { position: absolute; left: 88%; bottom: 22%; width: 0; height: 0; }
+.lk-held, .lk-place { position: absolute; left: 0; bottom: 0; display: block; }
+.lk-held { transform: translateX(-50%); animation-name: lk-held; }
+@keyframes lk-held { 0%, 4% { opacity: 1; } 5%, 89% { opacity: 0; } 90%, 100% { opacity: 1; } }
+.lk-place {
+  opacity: 0;
+  animation-name: lk-place;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+@keyframes lk-place {
+  0%, 4.9% { opacity: 0; transform: translate3d(-50%, 0, 0) scale(1); }
+  5%   { opacity: 1; transform: translate3d(-50%, 0, 0) scale(1); }                   /* ยังอยู่ในมือ */
+  10%  { transform: translate3d(calc(-50% + 12px), -10px, 0) scale(0.96); }           /* วางลงน้ำ */
+  85%  { opacity: 1; transform: translate3d(calc(-50% + var(--lk-run)), calc(-1 * var(--lk-lane)), 0) scale(0.7); }
+  90%, 100% { opacity: 0; transform: translate3d(calc(-50% + var(--lk-run)), calc(-1 * var(--lk-lane)), 0) scale(0.66); }
+}
+
+@media (max-width: 640px) {
+  .fx-loykrathong { --lk-s: 0.72; --lk-river: clamp(64px, 14vh, 100px); }
+  .lk-drift > :nth-child(n + 6) { display: none; }
+  .lk-moon { width: 32px; height: 32px; }
+}
+@media (min-width: 641px) and (max-width: 1023px) {
+  .fx-loykrathong { --lk-s: 0.86; }
+  .lk-drift > :nth-child(n + 8) { display: none; }
+}
+.lk-lite .lk-x { display: none; }
+
 /* ---------- มือถือ/แท็บเล็ต: ลดจำนวนอนุภาคให้เบาเครื่อง ---------- */
 @media (max-width: 640px) {
   .fx-fall:nth-child(n + 13) { display: none; }
