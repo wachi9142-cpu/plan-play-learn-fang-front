@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Pause, Play, Plus, Trash2, Volume2 } from "lucide-react";
 import type { Book, CornerCategory } from "@/types/book";
 import { cn } from "@/lib/cn";
+import { SPEECH_ENABLED, speechReady } from "@/lib/speak";
 import { BOOK_EVENT, CORNER_CATEGORIES, createBook, deleteBook, listBooks, updateBook } from "@/lib/books-store";
 import { uid } from "@/lib/studio-store";
 import { BackButton } from "@/components/ui";
@@ -83,7 +84,7 @@ function StoryReader({ book, onClose }: { book: Book; onClose: () => void }) {
   const autoRef = useRef(false);
   const page = pages[i];
 
-  useEffect(() => { setCanSpeak(typeof window !== "undefined" && "speechSynthesis" in window); return () => { try { window.speechSynthesis?.cancel(); } catch { /* */ } }; }, []);
+  useEffect(() => { setCanSpeak(speechReady()); return () => { try { window.speechSynthesis?.cancel(); } catch { /* */ } }; }, []);
   useEffect(() => { autoRef.current = auto; }, [auto]);
 
   const speak = (text: string, onEnd?: () => void) => {
@@ -135,7 +136,7 @@ function StoryReader({ book, onClose }: { book: Book; onClose: () => void }) {
                   </>)}
               <button type="button" onClick={() => go(1)} disabled={last} className="tap grid size-12 place-items-center rounded-full border border-line bg-white text-purple-700 disabled:opacity-40"><ChevronRight size={22} /></button>
             </div>
-            {!canSpeak && <p className="mt-2 text-center text-[12px] text-ink-soft">เบราว์เซอร์นี้ยังอ่านออกเสียงไม่ได้ — ให้คุณครู/ผู้ปกครองอ่านให้ฟังนะคะ</p>}
+            {SPEECH_ENABLED && !canSpeak && <p className="mt-2 text-center text-[12px] text-ink-soft">เบราว์เซอร์นี้ยังอ่านออกเสียงไม่ได้ — ให้คุณครู/ผู้ปกครองอ่านให้ฟังนะคะ</p>}
 
             <div className="mt-3 flex justify-center gap-1">{pages.map((p, k) => <button key={p.id} type="button" onClick={() => { stop(); setI(k); }} className={cn("size-2.5 rounded-full", k === i ? "bg-purple-600" : "bg-purple-200")} aria-label={`หน้า ${k + 1}`} />)}</div>
           </>

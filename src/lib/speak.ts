@@ -9,8 +9,14 @@ export type SpeakLang = "th" | "en";
 
 const CODE: Record<SpeakLang, string> = { th: "th-TH", en: "en-US" };
 
+/**
+ * 🔇 ปิดเสียงพูดทั้งเว็บไว้ก่อน (29 ต.ค. 2569) — เสียงสังเคราะห์ของเครื่องฟังแล้วไม่เป็นธรรมชาติ
+ * ทุกปุ่มลำโพงและการอ่านออกเสียงอัตโนมัติจะซ่อน/เงียบเอง · อยากเปิดคืนให้เปลี่ยนเป็น true
+ */
+export const SPEECH_ENABLED = false;
+
 export const speechReady = () =>
-  typeof window !== "undefined" && "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
+  SPEECH_ENABLED && typeof window !== "undefined" && "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
 
 /** เสียงที่เครื่องนี้มีสำหรับภาษานั้น */
 function pickVoice(lang: SpeakLang): SpeechSynthesisVoice | undefined {

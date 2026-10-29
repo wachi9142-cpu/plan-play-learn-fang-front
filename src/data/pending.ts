@@ -113,7 +113,7 @@ export const PENDING_GROUPS: PendingGroup[] = [
     items: [
       { id: "login", title: "ระบบบัญชีจริง", detail: "ตอนนี้ซ่อนโซนห้องครูจากเมนูได้ แต่ยังล็อกจริงไม่ได้ — ใครรู้ลิงก์ก็ยังเข้าได้", status: "waiting", priority: true, href: "/login", file: "src/app/login" },
       { id: "server", title: "ย้ายข้อมูลขึ้นเซิร์ฟเวอร์", detail: "ข้อมูลที่ครูสร้าง (แฟลชการ์ด · เอกสาร · ผลงาน · พัฒนาการ) เก็บในเบราว์เซอร์เครื่องเดียว ยังไม่ข้ามเครื่อง", status: "waiting", priority: true, file: "src/lib/*-store.ts" },
-      { id: "sound", title: "เสียงอ่านออกเสียงในใบงาน / นิทาน / เกม", detail: "แฟลชการ์ดมีแล้ว เอาไปใส่ที่อื่นได้อีก — ทำได้เลยโดยไม่ต้องอัดเสียง", status: "waiting", href: "/worksheets", file: "src/lib/speak.ts" },
+      { id: "sound", title: "เสียงอ่านออกเสียงในใบงาน / นิทาน / เกม", detail: "ปิดไว้ก่อน — เสียงสังเคราะห์ไม่เป็นธรรมชาติ รอเสียงอัดจริงของครู (สวิตช์ SPEECH_ENABLED)", status: "waiting", href: "/worksheets", file: "src/lib/speak.ts" },
       { id: "video", title: "บริการวิดีโอห้องเรียนออนไลน์", detail: "เรียนสดข้ามเครื่องในวงแลนได้ แต่ยังไม่มีเซิร์ฟเวอร์กลาง", status: "waiting", href: "/online-classroom" },
     ],
   },
