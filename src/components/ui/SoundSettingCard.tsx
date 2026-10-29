@@ -37,7 +37,7 @@ const SAMPLE: Record<SfxGroup, SfxName> = { correct: "correct", wrong: "wrong", 
  * สวิตช์ใหญ่ · ความดัง · แต่ละหมวด (เกมการศึกษา / เกมเล่นสนุก / แฟลชการ์ด) เลือกโทนเองได้ · เลือกจังหวะที่มีเสียง
  */
 export function SoundSettingCard() {
-  const [on, setOn] = useState(true);
+  const [on, setOn] = useState(false);
   const [cfg, setCfg] = useState<SfxConfig>(DEFAULT_SFX_CONFIG);
   const [ready, setReady] = useState(false);
 
@@ -73,7 +73,7 @@ export function SoundSettingCard() {
         <span className="min-w-0 flex-1">
           <span className="block font-display text-[16px] text-purple-800">เสียงเอฟเฟกต์ทั้งหมด</span>
           <span className="mt-0.5 block text-[13px] leading-snug text-ink-soft">
-            {on ? "เปิดอยู่ — เสียงดนตรีสั้น ๆ ตอนตอบถูก ได้ดาว และจบเกม (ไม่มีเสียงพูด)" : "ปิดอยู่ — ทุกหมวดเงียบหมด เหมาะกับห้องเรียนหรือตอนกลางคืน"}
+            {on ? "เปิดอยู่ — เสียงดนตรีสั้น ๆ ตอนตอบถูก ได้ดาว และจบเกม (ไม่มีเสียงพูด)" : "ปิดอยู่ — ในเกมจะเงียบทั้งหมด ลองกด ▶ ลองฟัง ด้านล่างได้ ชอบโทนไหนค่อยเปิด"}
           </span>
         </span>
         <button type="button" role="switch" aria-checked={on} aria-label={on ? "ปิดเสียงเอฟเฟกต์ทั้งหมด" : "เปิดเสียงเอฟเฟกต์ทั้งหมด"} onClick={toggleMaster}>
@@ -81,7 +81,7 @@ export function SoundSettingCard() {
         </button>
       </div>
 
-      <div className={cn("grid gap-3 transition-opacity", !on && "pointer-events-none opacity-50")} aria-disabled={!on}>
+      <div className="grid gap-3">
         {/* ความดัง */}
         <div className="card flex flex-wrap items-center gap-2 p-4">
           <span className="mr-auto font-display text-[15px] text-purple-800">ความดัง</span>

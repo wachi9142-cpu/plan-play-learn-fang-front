@@ -33,10 +33,10 @@ const audio = (): AudioContext | null => {
   }
 };
 
-/** ตอนนี้เปิดเสียงอยู่ไหม (ค่าเริ่มต้นคือเปิด) — สวิตช์ใหญ่ ปิดแล้วเงียบทุกหมวด */
+/** ตอนนี้เปิดเสียงอยู่ไหม (ค่าเริ่มต้นคือปิด — ผู้ใช้ต้องฟังแล้วเลือกเปิดเองในหน้าตั้งค่า) */
 export function sfxOn(): boolean {
-  if (typeof window === "undefined") return true;
-  try { return localStorage.getItem(KEY) !== "off"; } catch { return true; }
+  if (typeof window === "undefined") return false;
+  try { return localStorage.getItem(KEY) === "on"; } catch { return false; }
 }
 
 export function setSfxOn(on: boolean) {
@@ -203,7 +203,7 @@ const lastPlayed: Partial<Record<SfxName, number>> = {};
  * opts.tone + opts.preview ใช้กับปุ่ม "ลองฟัง" ในหน้าตั้งค่า (ข้ามการปิดหมวด/จังหวะ)
  */
 export function playSfx(name: SfxName, opts: { area?: SfxArea; tone?: SfxTone; preview?: boolean } = {}) {
-  if (!sfxOn()) return;
+  if (!sfxOn() && !opts.preview) return; // ปุ่ม "ลองฟัง" ฟังได้แม้ยังปิดเสียงอยู่
   const cfg = readSfxConfig();
   const area = cfg.areas[opts.area ?? currentArea];
   if (!opts.preview && (!area.on || !cfg.groups[GROUP_OF[name]])) return;
