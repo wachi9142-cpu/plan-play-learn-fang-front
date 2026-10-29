@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
-import { GAMES, GAME_CATEGORIES, getGame } from "@/data/games";
+import { GAMES, GAME_CATEGORIES, gameZone, getGame } from "@/data/games";
 import { getWorksheetsForGame } from "@/data/worksheets";
 import { getGrade, getPlan, getUnit } from "@/data/plans";
 import { getCoreActivity } from "@/data/core-activities";
@@ -57,7 +57,7 @@ export default async function GamePage({ params }: { params: Promise<Params> }) 
 
       <div className="animate-rise mb-4"><OfflineButtons game={game} /></div>
       <div id="play" className="animate-rise delay-1">
-        <GameSession game={game} />
+        <GameSession game={game} zone={gameZone(game)} />
       </div>
 
       {/* 📁 แฟ้มข้อมูลเกมเพื่อการเรียนรู้ — ทุกแผงปิดอยู่ กดจึงเปิด หน้าเกมจึงสะอาด */}

@@ -11,13 +11,16 @@ import { listOffline } from "@/lib/offline";
 import { PLAYER_EVENT, bandForAge, getCurrentPlayer, setCurrentPlayer, touchPlayer, type PlayerProfile } from "@/lib/players";
 import { PlayerPicker } from "./PlayerPicker";
 import { GamePlayer } from "./GamePlayer";
+import { setSfxArea } from "@/lib/sfx";
 import type { GameOutcome } from "./GameShell";
 
 /**
  * รอบการเล่น 1 เกม: ชื่อผู้เล่น → เลือกระดับ (หรือครูกำหนด) → เล่น → บันทึกผล → แนะนำปรับระดับอัตโนมัติ
  * ไม่มีการจัดอันดับ — แสดงเฉพาะพัฒนาการของเด็กคนนั้น
  */
-export function GameSession({ game }: { game: Game }) {
+export function GameSession({ game, zone = "edu" }: { game: Game; zone?: "edu" | "fun" }) {
+  // 🔊 เสียงในเกมนี้ใช้โทน/การตั้งค่าของหมวดเกมนั้น (เกมการศึกษา หรือ เกมเล่นสนุก)
+  useEffect(() => { setSfxArea(zone); }, [zone]);
   const [profile, setProfile] = useState<PlayerProfile | null>(null);
   const player = profile?.name ?? "";
   const [level, setLevel] = useState<Difficulty | null>(null);

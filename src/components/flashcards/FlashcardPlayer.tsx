@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, RotateCcw, Shuffle, Volume2 } from "lucide-react";
 import type { FlashCard, FlashMode } from "@/types/flashcard";
 import { canSpeak, onVoicesReady, speak, stopSpeaking } from "@/lib/speak";
+import { playSfx } from "@/lib/sfx";
 import { cn } from "@/lib/cn";
 
 /**
@@ -57,7 +58,7 @@ export function FlashcardPlayer({ cards, backHref }: { cards: FlashCard[]; backH
     const h = (e: KeyboardEvent) => {
       if (e.key === "ArrowRight") { e.preventDefault(); go(1); }
       else if (e.key === "ArrowLeft") { e.preventDefault(); go(-1); }
-      else if (e.key === " " || e.key === "Enter") { e.preventDefault(); setFlipped((f) => !f); }
+      else if (e.key === " " || e.key === "Enter") { e.preventDefault(); playSfx("pop"); setFlipped((f) => !f); }
     };
     window.addEventListener("keydown", h);
     return () => window.removeEventListener("keydown", h);
@@ -106,7 +107,7 @@ export function FlashcardPlayer({ cards, backHref }: { cards: FlashCard[]; backH
       {/* บัตร — กดที่บัตรเพื่อพลิก */}
       <button
         type="button"
-        onClick={() => setFlipped((f) => !f)}
+        onClick={() => { playSfx("pop"); setFlipped((f) => !f); }}
         aria-label={flipped ? "พลิกกลับด้านหน้า" : "พลิกดูอีกด้าน"}
         className="card tap w-full overflow-hidden p-0 text-center"
       >
@@ -164,7 +165,7 @@ export function FlashcardPlayer({ cards, backHref }: { cards: FlashCard[]; backH
           className="tap inline-flex items-center justify-center gap-1.5 rounded-full bg-white px-4 py-3 text-[15px] font-medium text-purple-700 shadow-soft hover:bg-cream">
           <ArrowLeft size={18} /> ก่อนหน้า
         </button>
-        <button type="button" onClick={() => setFlipped((f) => !f)}
+        <button type="button" onClick={() => { playSfx("pop"); setFlipped((f) => !f); }}
           className="tap inline-flex items-center justify-center gap-1.5 rounded-full bg-yellow-accent px-4 py-3 text-[15px] font-medium text-[#5a4600] shadow-soft hover:brightness-95">
           <RotateCcw size={18} /> พลิกบัตร
         </button>

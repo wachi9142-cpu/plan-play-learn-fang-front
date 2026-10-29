@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, RotateCcw, Volume2 } from "lucide-react";
 import type { FlashCard } from "@/types/flashcard";
 import { canSpeak, onVoicesReady, speak, stopSpeaking } from "@/lib/speak";
+import { playSfx } from "@/lib/sfx";
 import { cn } from "@/lib/cn";
 
 function shuffled<T>(a: T[]): T[] {
@@ -55,7 +56,7 @@ export function QuizGame({ cards, lang, backHref }: { cards: FlashCard[]; lang: 
   const choose = (id: string) => {
     if (chosen) return;
     setChosen(id);
-    if (id === q.answer.id) setScore((s) => s + 1);
+    if (id === q.answer.id) { setScore((s) => s + 1); playSfx("correct"); } else playSfx("wrong");
     setTimeout(() => { setChosen(null); setI((n) => n + 1); }, 1100);
   };
 

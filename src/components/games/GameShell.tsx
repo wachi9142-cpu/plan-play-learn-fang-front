@@ -5,6 +5,7 @@ import { RotateCcw } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { SpeakButton } from "@/components/ui/SpeakButton";
 import { PRAISE, starsFor } from "@/lib/game-levels";
+import { playSfx } from "@/lib/sfx";
 
 const mmss = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
@@ -55,6 +56,22 @@ export function GameShell({ instruction, progress, done, onRestart, children, st
     if (!finished || reported.current) return;
     reported.current = true;
     onDone?.({ mistakes, total, seconds: Math.round((Date.now() - start.current) / 1000), timeUp: timeUp && !done, stars });
+  }, [finished]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  /* 🔊 เสียงอัตโนมัติทุกเกม: ผ่านข้อ = ตอบถูก · พลาดเพิ่ม = ตอบผิด · จบเกม = ชนะ (เลือกโทน/ปิดได้ในหน้าตั้งค่า) */
+  const prevProgress = useRef(progress?.current ?? 0);
+  const prevMistakes = useRef(mistakes);
+  useEffect(() => {
+    const cur = progress?.current ?? 0;
+    if (cur > prevProgress.current && !finished) playSfx("correct");
+    prevProgress.current = cur;
+  }, [progress?.current]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (mistakes > prevMistakes.current && !finished) playSfx("wrong");
+    prevMistakes.current = mistakes;
+  }, [mistakes]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (finished) playSfx(timeUp && !done ? "wrong" : "win");
   }, [finished]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const praise = PRAISE[stars];

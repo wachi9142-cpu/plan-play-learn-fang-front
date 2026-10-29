@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { setSfxArea } from "@/lib/sfx";
 import Link from "next/link";
 import { PageHeader } from "@/components/ui";
 import { BackButton } from "@/components/ui/BackButton";
@@ -20,6 +21,7 @@ const TABS: { id: Tab; emoji: string; label: string }[] = [
 
 /** 🃏 หน้าเล่นชุดบัตร — บัตรคำ · เกมจับคู่ · เกมทายคำ อยู่ในหน้าเดียว */
 export function SetScreen({ categoryId, setId }: { categoryId: string; setId: string }) {
+  useEffect(() => { setSfxArea("flashcards"); }, []);
   const cat = useFlashCategory(categoryId);
   const set = cat?.sets.find((s) => s.id === setId);
   const [tab, setTab] = useState<Tab>("cards");

@@ -39,8 +39,8 @@ export default function SettingsPage() {
 
       <section className="mt-8">
         <h2 className="text-xl sm:text-2xl">🔊 เสียง</h2>
-        <p className="mt-1 text-[14px] text-ink-soft">เปิด–ปิดเสียงในเกมทุกเกมพร้อมกัน — ปุ่มเสียงในแต่ละเกมใช้ค่าเดียวกันนี้</p>
-        <div className="mt-3 max-w-xl"><SoundSettingCard /></div>
+        <p className="mt-1 text-[14px] text-ink-soft">เลือกโทนเสียงให้แต่ละหมวด และเลือกว่าจะให้มีเสียงตอนไหนบ้าง — ปุ่มเสียงในแต่ละเกมใช้ค่าเดียวกันนี้</p>
+        <div className="mt-3 max-w-3xl"><SoundSettingCard /></div>
       </section>
 
       <section className="mt-8">

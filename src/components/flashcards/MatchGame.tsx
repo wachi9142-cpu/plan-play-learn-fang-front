@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, RotateCcw, Volume2 } from "lucide-react";
 import type { FlashCard } from "@/types/flashcard";
 import { canSpeak, onVoicesReady, speak, stopSpeaking } from "@/lib/speak";
+import { playSfx } from "@/lib/sfx";
 import { cn } from "@/lib/cn";
 
 /** สุ่มลำดับใหม่ (ไม่แก้ array เดิม) */
@@ -60,11 +61,13 @@ export function MatchGame({ cards, lang, backHref }: { cards: FlashCard[]; lang:
     setTries((t) => t + 1);
     if (picked === id) {
       setDone((d) => [...d, id]);
+      playSfx("correct");
       setPicked(null);
       const c = group.find((x) => x.id === id);
       if (c && canHear) speak(lang === "th" ? c.th : c.en, lang);
     } else {
       setWrong(id);
+      playSfx("wrong");
       setTimeout(() => setWrong(null), 600);
     }
   };
