@@ -27,7 +27,7 @@ export function WorksheetLibrary({ worksheets, tags, initialCategory = null }: P
   const [tag, setTag] = useState<string | null>(null);
   const [band, setBand] = useState<AgeBandId | null>(null);
   const [skill, setSkill] = useState<string | null>(null);
-  const [level, setLevel] = useState<KinderLevelId | null>(null);
+  const [level, setLevel] = useState<LevelFilter | null>(null);
   const agesOf = worksheetAges;
   const skills = useMemo(() => { const m = new Map<string, number>(); worksheets.forEach((w) => w.skills.forEach((s) => m.set(s, (m.get(s) ?? 0) + 1))); return Array.from(m.entries()).sort((a, b) => b[1] - a[1]).slice(0, 18); }, [worksheets]);
 
@@ -37,6 +37,11 @@ export function WorksheetLibrary({ worksheets, tags, initialCategory = null }: P
     if (catParam && catParam in WORKSHEET_CATEGORIES) setCat(catParam as WorksheetCategory);
     else if (catParam === null) setCat(null);
   }, [catParam]);
+  // /worksheets?level=k3 → เปิดมาที่อนุบาล 3
+  const levelParam = useSearchParams().get("level");
+  useEffect(() => {
+    setLevel(LEVEL_FILTERS.some((l) => l.id === levelParam) ? (levelParam as LevelFilter) : null);
+  }, [levelParam]);
 
   const cats = (Object.keys(WORKSHEET_CATEGORIES) as WorksheetCategory[]).filter((c) => worksheets.some((w) => w.category === c));
 
@@ -47,7 +52,7 @@ export function WorksheetLibrary({ worksheets, tags, initialCategory = null }: P
       if (tag && !w.tags.includes(tag)) return false;
       if (band && !bandsForRange(agesOf(w)).includes(band)) return false;
       if (skill && !w.skills.includes(skill)) return false;
-      if (level && !kinderLevels(w).includes(level)) return false;
+      if (level && !matchLevel(w, level)) return false;
       if (!query) return true;
       const plans = w.planIds.map((id) => getPlan(id)?.title ?? "").join(" ");
       return withThaiAliases([w.title, w.description, WORKSHEET_CATEGORIES[w.category].label, ...w.skills, ...w.tags, plans].join(" ").toLowerCase()).includes(query);
@@ -57,8 +62,27 @@ export function WorksheetLibrary({ worksheets, tags, initialCategory = null }: P
   // จัดกลุ่มตามหมวดเมื่อยังไม่เลือกหมวด
   const grouped = cat ? [[cat, results] as const] : cats.map((c) => [c, results.filter((w) => w.category === c)] as const).filter(([, l]) => l.length > 0);
 
+  const pickLevel = (l: LevelFilter | null) => {
+    setLevel(l);
+    // จำชั้นที่เลือกไว้ในลิงก์ — แชร์/กลับมาหน้านี้แล้วยังเป็นชั้นเดิม
+    const u = new URL(window.location.href);
+    if (l) u.searchParams.set("level", l); else u.searchParams.delete("level");
+    window.history.replaceState(null, "", u);
+  };
+
   return (
     <div>
+      {/* 🎒 เลือกระดับชั้น — กดแล้วเหลือเฉพาะใบงานของชั้นนั้น */}
+      <div className="mb-4">
+        <p className="mb-2 font-display text-[16px] text-purple-800">🎒 เลือกระดับชั้น</p>
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+          <LevelTab active={level === null} onClick={() => pickLevel(null)} emoji="📝" label="ทุกระดับ" sub={`${worksheets.length} ใบงาน`} />
+          {LEVEL_FILTERS.map((l) => (
+            <LevelTab key={l.id} active={level === l.id} onClick={() => pickLevel(level === l.id ? null : l.id)} emoji={l.emoji} label={l.name} sub={`${l.ages} · ${worksheets.filter((w) => matchLevel(w, l.id)).length} ใบงาน`} />
+          ))}
+        </div>
+      </div>
+
       <label className="card flex items-center gap-3 px-4 py-2.5 focus-within:border-purple-300 sm:px-5">
         <Search size={20} className="shrink-0 text-purple-400" />
         <input
@@ -77,11 +101,6 @@ export function WorksheetLibrary({ worksheets, tags, initialCategory = null }: P
         <span className="self-center text-[13px] text-ink-soft">👶 อายุ:</span>
         <Mini active={band === null} onClick={() => setBand(null)}>ทุกวัย</Mini>
         {AGE_BANDS.filter((b) => b.id !== "adult").map((b) => <Mini key={b.id} active={band === b.id} onClick={() => setBand(band === b.id ? null : b.id)}>{b.emoji} {b.label} ({worksheets.filter((w) => bandsForRange(agesOf(w)).includes(b.id)).length})</Mini>)}
-      </div>
-      <div className="mt-2 flex flex-wrap gap-1.5">
-        <span className="self-center text-[13px] text-ink-soft">🎒 ระดับชั้น:</span>
-        <Mini active={level === null} onClick={() => setLevel(null)}>ทุกชั้น</Mini>
-        {KINDER_LEVELS.map((l) => <Mini key={l.id} active={level === l.id} onClick={() => setLevel(level === l.id ? null : l.id)}>{l.emoji} {l.name} · {l.min}–{l.max} ปี ({worksheets.filter((w) => kinderLevels(w).includes(l.id)).length})</Mini>)}
       </div>
       <div className="mt-2 flex flex-wrap gap-1.5">
         <span className="self-center text-[13px] text-ink-soft">🧠 ทักษะ:</span>
@@ -187,6 +206,27 @@ export function WorksheetCard({ w, delay = 0 }: { w: Worksheet; delay?: number }
         </div>
       </div>
     </article>
+  );
+}
+
+/** ตัวเลือกระดับชั้นของคลังใบงาน: อนุบาล 1–3 + ประถม + มัธยม */
+type LevelFilter = KinderLevelId | "primary" | "secondary";
+const LEVEL_FILTERS: { id: LevelFilter; emoji: string; name: string; ages: string }[] = [
+  ...KINDER_LEVELS.map((l) => ({ id: l.id, emoji: l.emoji, name: l.name, ages: `${l.min}–${l.max} ปี` })),
+  { id: "primary", emoji: "📚", name: "ประถมศึกษา", ages: "7–12 ปี" },
+  { id: "secondary", emoji: "🎓", name: "มัธยมศึกษา", ages: "13–18 ปี" },
+];
+const matchLevel = (w: Worksheet, l: LevelFilter) => (l === "primary" || l === "secondary" ? w.gradeId === l : kinderLevels(w).includes(l));
+
+function LevelTab({ active, onClick, emoji, label, sub }: { active: boolean; onClick: () => void; emoji: string; label: string; sub: string }) {
+  return (
+    <button type="button" onClick={onClick} aria-pressed={active} className={cn("tap flex items-center gap-2 rounded-2xl border-2 px-3 py-2.5 text-left transition", active ? "border-purple-600 bg-purple-600 text-white shadow-soft" : "border-line bg-white hover:border-purple-300 hover:bg-purple-50")}>
+      <span className="text-2xl">{emoji}</span>
+      <span className="min-w-0">
+        <span className="block truncate font-display text-[15px]">{label}</span>
+        <span className={cn("block truncate text-[12px]", active ? "text-purple-100" : "text-ink-soft")}>{sub}</span>
+      </span>
+    </button>
   );
 }
 
