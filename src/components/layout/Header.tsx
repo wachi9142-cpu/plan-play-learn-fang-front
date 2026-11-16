@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, LogIn, Menu, X } from "lucide-react";
 import { PRIMARY_NAV, SITE, TOP_LINKS, type NavItem } from "@/lib/site";
-import { getClassMe, isTeacher } from "@/lib/classroom-store";
+import { useTeacher } from "@/lib/teacher-auth";
 import { cn } from "@/lib/cn";
 import { ThaiClock } from "./ThaiClock";
 import { ThemeToggle } from "@/components/theme";
@@ -16,9 +16,8 @@ export function Header() {
   const [open, setOpen] = useState(false);
   /** มีโลโก้แนวนอนไหม (public/logo-wide.webp) — ถ้ามีจะใช้แทนโลโก้กลม + ข้อความ */
   const [wideLogo, setWideLogo] = useState(false);
-  /** 👩‍🏫 โซน "ห้องครู" ขึ้นเมื่อเข้าสู่ระบบเป็นครูแล้วเท่านั้น (ยังเปิดจากลิงก์ตรงได้) */
-  const [teacher, setTeacher] = useState(false);
-  useEffect(() => { setTeacher(isTeacher(getClassMe())); }, [pathname]);
+  /** 👩‍🏫 โซน "ห้องครู" ขึ้นเมื่อเข้าสู่ระบบครูแล้วเท่านั้น */
+  const { teacher } = useTeacher();
   const zones = PRIMARY_NAV.filter((z) => !z.teacherOnly || teacher);
   useEffect(() => { const img = new window.Image(); img.onload = () => setWideLogo(true); img.src = "/logo-wide.webp"; }, []);
 
@@ -85,9 +84,15 @@ export function Header() {
         <div className="hidden shrink-0 items-center gap-1.5 lg:flex">
           <ThaiClock className="hidden xl:flex" />
           <ThemeToggle />
-          <Link href="/login" className={cn("inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-4 py-2 text-[15px] font-medium shadow-soft transition", pathname === "/login" ? "bg-purple-700 text-white" : "bg-purple-600 text-white hover:bg-purple-700")}>
-            <LogIn size={16} /> <span className="hidden xl:inline">เข้าสู่ระบบ</span><span className="xl:hidden">เข้าระบบ</span>
-          </Link>
+          {teacher ? (
+            <Link href="/teacher" title="ไปห้องครู" className="inline-flex max-w-44 items-center gap-1.5 whitespace-nowrap rounded-full bg-purple-600 px-4 py-2 text-[15px] font-medium text-white shadow-soft transition hover:bg-purple-700">
+              👩‍🏫 <span className="truncate">{teacher.name}</span>
+            </Link>
+          ) : (
+            <Link href="/login" className={cn("inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-4 py-2 text-[15px] font-medium shadow-soft transition", pathname === "/login" ? "bg-purple-700 text-white" : "bg-purple-600 text-white hover:bg-purple-700")}>
+              <LogIn size={16} /> <span className="hidden xl:inline">เข้าสู่ระบบ</span><span className="xl:hidden">เข้าระบบ</span>
+            </Link>
+          )}
         </div>
 
         <div className="flex items-center gap-2 lg:hidden">
@@ -134,8 +139,8 @@ export function Header() {
             <MobileLink key={item.href} href={item.href} emoji={item.emoji} label={item.label} active={isActive(item)} tint={item.tint} image={item.image} />
           ))}
           <MobileLink href="/settings" emoji="⚙️" label="ตั้งค่า" active={pathname === "/settings"} tint="bg-purple-100" />
-          <Link href="/login" className="tap mt-1 inline-flex items-center justify-center gap-2 rounded-2xl bg-purple-600 px-4 py-3 text-base font-medium text-white shadow-soft">
-            <LogIn size={18} /> เข้าสู่ระบบ
+          <Link href={teacher ? "/teacher" : "/login"} className="tap mt-1 inline-flex items-center justify-center gap-2 rounded-2xl bg-purple-600 px-4 py-3 text-base font-medium text-white shadow-soft">
+            {teacher ? <>👩‍🏫 ห้องครู · {teacher.name}</> : <><LogIn size={18} /> เข้าสู่ระบบ</>}
           </Link>
         </nav>
       </div>

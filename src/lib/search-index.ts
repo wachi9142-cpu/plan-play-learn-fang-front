@@ -7,6 +7,7 @@ import { SCHOOL_EVENTS, EVENT_CATEGORIES } from "@/data/school-events";
 import { TEACHING_MEDIA, LEARNING_ACTIVITIES } from "@/data/content";
 import { SCHEDULES } from "@/data/schedules";
 import { FLASH_CATEGORIES } from "@/data/flashcards";
+import { withThaiAliases } from "@/lib/search-alias";
 
 export type SearchKind = "plan" | "worksheet" | "game" | "project" | "news" | "event" | "media" | "activity" | "schedule" | "flashcard";
 
@@ -32,7 +33,7 @@ export const SEARCH_KINDS: Record<SearchKind, { emoji: string; label: string }> 
   flashcard: { emoji: "🃏", label: "แฟลชการ์ด (ไทย–อังกฤษ)" },
 };
 
-const j = (...parts: (string | string[] | undefined)[]) => parts.flat().filter(Boolean).join(" ").toLowerCase();
+const j = (...parts: (string | string[] | undefined)[]) => withThaiAliases(parts.flat().filter(Boolean).join(" ").toLowerCase());
 
 /** ดัชนีค้นหาทั้งเว็บ — สร้างครั้งเดียวตอนโหลด */
 export const SEARCH_INDEX: SearchDoc[] = [

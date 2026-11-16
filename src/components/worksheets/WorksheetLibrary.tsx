@@ -9,6 +9,8 @@ import { WORKSHEET_CATEGORIES } from "@/data/worksheets";
 import { AGE_BANDS, bandsForRange, type AgeBandId } from "@/lib/age-bands";
 import { getGrade } from "@/data/plans";
 import { getPlan } from "@/data/plans";
+import { withThaiAliases } from "@/lib/search-alias";
+import { KINDER_LEVELS, kinderLevelLabel, kinderLevels, worksheetAges, type KinderLevelId } from "@/lib/worksheet-levels";
 import { EmptyState, Tag } from "@/components/ui";
 import { cn } from "@/lib/cn";
 
@@ -25,7 +27,8 @@ export function WorksheetLibrary({ worksheets, tags, initialCategory = null }: P
   const [tag, setTag] = useState<string | null>(null);
   const [band, setBand] = useState<AgeBandId | null>(null);
   const [skill, setSkill] = useState<string | null>(null);
-  const agesOf = (w: Worksheet) => w.ages ?? getGrade(w.gradeId)?.ages;
+  const [level, setLevel] = useState<KinderLevelId | null>(null);
+  const agesOf = worksheetAges;
   const skills = useMemo(() => { const m = new Map<string, number>(); worksheets.forEach((w) => w.skills.forEach((s) => m.set(s, (m.get(s) ?? 0) + 1))); return Array.from(m.entries()).sort((a, b) => b[1] - a[1]).slice(0, 18); }, [worksheets]);
 
   // รองรับลิงก์ /worksheets?cat=math จากแถบลอย/หน้าอื่น
@@ -44,11 +47,12 @@ export function WorksheetLibrary({ worksheets, tags, initialCategory = null }: P
       if (tag && !w.tags.includes(tag)) return false;
       if (band && !bandsForRange(agesOf(w)).includes(band)) return false;
       if (skill && !w.skills.includes(skill)) return false;
+      if (level && !kinderLevels(w).includes(level)) return false;
       if (!query) return true;
       const plans = w.planIds.map((id) => getPlan(id)?.title ?? "").join(" ");
-      return [w.title, w.description, ...w.skills, ...w.tags, plans].join(" ").toLowerCase().includes(query);
+      return withThaiAliases([w.title, w.description, WORKSHEET_CATEGORIES[w.category].label, ...w.skills, ...w.tags, plans].join(" ").toLowerCase()).includes(query);
     });
-  }, [q, cat, tag, band, skill, worksheets]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [q, cat, tag, band, skill, level, worksheets]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // จัดกลุ่มตามหมวดเมื่อยังไม่เลือกหมวด
   const grouped = cat ? [[cat, results] as const] : cats.map((c) => [c, results.filter((w) => w.category === c)] as const).filter(([, l]) => l.length > 0);
@@ -73,6 +77,11 @@ export function WorksheetLibrary({ worksheets, tags, initialCategory = null }: P
         <span className="self-center text-[13px] text-ink-soft">👶 อายุ:</span>
         <Mini active={band === null} onClick={() => setBand(null)}>ทุกวัย</Mini>
         {AGE_BANDS.filter((b) => b.id !== "adult").map((b) => <Mini key={b.id} active={band === b.id} onClick={() => setBand(band === b.id ? null : b.id)}>{b.emoji} {b.label} ({worksheets.filter((w) => bandsForRange(agesOf(w)).includes(b.id)).length})</Mini>)}
+      </div>
+      <div className="mt-2 flex flex-wrap gap-1.5">
+        <span className="self-center text-[13px] text-ink-soft">🎒 ระดับชั้น:</span>
+        <Mini active={level === null} onClick={() => setLevel(null)}>ทุกชั้น</Mini>
+        {KINDER_LEVELS.map((l) => <Mini key={l.id} active={level === l.id} onClick={() => setLevel(level === l.id ? null : l.id)}>{l.emoji} {l.name} · {l.min}–{l.max} ปี ({worksheets.filter((w) => kinderLevels(w).includes(l.id)).length})</Mini>)}
       </div>
       <div className="mt-2 flex flex-wrap gap-1.5">
         <span className="self-center text-[13px] text-ink-soft">🧠 ทักษะ:</span>
@@ -165,6 +174,10 @@ export function WorksheetCard({ w, delay = 0 }: { w: Worksheet; delay?: number }
       <div className="flex flex-1 flex-col p-4">
         <p className="text-[12px] font-medium text-purple-500">{m.emoji} {m.label}</p>
         <h3 className="text-lg leading-snug">{w.title}</h3>
+        <p className="mt-1 flex flex-wrap gap-1 text-[12px]">
+          {kinderLevels(w).length > 0 && <span className="rounded-full bg-pink-soft px-2 py-0.5 font-medium text-purple-800">🎒 {kinderLevelLabel(kinderLevels(w))}</span>}
+          {worksheetAges(w) && <span className="rounded-full bg-yellow-soft px-2 py-0.5 text-[#8a6a00]">👶 {worksheetAges(w)}</span>}
+        </p>
         <p className="mt-1 flex-1 text-[14px] text-ink-soft">{w.description}</p>
         <div className="mt-2 flex flex-wrap gap-1">{w.skills.slice(0, 3).map((s) => <Tag key={s} tone="mint" className="text-[12px]">{s}</Tag>)}</div>
         {plans.length > 0 && <p className="mt-2 truncate text-[12px] text-ink-soft">📖 {plans.map((p) => p.title).join(" · ")}</p>}

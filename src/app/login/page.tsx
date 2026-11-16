@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { AUTH_PROVIDERS } from "@/lib/auth-providers";
 import { SITE } from "@/lib/site";
 import { LoginButtons } from "./LoginButtons";
+import { TeacherLogin } from "./TeacherLogin";
 
 export const metadata: Metadata = { title: "เข้าสู่ระบบ" };
 
@@ -17,10 +18,13 @@ export default function LoginPage() {
           <p className="mt-1 text-[15px] text-ink-soft">💜 {SITE.brand} · {SITE.credit}</p>
         </div>
 
+        <TeacherLogin />
+
+        <p className="mt-6 text-center text-[13px] text-ink-soft">👨‍👩‍👧 ผู้ปกครอง (เร็ว ๆ นี้)</p>
         <LoginButtons providers={AUTH_PROVIDERS} />
 
         <p className="mt-6 text-center text-[13px] text-ink-soft">
-          การเข้าสู่ระบบจะเปิดใช้เมื่อเชื่อมต่อระบบหลังบ้านแล้ว — ตอนนี้ทุกส่วนของเว็บใช้งานได้โดยไม่ต้องเข้าสู่ระบบ
+          การเข้าสู่ระบบของผู้ปกครองจะเปิดใช้เมื่อเชื่อมต่อระบบหลังบ้านแล้ว — ตอนนี้ส่วนของเด็กและผู้ปกครองใช้งานได้โดยไม่ต้องเข้าสู่ระบบ
         </p>
         <Link href="/" className="tap mt-3 inline-flex w-full items-center justify-center rounded-full border border-line px-4 py-2.5 text-[15px] text-purple-700 hover:bg-purple-50">
           ← กลับหน้าแรก

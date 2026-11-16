@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { ZONES } from "@/lib/site";
-import { getClassMe, isTeacher } from "@/lib/classroom-store";
+import { useTeacher } from "@/lib/teacher-auth";
 import { NavIcon } from "@/components/ui/NavIcon";
 
 /**
@@ -12,8 +11,7 @@ import { NavIcon } from "@/components/ui/NavIcon";
  * โซน "ห้องครู" ขึ้นเมื่อเข้าสู่ระบบเป็นครูแล้วเท่านั้น เหมือนในแถบเมนู
  */
 export function ZoneCards() {
-  const [teacher, setTeacher] = useState(false);
-  useEffect(() => { setTeacher(isTeacher(getClassMe())); }, []);
+  const { teacher } = useTeacher();
   const zones = ZONES.filter((z) => !z.teacherOnly || teacher);
 
   return (

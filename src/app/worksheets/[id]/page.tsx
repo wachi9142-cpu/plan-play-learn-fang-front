@@ -7,6 +7,7 @@ import { getGrade, getPlan, getUnit } from "@/data/plans";
 import { Breadcrumb, PageHeader, SpeakButton, Tag } from "@/components/ui";
 import { SheetScaler, WorksheetActions, WorksheetSheet } from "@/components/worksheets";
 import { WorksheetCard } from "@/components/worksheets/WorksheetLibrary";
+import { KINDER_LEVELS, kinderLevels, worksheetAges } from "@/lib/worksheet-levels";
 
 type Params = { id: string };
 
@@ -26,6 +27,7 @@ export default async function WorksheetDetailPage({ params }: { params: Promise<
 
   const cat = WORKSHEET_CATEGORIES[w.category];
   const grade = getGrade(w.gradeId);
+  const levels = kinderLevels(w);
   const plans = w.planIds.map(getPlan).filter((p) => p !== undefined);
   const games = (w.gameIds ?? []).map(getGame).filter((g) => g !== undefined);
   const related = WORKSHEETS.filter((x) => x.id !== w.id && (x.category === w.category || x.planIds.some((p) => w.planIds.includes(p)))).slice(0, 3);
@@ -65,7 +67,7 @@ export default async function WorksheetDetailPage({ params }: { params: Promise<
           <div className="card p-5">
             <h2 className="mb-3 text-lg">📋 ข้อมูลใบงาน</h2>
             <dl className="grid gap-y-3 text-[15px]">
-              <div><dt className="text-[13px] text-ink-soft">🎯 เหมาะสำหรับ</dt><dd className="flex flex-wrap gap-1.5"><Tag tone="pink">{grade?.name ?? (w.gradeId === "primary" ? "ประถมศึกษา" : w.gradeId === "secondary" ? "มัธยมศึกษา" : w.gradeId)}</Tag><Tag tone="yellow">👶 {w.ages ?? grade?.ages}</Tag></dd></div>
+              <div><dt className="text-[13px] text-ink-soft">🎯 เหมาะสำหรับ</dt><dd className="flex flex-wrap gap-1.5">{levels.length > 0 ? KINDER_LEVELS.filter((l) => levels.includes(l.id)).map((l) => <Tag key={l.id} tone="pink">{l.emoji} {l.name}</Tag>) : <Tag tone="pink">{grade?.name ?? (w.gradeId === "primary" ? "ประถมศึกษา" : w.gradeId === "secondary" ? "มัธยมศึกษา" : w.gradeId)}</Tag>}<Tag tone="yellow">👶 {worksheetAges(w)}</Tag></dd></div>
               <div><dt className="text-[13px] text-ink-soft">📚 หมวด</dt><dd><Link href={`/worksheets?cat=${w.category}`} className="hover:underline"><Tag tone="purple">{cat.emoji} {cat.label}</Tag></Link></dd></div>
               <div><dt className="text-[13px] text-ink-soft">✏️ ทักษะ</dt><dd className="mt-0.5 flex flex-wrap gap-1.5">{w.skills.map((s) => <Tag key={s} tone="mint">{s}</Tag>)}</dd></div>
               <div><dt className="text-[13px] text-ink-soft">🏷️ แท็ก</dt><dd className="mt-0.5 flex flex-wrap gap-1.5">{w.tags.map((t) => <Tag key={t} tone="yellow">{t}</Tag>)}</dd></div>

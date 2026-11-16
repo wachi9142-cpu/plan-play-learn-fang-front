@@ -21,6 +21,7 @@ import { NEWS } from "@/data/news";
 import { CALENDAR_EVENTS } from "@/data/calendar";
 import { listAllAssets } from "@/lib/studio-assets";
 import { EffectAdmin, FestivalAdmin } from "@/components/theme";
+import { TeacherAccounts } from "@/components/teacher/TeacherAccounts";
 
 /**
  * 👑 Admin / CMS — ภาพรวมข้อมูลทั้งระบบ + ทางลัดไปจัดการแต่ละส่วน
@@ -129,6 +130,9 @@ export function AdminPage() {
           </tbody>
         </table>
       </div>
+
+      <h2 className="mt-8 text-xl">👩‍🏫 บัญชีครู</h2>
+      <div className="mt-2"><TeacherAccounts /></div>
 
       <h2 className="mt-8 text-xl">✨ เอฟเฟกต์บรรยากาศ</h2>
       <div className="mt-2"><EffectAdmin /></div>

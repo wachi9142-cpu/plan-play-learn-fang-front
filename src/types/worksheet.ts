@@ -42,6 +42,7 @@ export interface Worksheet {
   category: WorksheetCategory;
   gradeId: string;
   ages?: string;             // 👶 เหมาะกับอายุ เช่น "4–6 ปี" (บ้านหนึ่งมีเด็กหลายวัย)
+  levels?: ("k1" | "k2" | "k3")[]; // 🎒 อนุบาลชั้นไหน — ไม่ใส่ = คิดจากอายุ (lib/worksheet-levels.ts)
   description: string;
   skills: string[];          // ✏️ ทักษะ
   tags: string[];            // แท็กสำหรับค้นหา/กรอง เช่น "กล้ามเนื้อมัดเล็ก", "หน่วยอาหาร"
